@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { schemaTypes } from "./sanity/schemaTypes";
+import { deskStructure } from "./sanity/deskStructure";
 
 const projectId = process.env.SANITY_PROJECT_ID || "ngouy1on";
 const dataset = process.env.SANITY_DATASET || "production";
@@ -10,7 +11,7 @@ export default defineConfig({
   title: "Naturaufeminin Studio",
   projectId,
   dataset,
-  plugins: [structureTool()],
+  plugins: [structureTool({ structure: deskStructure })],
   schema: {
     types: schemaTypes,
   },

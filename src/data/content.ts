@@ -162,7 +162,13 @@ function hasMediaTags(html: string): boolean {
   return /<(img|iframe|video)\b/i.test(html);
 }
 
+const FORCE_LEGACY_HTML_SLUGS = new Set(["mentions-legales", "politique-de-confidentialite"]);
+
 function pickBestHtmlContent(page: SanityPage): string {
+  if (FORCE_LEGACY_HTML_SLUGS.has(page.slug)) {
+    return page.bodyHtml ?? "";
+  }
+
   const portableHtml =
     Array.isArray(page.body) && page.body.length > 0 ? toHTML(page.body as any[]) : "";
   const legacyHtml = page.bodyHtml ?? "";

@@ -417,6 +417,40 @@ textarea {
   color: #ffffff !important;
 }
 
+.legal-page {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(95, 127, 84, 0.1), transparent 35%),
+    linear-gradient(180deg, #f8fbf7, #eef4ef);
+}
+
+.legal-page h1 {
+  max-width: 28ch;
+  margin-bottom: 0.65rem;
+}
+
+.legal-page h2 {
+  margin-top: 1.4em;
+  padding-top: 0.85rem;
+  border-top: 1px solid color-mix(in oklab, var(--line) 75%, white);
+  font-size: clamp(1.45rem, 2.4vw, 1.95rem);
+}
+
+.legal-page h3 {
+  margin-top: 1em;
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+}
+
+.legal-page p,
+.legal-page li {
+  max-width: 78ch;
+  color: color-mix(in oklab, var(--text) 92%, var(--muted));
+}
+
+.legal-page ul,
+.legal-page ol {
+  padding-left: 1.3rem;
+}
+
 .home-hero {
   background:
     radial-gradient(circle at 85% 18%, rgba(92, 138, 112, 0.2), transparent 35%),
