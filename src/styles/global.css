@@ -427,7 +427,7 @@ textarea:focus-visible {
   color: var(--muted);
 }
 
-:root[data-theme="dark"] .tarifs-content h1,
+:root[data-theme="dark"] .wp-content h1#page-title,
 :root[data-theme="dark"] .tarif-card h2,
 :root[data-theme="dark"] .tarifs-cta-text,
 :root[data-theme="dark"] .prestations-submenu-title,
@@ -683,11 +683,6 @@ textarea {
     linear-gradient(180deg, #f8fbf7, #eef4ef);
 }
 
-.legal-page h1 {
-  max-width: 28ch;
-  margin-bottom: 0.65rem;
-}
-
 .legal-page h2 {
   margin-top: 1.4em;
   padding-top: 0.85rem;
@@ -853,7 +848,7 @@ textarea {
   background-size: auto, 34px 34px, 34px 34px;
 }
 
-.tarifs-content h1 {
+.wp-content h1#page-title {
   text-align: center;
   color: color-mix(in oklab, var(--moss) 88%, #5f7f54);
   margin-bottom: 0.35rem;
@@ -1029,10 +1024,6 @@ textarea {
   background:
     radial-gradient(circle at 88% 12%, rgba(100, 145, 118, 0.13), transparent 32%),
     linear-gradient(180deg, #f8fcf7, #edf5ee);
-}
-
-.ecoute-page h1 {
-  margin-bottom: 0.7rem;
 }
 
 .ecoute-lead {
