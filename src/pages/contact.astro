@@ -7,12 +7,334 @@ const slug = "contact-prise-de-rendez-vous";
 const page = await getPageContent(slug);
 const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
 const description = page.seoDescription?.trim() || getDefaultPageDescription("/contact");
-const html = page.html;
+const html = page.html
+  .replace(/<div class="wpcf7[\s\S]*?<div class="wpcf7-response-output"><\/div>\s*<\/div>/gi, "")
+  .replace(/<p>\s*Votre nom\s*<br\s*\/?>\s*<\/p>/gi, "")
+  .replace(/<p>\s*Votre mail\s*<br\s*\/?>\s*<\/p>/gi, "")
+  .replace(/<p>\s*Sujet\s*<br\s*\/?>\s*<\/p>/gi, "")
+  .replace(/<p>\s*Votre message\s*<br\s*\/?>\s*<\/p>/gi, "")
+  .replace(/<p>\s*Audrey\s*<\/p>/gi, "");
+const firebaseContactEndpoint = import.meta.env.PUBLIC_FIREBASE_CONTACT_ENDPOINT?.trim() || "";
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() || "";
+const status = Astro.url.searchParams.get("status");
+const hasConfig = Boolean(firebaseContactEndpoint && turnstileSiteKey);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: page.title,
+  description,
+  url: "https://naturaufeminin.fr/contact",
+  inLanguage: "fr-FR",
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} structuredData={structuredData}>
   <article class="section wp-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
-    <div set:html={html}></div>
+    <div class="contact-intro" set:html={html}></div>
+
+    <section class="contact-form-section" aria-labelledby="contact-form-title">
+      <h2 id="contact-form-title">Envoyer un message</h2>
+      <p class="contact-form-intro">
+        Réponse sous 48h ouvrées. Vos données sont utilisées uniquement pour vous recontacter.
+      </p>
+
+      {status === "success" && (
+        <p id="form-status-message" class="form-alert form-alert-success" role="status">
+          Votre demande a bien été envoyée. Merci, je vous réponds rapidement.
+        </p>
+      )}
+      {status === "error" && (
+        <p id="form-status-message" class="form-alert form-alert-error" role="alert">
+          Un problème est survenu pendant l'envoi. Merci de réessayer ou d'appeler directement.
+        </p>
+      )}
+      {!hasConfig && (
+        <p id="form-status-message" class="form-alert form-alert-error" role="alert">
+          Le formulaire n'est pas encore configuré. Merci de me contacter par téléphone.
+        </p>
+      )}
+
+      <form
+        id="contact-form"
+        class="contact-form"
+        method="post"
+        action={firebaseContactEndpoint || "#"}
+        novalidate
+        data-endpoint={firebaseContactEndpoint}
+      >
+        <input type="hidden" name="originPath" value="/contact" />
+        <input type="hidden" id="formStartedAt" name="formStartedAt" value="" />
+        <div class="hp-wrapper" aria-hidden="true">
+          <label for="website">Site web</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+            inputmode="url"
+          />
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="firstName">Prénom <span aria-hidden="true">*</span></label>
+            <input id="firstName" name="firstName" type="text" autocomplete="given-name" required maxlength="80" />
+          </div>
+          <div class="form-field">
+            <label for="lastName">Nom <span aria-hidden="true">*</span></label>
+            <input id="lastName" name="lastName" type="text" autocomplete="family-name" required maxlength="80" />
+          </div>
+          <div class="form-field">
+            <label for="email">Email <span aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" required maxlength="254" />
+          </div>
+          <div class="form-field">
+            <label for="phone">Téléphone</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="subject">Sujet <span aria-hidden="true">*</span></label>
+          <input id="subject" name="subject" type="text" required maxlength="120" />
+        </div>
+
+        <div class="form-field">
+          <label for="message">Message <span aria-hidden="true">*</span></label>
+          <textarea
+            id="message"
+            name="message"
+            rows="7"
+            required
+            minlength="20"
+            maxlength="5000"
+          ></textarea>
+        </div>
+
+        <div class="form-check">
+          <input id="consent" name="consent" type="checkbox" value="yes" required />
+          <label for="consent">
+            J'accepte que mes données soient traitées pour être recontactée, selon la
+            <a href="/politique-de-confidentialite">politique de confidentialité</a>.
+          </label>
+        </div>
+
+        <div class="form-turnstile">
+          <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
+        </div>
+
+        <p class="form-help">
+          Les champs marqués d'un <span aria-hidden="true">*</span> sont obligatoires.
+        </p>
+
+        <button class="btn btn-primary form-submit" type="submit" disabled={!hasConfig}>
+          Envoyer ma demande
+        </button>
+
+        <p class="form-live" id="form-live" role="status" aria-live="polite"></p>
+      </form>
+    </section>
   </article>
+
+  <Fragment slot="head">
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+      referrerpolicy="no-referrer"
+    ></script>
+    <script is:inline>
+      (() => {
+        const form = document.querySelector("#contact-form");
+        if (!(form instanceof HTMLFormElement)) return;
+
+        const endpoint = form.dataset.endpoint || "";
+        const startedAtInput = document.querySelector("#formStartedAt");
+        const liveRegion = document.querySelector("#form-live");
+        const submitButton = form.querySelector("button[type='submit']");
+        const statusMessage = document.querySelector("#form-status-message");
+
+        if (!(submitButton instanceof HTMLButtonElement)) return;
+        if (startedAtInput instanceof HTMLInputElement) {
+          startedAtInput.value = new Date().toISOString();
+        }
+        if (!endpoint) return;
+
+        const setLiveText = (message) => {
+          if (liveRegion instanceof HTMLElement) {
+            liveRegion.textContent = message;
+          }
+        };
+
+        const clearStatusMessage = () => {
+          if (statusMessage instanceof HTMLElement) {
+            statusMessage.remove();
+          }
+        };
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          clearStatusMessage();
+
+          if (!form.checkValidity()) {
+            form.reportValidity();
+            setLiveText("Merci de corriger les champs en erreur.");
+            return;
+          }
+
+          const tokenInput = form.querySelector("input[name='cf-turnstile-response']");
+          if (!(tokenInput instanceof HTMLInputElement) || !tokenInput.value.trim()) {
+            setLiveText("Merci de valider l'étape de sécurité anti-spam.");
+            return;
+          }
+
+          submitButton.disabled = true;
+          submitButton.setAttribute("aria-busy", "true");
+          setLiveText("Envoi en cours...");
+
+          try {
+            const response = await fetch(endpoint, {
+              method: "POST",
+              body: new FormData(form),
+              headers: {
+                Accept: "application/json",
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error("Envoi refusé");
+            }
+
+            form.reset();
+            window.turnstile?.reset();
+            setLiveText("Votre message a bien été envoyé.");
+          } catch {
+            setLiveText("L'envoi a échoué. Merci de réessayer dans quelques instants.");
+          } finally {
+            submitButton.disabled = false;
+            submitButton.removeAttribute("aria-busy");
+          }
+        });
+      })();
+    </script>
+  </Fragment>
 </BaseLayout>
+
+<style>
+  .contact-form-section {
+    margin-top: 2rem;
+    max-width: 46rem;
+    padding: 1.35rem;
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--surface) 85%, white);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .contact-form-intro {
+    margin-top: 0;
+    color: var(--muted);
+  }
+
+  .contact-form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-field {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .form-field label {
+    font-weight: 700;
+  }
+
+  .form-field input,
+  .form-field textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .form-check input {
+    width: auto;
+    margin-top: 0.2rem;
+  }
+
+  .form-turnstile {
+    margin-top: 0.25rem;
+  }
+
+  .form-help {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .form-submit {
+    width: fit-content;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .form-submit[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+  }
+
+  .form-alert {
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-alert-success {
+    border: 1px solid color-mix(in oklab, #2d7a4f 50%, white);
+    background: color-mix(in oklab, #2d7a4f 12%, white);
+  }
+
+  .form-alert-error {
+    border: 1px solid color-mix(in oklab, #a92f2f 45%, white);
+    background: color-mix(in oklab, #a92f2f 10%, white);
+  }
+
+  .form-live {
+    min-height: 1.4em;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .hp-wrapper {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 720px) {
+    .contact-form-section {
+      padding: 1rem;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
