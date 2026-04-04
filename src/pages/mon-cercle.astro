@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
 import { getDefaultPageDescription } from "../data/seo";
+import { sanitizeCmsUrl } from "../utils/security";
 
 const slug = "mon-cercle";
 const page = await getPageContent(slug);
@@ -16,7 +17,10 @@ const partners =
     .map((item) => ({
       name: item.name?.trim() || "",
       role: item.role?.trim() || "",
-      websiteUrl: item.websiteUrl?.trim() || "",
+      websiteUrl:
+        sanitizeCmsUrl(item.websiteUrl, {
+          allowedProtocols: ["https:", "mailto:", "tel:"],
+        }) || "",
     })) ?? [];
 
 const fallbackPartners = [

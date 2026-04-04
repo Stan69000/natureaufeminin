@@ -151,8 +151,15 @@ export const pageType = defineType({
             defineField({
               name: "href",
               title: "URL",
-              type: "string",
-              validation: (rule) => rule.required(),
+              type: "url",
+              options: {
+                allowRelative: true,
+              },
+              validation: (rule) =>
+                rule.required().uri({
+                  allowRelative: true,
+                  scheme: ["https"],
+                }),
             }),
             defineField({
               name: "description",

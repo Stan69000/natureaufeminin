@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
 import { getDefaultPageDescription } from "../data/seo";
 import { siteConfig } from "../data/site";
+import { sanitizeCmsUrl, sanitizeYoutubeVideoId } from "../utils/security";
 
 const slug = "que-se-passe-t-il-en-ce-moment";
 const page = await getPageContent(slug);
@@ -30,7 +31,9 @@ function getYoutubeEmbedUrl(input?: string): string | null {
     }
 
     if (!videoId) return null;
-    return `https://www.youtube.com/embed/${videoId}`;
+    const safeVideoId = sanitizeYoutubeVideoId(videoId);
+    if (!safeVideoId) return null;
+    return `https://www.youtube.com/embed/${safeVideoId}`;
   } catch {
     return null;
   }
@@ -47,7 +50,10 @@ const newsItems =
       excerpt: item.excerpt?.trim() || "",
       youtubeEmbedUrl: getYoutubeEmbedUrl(item.youtubeUrl),
       ctaLabel: item.ctaLabel?.trim() || "",
-      ctaUrl: item.ctaUrl?.trim() || "",
+      ctaUrl:
+        sanitizeCmsUrl(item.ctaUrl, {
+          allowedProtocols: ["https:", "mailto:", "tel:"],
+        }) || "",
     })) ?? [];
 
 const fallbackNewsItems = [

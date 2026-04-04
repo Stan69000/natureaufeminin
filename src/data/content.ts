@@ -1,5 +1,6 @@
 import mediaMap from "./wp-media-map.json";
 import { toHTML } from "@portabletext/to-html";
+import sanitizeHtml from "sanitize-html";
 
 export interface SitePageContent {
   slug: string;
@@ -105,7 +106,64 @@ function normalizeHtml(html: string): string {
   for (const [from, to] of Object.entries(mediaMap as Record<string, string>)) {
     result = result.split(from).join(to);
   }
-  return optimizeHtmlForSeo(result);
+  return optimizeHtmlForSeo(sanitizeCmsHtml(result));
+}
+
+function sanitizeCmsHtml(html: string): string {
+  return sanitizeHtml(html, {
+    allowedTags: [
+      "p",
+      "br",
+      "strong",
+      "b",
+      "em",
+      "i",
+      "u",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "a",
+      "img",
+      "figure",
+      "figcaption",
+      "iframe",
+      "div",
+      "span",
+    ],
+    allowedAttributes: {
+      "*": ["class", "id"],
+      a: ["href", "name", "target", "rel", "title"],
+      img: ["src", "alt", "title", "width", "height", "loading", "decoding"],
+      iframe: [
+        "src",
+        "title",
+        "width",
+        "height",
+        "allow",
+        "allowfullscreen",
+        "loading",
+        "referrerpolicy",
+      ],
+    },
+    allowedSchemes: ["http", "https", "mailto", "tel"],
+    allowedSchemesAppliedToAttributes: ["href", "src", "cite"],
+    allowedSchemesByTag: {
+      img: ["http", "https", "data"],
+    },
+    allowProtocolRelative: false,
+    allowedIframeHostnames: [
+      "www.youtube.com",
+      "youtube.com",
+      "www.youtube-nocookie.com",
+      "youtube-nocookie.com",
+    ],
+  });
 }
 
 function optimizeHtmlForSeo(html: string): string {

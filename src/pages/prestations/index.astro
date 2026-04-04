@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getPageContent } from "../../data/content";
 import { getDefaultPageDescription } from "../../data/seo";
 import { serviceCards } from "../../data/site";
+import { sanitizeCmsUrl } from "../../utils/security";
 
 const slug = "prestations";
 const page = await getPageContent(slug);
@@ -17,9 +18,14 @@ const menuItems =
     ?.filter((item) => item.label?.trim() && item.href?.trim())
     .map((item) => ({
       label: item.label ?? "",
-      href: item.href ?? "",
+      href:
+        sanitizeCmsUrl(item.href, {
+          allowRelative: true,
+          allowedProtocols: ["https:"],
+        }) || "",
       description: item.description ?? "",
-    })) ??
+    }))
+    .filter((item) => item.href) ??
   [];
 const displayedMenuItems =
   menuItems.length > 0
