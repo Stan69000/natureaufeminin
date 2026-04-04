@@ -217,11 +217,14 @@ const structuredData = {
           setLiveText("Envoi en cours...");
 
           try {
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
             const response = await fetch(endpoint, {
               method: "POST",
-              body: new FormData(form),
+              body: JSON.stringify(payload),
               headers: {
                 Accept: "application/json",
+                "Content-Type": "application/json",
               },
             });
 
@@ -247,7 +250,8 @@ const structuredData = {
 <style>
   .contact-form-section {
     margin-top: 2rem;
-    max-width: 46rem;
+    width: 100%;
+    max-width: 100%;
     padding: 1.35rem;
     border: 1px solid var(--line);
     border-radius: 1rem;
@@ -257,7 +261,8 @@ const structuredData = {
 
   .contact-choices {
     margin-top: 1.25rem;
-    max-width: 46rem;
+    width: 100%;
+    max-width: 100%;
     padding: 1.1rem 1.2rem;
     border: 1px solid color-mix(in oklab, var(--brand) 35%, white);
     border-radius: 1rem;
