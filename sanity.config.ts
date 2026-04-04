@@ -1,4 +1,5 @@
 import { defineConfig } from "sanity";
+import { structureTool } from "sanity/structure";
 import { schemaTypes } from "./sanity/schemaTypes";
 
 const projectId = process.env.SANITY_PROJECT_ID || "ngouy1on";
@@ -9,6 +10,7 @@ export default defineConfig({
   title: "Naturaufeminin Studio",
   projectId,
   dataset,
+  plugins: [structureTool()],
   schema: {
     types: schemaTypes,
   },
