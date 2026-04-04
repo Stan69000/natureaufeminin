@@ -1,10 +1,37 @@
-# Sanity Migration (Astro)
+# Sanity Migration (Runbook)
 
-Ce projet peut maintenant lire le contenu depuis Sanity, avec fallback local sur `src/data/wp-pages.json`.
+Le site est déjà prêt à lire Sanity avec fallback local.
+Tu peux suivre ce runbook dans l'ordre.
 
-## 1) Variables d'environnement
+## 1) Créer/Configurer Sanity
 
-Copier `.env.example` vers `.env` puis remplir:
+Dans un terminal local:
+
+```bash
+npx sanity@latest login
+```
+
+Puis crée un projet Sanity (si pas déjà fait) dans le dashboard Sanity, avec dataset `production`.
+
+## 2) Préparer le contenu à importer
+
+Le seed est déjà prêt dans ce repo: `sanity/seed.ndjson`.
+
+Tu peux le régénérer si besoin:
+
+```bash
+npm run sanity:seed
+```
+
+## 3) Importer le seed
+
+```bash
+npx sanity@latest dataset import sanity/seed.ndjson production --replace
+```
+
+## 4) Configurer Astro pour lire Sanity
+
+Copier `.env.example` vers `.env`, puis compléter:
 
 ```bash
 SANITY_PROJECT_ID=xxxxxx
@@ -12,47 +39,32 @@ SANITY_DATASET=production
 SANITY_API_VERSION=2025-01-01
 ```
 
-Sans ces variables, le site continue d'utiliser le contenu local (fallback).
-
-## 2) Seed Sanity depuis le contenu actuel
-
-Générer le fichier NDJSON:
+## 5) Vérifier la connexion et l'import
 
 ```bash
-npm run sanity:seed
+npm run sanity:check
+npm run sanity:verify
+npm run build
 ```
 
-Fichier généré: `sanity/seed.ndjson`
+Attendu:
+- `sanity:check` => connexion OK + liste de pages
+- `sanity:verify` => toutes les pages attendues trouvées
+- `build` => passe
 
-Importer ensuite dans Sanity (CLI):
+## 6) Schéma minimum attendu dans Sanity
 
-```bash
-sanity dataset import sanity/seed.ndjson production --replace
-```
-
-## 3) Schéma Sanity minimal recommandé
-
-Type de document `page`:
-
+Type document `page`:
 - `title` (string)
 - `slug` (slug)
 - `bodyHtml` (text)
 - `seoTitle` (string, optionnel)
 - `seoDescription` (text, optionnel)
+- `legacyWp` (object, optionnel)
 
-Optionnel: objet `legacyWp` (pour traçabilité migration).
+## 7) Quand tout est validé
 
-## 4) Fonctionnement côté Astro
-
-Source de contenu: `src/data/content.ts`
-
-- tente Sanity si env configuré
-- fallback local en cas d'absence/env invalide/erreur réseau
-- normalise les liens internes + médias hérités WP
-
-## 5) Objectif final
-
-Quand Sanity est complètement alimenté et validé:
-
-1. supprimer le fallback WP (`src/data/wp-pages.json`, `src/data/wp.ts`)
-2. garder uniquement `src/data/content.ts` branché Sanity
+On supprime le fallback WP:
+1. `src/data/wp-pages.json`
+2. `src/data/wp.ts`
+3. la logique fallback dans `src/data/content.ts`

@@ -12,7 +12,9 @@
     "astro": "astro",
     "media:extract": "node scripts/extract-wp-media.mjs",
     "media:download": "node scripts/download-wp-media.mjs",
-    "sanity:seed": "node scripts/export-sanity-seed.mjs"
+    "sanity:seed": "node scripts/export-sanity-seed.mjs",
+    "sanity:check": "node scripts/sanity-check.mjs",
+    "sanity:verify": "node scripts/sanity-verify-seed.mjs"
   },
   "dependencies": {
     "astro": "^6.1.3"
