@@ -1,11 +1,13 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getPageContent } from "../../data/content";
+import { getDefaultPageDescription } from "../../data/seo";
 import { serviceCards } from "../../data/site";
 
 const slug = "prestations";
 const page = await getPageContent(slug);
-const title = `${page.title} | Natur' Au Feminin`;
+const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
+const description = page.seoDescription?.trim() || getDefaultPageDescription("/prestations");
 const menuTitle = page.prestationsMenuTitle?.trim() || "Nos accompagnements";
 const menuIntro =
   page.prestationsIntro?.trim() ||
@@ -29,7 +31,7 @@ const displayedMenuItems =
       }));
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={description}>
   <article class="section wp-content prestations-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <nav class="prestations-submenu" aria-label="Sous-menu prestations">

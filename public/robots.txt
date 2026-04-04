@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://naturaufeminin.fr/sitemap-index.xml
+Sitemap: https://naturaufeminin.fr/sitemap.xml

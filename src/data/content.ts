@@ -105,6 +105,56 @@ function normalizeHtml(html: string): string {
   for (const [from, to] of Object.entries(mediaMap as Record<string, string>)) {
     result = result.split(from).join(to);
   }
+  return optimizeHtmlForSeo(result);
+}
+
+function optimizeHtmlForSeo(html: string): string {
+  let result = html;
+
+  // Avoid duplicate H1 (the page template already includes the main H1).
+  result = result
+    .replace(/<h1(\s[^>]*)?>/gi, (_match, attrs = "") => `<h2${attrs}>`)
+    .replace(/<\/h1>/gi, "</h2>");
+
+  // Ensure external links opened in new tabs always include noopener/noreferrer.
+  result = result.replace(/<a([^>]*target="_blank"[^>]*)>/gi, (match, attrs: string) => {
+    if (/rel\s*=/.test(attrs)) {
+      return `<a${attrs.replace(/rel\s*=\s*["']([^"']*)["']/i, (_relMatch, relValue: string) => {
+        const relTokens = new Set(
+          relValue
+            .split(/\s+/)
+            .map((token) => token.trim())
+            .filter(Boolean),
+        );
+        relTokens.add("noopener");
+        relTokens.add("noreferrer");
+        return ` rel="${Array.from(relTokens).join(" ")}"`;
+      })}>`;
+    }
+    return `<a${attrs} rel="noopener noreferrer">`;
+  });
+
+  // Improve image technical attributes and provide fallback alt text when missing.
+  result = result.replace(/<img\b([^>]*)>/gi, (match, attrs: string) => {
+    let nextAttrs = attrs.replace(/\s*\/\s*$/, "").trimEnd();
+
+    if (!/\bloading\s*=/.test(nextAttrs)) {
+      nextAttrs += ' loading="lazy"';
+    }
+    if (!/\bdecoding\s*=/.test(nextAttrs)) {
+      nextAttrs += ' decoding="async"';
+    }
+
+    const altAttrMatch = nextAttrs.match(/\balt\s*=\s*["']([^"']*)["']/i);
+    if (!altAttrMatch) {
+      nextAttrs += ' alt="Illustration Natur Au Feminin"';
+    } else if (!altAttrMatch[1].trim()) {
+      nextAttrs = nextAttrs.replace(/\balt\s*=\s*["'][^"']*["']/i, 'alt="Illustration Natur Au Feminin"');
+    }
+
+    return `<img${nextAttrs} />`;
+  });
+
   return result;
 }
 

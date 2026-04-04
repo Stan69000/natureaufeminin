@@ -2,17 +2,102 @@
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-import { siteConfig } from "../data/site";
+import { navItems, serviceCards, siteConfig } from "../data/site";
 
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
   title = siteConfig.title,
   description = siteConfig.description,
+  ogImage = "/branding/og-default-1200x630.jpg",
+  noindex = false,
+  structuredData,
 } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const canonicalUrl = new URL(pathname, siteConfig.url).toString();
+const ogImagePath = ogImage.startsWith("http") ? ogImage : new URL(ogImage, siteConfig.url).toString();
+const robotsContent = noindex ? "noindex,nofollow" : "index,follow";
+
+const pathnameLabels = new Map<string, string>([
+  ["/", "Accueil"],
+  ...navItems.map((item) => [item.href, item.label]),
+  ...serviceCards.map((item) => [item.href, item.title]),
+  ["/mentions-legales", "Mentions légales"],
+  ["/politique-de-confidentialite", "Politique de confidentialité"],
+]);
+
+function toPathLabel(input: string): string {
+  return decodeURIComponent(input)
+    .replaceAll("-", " ")
+    .replace(/\b\w/g, (match) => match.toUpperCase());
+}
+
+function getBreadcrumbItems(path: string): Array<{ name: string; item: string }> {
+  if (path === "/") return [];
+
+  const parts = path.split("/").filter(Boolean);
+  const items = [{ name: "Accueil", item: siteConfig.url }];
+
+  for (let index = 0; index < parts.length; index += 1) {
+    const currentPath = `/${parts.slice(0, index + 1).join("/")}`;
+    const knownLabel = pathnameLabels.get(currentPath);
+    items.push({
+      name: knownLabel ?? toPathLabel(parts[index]),
+      item: new URL(currentPath, siteConfig.url).toString(),
+    });
+  }
+
+  return items;
+}
+
+const breadcrumbItems = getBreadcrumbItems(pathname);
+const defaultStructuredData: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: siteConfig.description,
+    telephone: siteConfig.phone,
+    areaServed: "France",
+    availableLanguage: ["fr-FR"],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: siteConfig.city,
+      addressCountry: "FR",
+    },
+  },
+];
+
+if (breadcrumbItems.length > 0) {
+  defaultStructuredData.push({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbItems.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.item,
+    })),
+  });
+}
+
+if (structuredData) {
+  if (Array.isArray(structuredData)) {
+    defaultStructuredData.push(...structuredData);
+  } else {
+    defaultStructuredData.push(structuredData);
+  }
+}
+
+const structuredDataJson = JSON.stringify(defaultStructuredData);
 ---
 
 <!doctype html>
@@ -21,13 +106,30 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content={robotsContent} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="author" content={siteConfig.name} />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImagePath} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImagePath} />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="canonical" href={new URL(Astro.url.pathname, siteConfig.url).toString()} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={structuredDataJson} />
     <slot name="head" />
   </head>
   <body>

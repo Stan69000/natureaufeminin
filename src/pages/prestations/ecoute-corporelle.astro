@@ -1,12 +1,18 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import PrestationSupportBlocks from "../../components/PrestationSupportBlocks.astro";
 import { getPageContent } from "../../data/content";
+import { getDefaultPageDescription } from "../../data/seo";
+import { getPrestationSeo } from "../../data/prestations-seo";
 import { siteConfig } from "../../data/site";
 
 const slug = "lecoute-corporelle-par-la-voie-des-sens";
+const path = "/prestations/ecoute-corporelle";
 const page = await getPageContent(slug);
-const title = `${page.title} | Natur' Au Feminin`;
+const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
+const description = page.seoDescription?.trim() || getDefaultPageDescription(path);
 const html = page.html;
+const prestationSeo = getPrestationSeo(path);
 
 function toParagraphs(input: string): string[] {
   const decode = (value: string) =>
@@ -40,7 +46,7 @@ const lead = paragraphs[0] ?? "";
 const rest = paragraphs.slice(1);
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={description} structuredData={prestationSeo.structuredData}>
   <article class="section wp-content ecoute-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
 
@@ -49,6 +55,8 @@ const rest = paragraphs.slice(1);
     <div class="ecoute-body">
       {rest.map((paragraph) => <p>{paragraph}</p>)}
     </div>
+
+    <PrestationSupportBlocks faqItems={prestationSeo.faqItems} internalLinks={prestationSeo.internalLinks} />
 
     <p class="ecoute-cta-wrap">
       <a

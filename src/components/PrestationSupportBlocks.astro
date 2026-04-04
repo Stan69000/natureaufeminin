@@ -1,0 +1,45 @@
+---
+import type { FaqItem, InternalLinkItem } from "../data/prestations-seo";
+
+interface Props {
+  faqItems: FaqItem[];
+  internalLinks: InternalLinkItem[];
+}
+
+const { faqItems = [], internalLinks = [] } = Astro.props;
+---
+
+{
+  faqItems.length > 0 && (
+    <section class="prestation-seo-block" aria-label="Questions fréquentes">
+      <h2>Questions fréquentes</h2>
+      <div class="prestation-faq-grid">
+        {
+          faqItems.map((item) => (
+            <article class="prestation-faq-item">
+              <h3>{item.question}</h3>
+              <p>{item.answer}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  )
+}
+
+{
+  internalLinks.length > 0 && (
+    <nav class="prestation-seo-block prestation-links" aria-label="Autres accompagnements">
+      <h2>Autres accompagnements</h2>
+      <ul>
+        {
+          internalLinks.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  )
+}

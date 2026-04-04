@@ -1,11 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
+import { getDefaultPageDescription } from "../data/seo";
 import { siteConfig } from "../data/site";
 
 const slug = "tarifs";
 const page = await getPageContent(slug);
-const title = `${page.title} | Natur' Au Feminin`;
+const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
+const description = page.seoDescription?.trim() || getDefaultPageDescription("/tarifs");
 const intro = page.pricingIntro?.trim() || "";
 const ctaText = page.pricingCtaText?.trim() || "Un doute sur la formule adaptée ?";
 const ctaLabel = page.pricingCtaLabel?.trim() || "Réserver un premier échange";
@@ -68,7 +70,7 @@ const sideSection = displayedSections.at(-1);
 const mainSections = sideSection ? displayedSections.slice(0, -1) : displayedSections;
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={description}>
   <article class="section wp-content tarifs-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     {intro && <p class="tarifs-intro">{intro}</p>}

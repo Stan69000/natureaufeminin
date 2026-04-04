@@ -1,14 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
+import { getDefaultPageDescription } from "../data/seo";
 import { siteConfig } from "../data/site";
 
 const page = await getPageContent("page-d-exemple");
-const title = "Accueil | Natur' Au Feminin";
+const title = page.seoTitle?.trim() || "Accueil | Natur' Au Feminin";
+const description = page.seoDescription?.trim() || getDefaultPageDescription("/");
 const html = page.html;
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={description}>
   <section class="home-hero section" aria-labelledby="home-hero-title">
     <div class="hero-grid">
       <div>

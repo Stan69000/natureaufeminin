@@ -1,10 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
+import { getDefaultPageDescription } from "../data/seo";
 
 const slug = "mon-cercle";
 const page = await getPageContent(slug);
-const title = `${page.title} | Natur' Au Feminin`;
+const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
+const description = page.seoDescription?.trim() || getDefaultPageDescription("/mon-cercle");
 const intro =
   page.circleIntro?.trim() ||
   "Une sélection de professionnel.le.s complétant mon approche. Je connais personnellement ces accompagnant.e.s et n'ai aucun mal à vous les recommander !";
@@ -38,7 +40,7 @@ const fallbackPartners = [
 const displayedPartners = partners.length > 0 ? partners : fallbackPartners;
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={description}>
   <article class="section wp-content cercle-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <p class="cercle-intro">{intro}</p>

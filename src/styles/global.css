@@ -754,6 +754,59 @@ textarea {
   margin: 1rem 0 0;
 }
 
+.prestation-seo-block {
+  margin-top: 1.35rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid color-mix(in oklab, var(--line) 82%, white);
+  border-radius: 0.9rem;
+  background: linear-gradient(160deg, #ffffff, #f2f8f2);
+}
+
+.prestation-seo-block h2 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+  color: color-mix(in oklab, var(--brand-deep) 82%, #214a3b);
+}
+
+.prestation-faq-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.prestation-faq-item {
+  padding: 0.6rem 0.65rem;
+  border-radius: 0.65rem;
+  background: color-mix(in oklab, #ffffff 78%, #e7f0e8);
+  border: 1px solid color-mix(in oklab, var(--line) 80%, white);
+}
+
+.prestation-faq-item h3 {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+}
+
+.prestation-faq-item p {
+  margin: 0;
+}
+
+.prestation-links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.prestation-links a {
+  display: inline-block;
+  text-decoration: none;
+  border: 1px solid color-mix(in oklab, var(--line) 82%, white);
+  border-radius: 999px;
+  padding: 0.42rem 0.82rem;
+  background: linear-gradient(140deg, #fff, #f4faf4);
+  font-weight: 700;
+}
+
 .actualites-page {
   background:
     radial-gradient(circle at 92% 8%, rgba(122, 158, 125, 0.14), transparent 30%),
