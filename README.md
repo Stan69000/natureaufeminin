@@ -1,43 +1,84 @@
-# Astro Starter Kit: Minimal
+# Natur' Au Feminin
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Site vitrine de Natur' Au Feminin, développé avec Astro et alimenté par Sanity pour la gestion des contenus.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Objectif du site
 
-## 🚀 Project Structure
+- Présenter l’activité et les prestations
+- Publier les informations pratiques (tarifs, contact, mentions)
+- Mettre en avant les actualités et événements
 
-Inside of your Astro project, you'll see the following folders and files:
+## Stack technique
+
+- Astro (site statique)
+- Sanity (CMS headless)
+- Déploiement statique (dossier `dist/`)
+
+## Arborescence utile
 
 ```text
 /
-├── public/
+├── public/                  # Assets statiques (images, favicon, etc.)
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── pages/               # Pages du site
+│   ├── components/          # Composants UI
+│   ├── layouts/             # Layouts partagés
+│   └── data/                # Configuration et chargement de contenu
+├── sanity/                  # Schémas CMS
+├── scripts/                 # Scripts de vérification / migration contenu
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Prérequis
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- Node.js `>= 22.12.0`
+- npm
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Installation
 
-## 🧞 Commands
+```bash
+npm install
+```
 
-All commands are run from the root of the project, from a terminal:
+## Variables d’environnement
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Créer un fichier `.env` à partir de `.env.example` :
 
-## 👀 Want to learn more?
+```bash
+cp .env.example .env
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Renseigner les valeurs nécessaires pour le CMS et la configuration du site.
+
+## Commandes principales
+
+```bash
+npm run dev            # Lancer le site en local
+npm run build          # Build de production dans dist/
+npm run preview        # Prévisualiser le build localement
+npm run sanity:check   # Vérifier la connexion et le contenu Sanity
+```
+
+## Mise en ligne (statique)
+
+1. Générer le build :
+
+```bash
+npm run build
+```
+
+2. Déployer le contenu du dossier `dist/` sur l’hébergement.
+
+## Contenu éditorial
+
+- Le contenu de pages est géré dans Sanity.
+- Les modèles de documents sont définis dans `sanity/schemaTypes/`.
+- Certains scripts `scripts/` permettent de vérifier/synchroniser des contenus.
+
+## Domaine de production
+
+- `https://naturaufeminin.fr`
+
+## Licence
+
+Projet privé.
