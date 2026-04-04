@@ -75,7 +75,8 @@ Le repo inclut un workflow GitHub Actions :
 
 - `.github/workflows/deploy-o2switch.yml`
 - Build automatique à chaque push sur `main`
-- Déploiement FTP vers O2Switch après validation environnement `production`
+- Déploiement FTP en parallèle vers `/public_html_new/` (ne touche pas le site actuel)
+- Possibilité de déployer en production via `workflow_dispatch` avec `target=production`
 
 ### Secrets GitHub à configurer
 
@@ -102,8 +103,36 @@ Dans `Settings > Environments > production` :
 Ensuite :
 
 - Le build démarre automatiquement sur push `main`
-- Le job de déploiement attend l’approbation
-- Après validation, la publication vers O2Switch se lance
+- Le déploiement se fait vers `/naturaufeminin-next/` (site parallèle)
+- Pour publier en prod (`/naturaufeminin.fr/`), lancer manuellement le workflow avec `target=production`
+
+## Stratégie recommandée : nouveau site en parallèle puis bascule
+
+### 1) Déployer le nouveau site en parallèle
+
+- Push sur `main` (ou lancement manuel sans `target=production`)
+- Le workflow déploie sur `/naturaufeminin-next/`
+
+### 2) Vérifier le nouveau site
+
+- Ouvrir une URL de test pointant vers ce dossier (selon ta config O2Switch)
+- Valider formulaires, SEO, images, liens, performances
+
+### 3) Basculer le domaine principal sur le nouveau dossier
+
+Dans ton cas (racine domaine sur dossier `naturaufeminin.fr`), la bascule la plus simple est un swap de dossiers côté hébergement :
+
+1. Sauvegarder l’ancien :
+   - `/naturaufeminin.fr/` -> `/naturaufeminin.fr_backup_YYYYMMDD/`
+2. Promouvoir le nouveau :
+   - `/naturaufeminin-next/` -> `/naturaufeminin.fr/`
+
+La bascule est quasi instantanée (pas de propagation DNS si on garde le même hébergement).
+
+### 4) Rollback rapide si besoin
+
+1. `/naturaufeminin.fr/` (nouveau) -> `/naturaufeminin.fr_failed_YYYYMMDD/`
+2. `/naturaufeminin.fr_backup_YYYYMMDD/` -> `/naturaufeminin.fr/`
 
 ## Contenu éditorial
 
