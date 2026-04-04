@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "media:extract": "node scripts/extract-wp-media.mjs",
+    "media:download": "node scripts/download-wp-media.mjs"
   },
   "dependencies": {
     "astro": "^6.1.3"

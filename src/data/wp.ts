@@ -1,4 +1,5 @@
 import pages from './wp-pages.json';
+import mediaMap from './wp-media-map.json';
 
 interface WpPage {
   id: number;
@@ -38,6 +39,9 @@ export function getWpPage(slug: string): WpPage | undefined {
 export function normalizeWpHtml(html: string): string {
   let result = html;
   for (const [from, to] of map.entries()) {
+    result = result.split(from).join(to);
+  }
+  for (const [from, to] of Object.entries(mediaMap as Record<string, string>)) {
     result = result.split(from).join(to);
   }
   return result;

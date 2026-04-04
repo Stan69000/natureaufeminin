@@ -1,0 +1,12 @@
+{
+  "total": 25,
+  "downloaded": 24,
+  "failed": 1,
+  "failures": [
+    {
+      "sourceUrl": "https://naturaufeminin.fr/wp-content/uploads/2023/05/Affiche-Salon-arnas-2023-scaled.jpg",
+      "relativePath": "2023/05/Affiche-Salon-arnas-2023-scaled.jpg",
+      "message": "HTTP 404 for https://naturaufeminin.fr/wp-content/uploads/2023/05/Affiche-Salon-arnas-2023-scaled.jpg"
+    }
+  ]
+}
