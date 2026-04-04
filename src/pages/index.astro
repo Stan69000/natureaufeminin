@@ -1,17 +1,54 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getWpPage, normalizeWpHtml } from "../data/wp";
+import { siteConfig } from "../data/site";
 
+const page = getWpPage("page-d-exemple");
+const title = "Accueil | Natur' Au Feminin";
+const html = normalizeWpHtml(page?.content.rendered ?? "");
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title={title}>
+  <section class="home-hero section" aria-labelledby="home-hero-title">
+    <div class="hero-grid">
+      <div>
+        <p class="hero-kicker">Accompagnement global et personnalisé</p>
+        <h1 id="home-hero-title">Prendre soin de votre santé, avec douceur et confiance</h1>
+        <p class="hero-intro">
+          Consultations au cabinet, à domicile ou en visio. Un accompagnement concret pour mieux
+          comprendre votre corps, réguler les émotions et avancer à votre rythme.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-booking" href={siteConfig.bookingUrl} target="_blank" rel="noopener noreferrer">
+            Prendre rendez-vous
+          </a>
+          <a class="btn btn-secondary" href="/prestations">Découvrir les accompagnements</a>
+        </div>
+      </div>
+      <aside class="hero-side" aria-label="Modalités d'accompagnement">
+        <div class="hero-logo-shell" aria-hidden="true">
+          <img
+            class="hero-logo"
+            src="/branding/logo.webp"
+            width="92"
+            height="92"
+            alt="Logo Natur' Au Feminin"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+        <ul>
+          <li>Cabinet - Fleurieux-sur-l'Arbresle</li>
+          <li>Domicile - selon disponibilité</li>
+          <li>Visio - partout en France</li>
+          <li>Accompagnement sur rendez-vous</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <article class="section wp-content home-content" aria-labelledby="page-title">
+    <h2 id="page-title">Bienvenue</h2>
+    <div set:html={html}></div>
+  </article>
+</BaseLayout>

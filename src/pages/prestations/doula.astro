@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getWpPage, getWpTitle, normalizeWpHtml } from "../../data/wp";
+
+const slug = "doula-un-bebe-pour-bientot";
+const page = getWpPage(slug);
+const title = `${getWpTitle(slug)} | Natur' Au Feminin`;
+const html = normalizeWpHtml(page?.content.rendered ?? "");
+---
+
+<BaseLayout title={title}>
+  <article class="section wp-content" aria-labelledby="page-title">
+    <h1 id="page-title">{getWpTitle(slug)}</h1>
+    <div set:html={html}></div>
+  </article>
+</BaseLayout>

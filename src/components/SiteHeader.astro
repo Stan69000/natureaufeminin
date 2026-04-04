@@ -1,0 +1,39 @@
+---
+import { navItems, siteConfig } from "../data/site";
+
+const pathname = Astro.url.pathname;
+---
+
+<a class="skip-link" href="#main-content">Aller au contenu principal</a>
+<header class="site-header">
+  <div class="container head-top">
+    <p class="meta">
+      <span>{siteConfig.city}</span>
+      <span aria-hidden="true">•</span>
+      <a href={siteConfig.phoneHref}>{siteConfig.phone}</a>
+    </p>
+  </div>
+  <div class="container brand-band">
+    <a class="brand-mark" href="/" aria-label="Accueil Natur' Au Feminin">
+      <img src="/branding/logo.webp" width="120" height="120" alt="Logo Natur' Au Feminin" />
+      <span class="brand-text">
+        <strong>{siteConfig.name}</strong>
+        <small>Naturopathe – Conseillère en Symptothermie – Doula – Régulation Emotionnelle</small>
+      </span>
+    </a>
+    <a class="btn btn-primary btn-booking header-cta" href={siteConfig.bookingUrl} target="_blank" rel="noopener noreferrer">
+      Prendre rendez-vous
+    </a>
+  </div>
+  <nav class="main-nav container" aria-label="Navigation principale">
+    <ul>
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} aria-current={pathname === item.href ? "page" : undefined}>
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>

@@ -1,0 +1,28 @@
+---
+import { siteConfig } from "../data/site";
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="footer-brand">
+        <img src="/branding/logo.webp" width="56" height="56" alt="" />
+        <strong>{siteConfig.name}</strong>
+      </p>
+      <p>Naturopathe – Conseillère en Symptothermie – Doula – Régulation Emotionnelle</p>
+    </div>
+    <div>
+      <h2>Contact</h2>
+      <p><a href={siteConfig.phoneHref}>{siteConfig.phone}</a></p>
+      <p>{siteConfig.city}</p>
+      <p><a href="/contact">Prendre rendez-vous</a></p>
+    </div>
+    <div>
+      <h2>Informations</h2>
+      <ul>
+        <li><a href="/mentions-legales">Mentions legales</a></li>
+        <li><a href="/politique-de-confidentialite">Politique de confidentialite</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

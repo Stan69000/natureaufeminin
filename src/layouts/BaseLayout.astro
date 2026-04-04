@@ -1,0 +1,38 @@
+---
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { siteConfig } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, siteConfig.url).toString()} />
+    <title>{title}</title>
+    <slot name="head" />
+  </head>
+  <body>
+    <SiteHeader />
+    <main id="main-content" class="container page-content">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
