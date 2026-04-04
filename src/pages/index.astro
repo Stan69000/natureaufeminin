@@ -24,27 +24,29 @@ const html = page.html;
           <a class="btn btn-primary btn-booking" href={siteConfig.bookingUrl} target="_blank" rel="noopener noreferrer">
             Prendre rendez-vous
           </a>
-          <a class="btn btn-secondary" href="/prestations">Découvrir les accompagnements</a>
         </div>
       </div>
       <aside class="hero-side" aria-label="Modalités d'accompagnement">
-        <div class="hero-logo-shell" aria-hidden="true">
-          <img
-            class="hero-logo"
-            src="/branding/logo.webp"
-            width="92"
-            height="92"
-            alt="Logo Natur' Au Feminin"
-            loading="eager"
-            decoding="async"
-          />
+        <div class="hero-side-content">
+          <div class="hero-logo-shell" aria-hidden="true">
+            <img
+              class="hero-logo"
+              src="/branding/logo.webp"
+              width="92"
+              height="92"
+              alt="Logo Natur' Au Feminin"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+          <ul>
+            <li>Cabinet - Fleurieux-sur-l'Arbresle</li>
+            <li>Domicile - selon disponibilité</li>
+            <li>Visio - partout en France</li>
+            <li>Accompagnement sur rendez-vous</li>
+          </ul>
         </div>
-        <ul>
-          <li>Cabinet - Fleurieux-sur-l'Arbresle</li>
-          <li>Domicile - selon disponibilité</li>
-          <li>Visio - partout en France</li>
-          <li>Accompagnement sur rendez-vous</li>
-        </ul>
+        <a class="btn btn-secondary hero-side-cta" href="/prestations">Découvrir les accompagnements</a>
       </aside>
     </div>
   </section>

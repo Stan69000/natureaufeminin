@@ -789,12 +789,20 @@ textarea {
   border-radius: 1rem;
   padding: 1rem 1.1rem;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-start;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 0.85rem;
   height: 100%;
   position: relative;
   overflow: hidden;
+}
+
+.hero-side-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
 }
 
 .hero-side ul {
@@ -807,6 +815,10 @@ textarea {
   margin: 0.3rem 0;
   color: var(--muted);
   font-size: 1.02rem;
+}
+
+.hero-side-cta {
+  align-self: center;
 }
 
 @keyframes hero-float {
@@ -1342,7 +1354,11 @@ textarea {
   }
 
   .hero-side {
-    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .hero-side-content {
+    flex-direction: column;
     align-items: flex-start;
   }
 
