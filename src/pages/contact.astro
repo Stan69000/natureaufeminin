@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
 import { getDefaultPageDescription } from "../data/seo";
+import { siteConfig } from "../data/site";
 
 const slug = "contact-prise-de-rendez-vous";
 const page = await getPageContent(slug);
@@ -9,6 +10,10 @@ const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
 const description = page.seoDescription?.trim() || getDefaultPageDescription("/contact");
 const html = page.html
   .replace(/<div class="wpcf7[\s\S]*?<div class="wpcf7-response-output"><\/div>\s*<\/div>/gi, "")
+  .replace(
+    /<p>\s*Nous pouvons nous rencontrer[\s\S]*?<\/p>\s*<p>\s*Afin de prendre rendez-vous,[\s\S]*?<\/p>\s*<p>\s*<a class="btn-liberlo"[\s\S]*?<\/p>\s*<p>\s*Pour me contacter depuis ce site,[\s\S]*?<\/p>/gi,
+    "",
+  )
   .replace(/<p>\s*Votre nom\s*<br\s*\/?>\s*<\/p>/gi, "")
   .replace(/<p>\s*Votre mail\s*<br\s*\/?>\s*<\/p>/gi, "")
   .replace(/<p>\s*Sujet\s*<br\s*\/?>\s*<\/p>/gi, "")
@@ -33,9 +38,25 @@ const structuredData = {
   <article class="section wp-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <div class="contact-intro" set:html={html}></div>
+    <section class="contact-choices" aria-labelledby="contact-choices-title">
+      <h2 id="contact-choices-title">Comment souhaitez-vous être accompagnée ?</h2>
+      <p class="contact-choices-intro">
+        Vous pouvez réserver en <strong>cabinet</strong>, à <strong>domicile</strong> ou en <strong>visio</strong>.
+      </p>
+      <ul class="contact-choices-list">
+        <li><strong>Cabinet</strong> : à Fleurieux-sur-l'Arbresle.</li>
+        <li><strong>Domicile</strong> : selon votre secteur.</li>
+        <li><strong>Visio</strong> : Zoom ou autre solution simple.</li>
+      </ul>
+      <a class="btn btn-primary contact-booking-btn" href={siteConfig.bookingUrl} target="_blank" rel="noopener noreferrer">
+        Prendre rendez-vous sur Liberlo
+      </a>
+      <p class="contact-choices-help">
+        Pour une question rapide, utilisez aussi le formulaire juste en dessous.
+      </p>
+    </section>
 
-    <section class="contact-form-section" aria-labelledby="contact-form-title">
-      <h2 id="contact-form-title">Envoyer un message</h2>
+    <section class="contact-form-section">
       <p class="contact-form-intro">
         Réponse sous 48h ouvrées. Vos données sont utilisées uniquement pour vous recontacter.
       </p>
@@ -232,6 +253,39 @@ const structuredData = {
     border-radius: 1rem;
     background: color-mix(in oklab, var(--surface) 85%, white);
     box-shadow: var(--shadow-soft);
+  }
+
+  .contact-choices {
+    margin-top: 1.25rem;
+    max-width: 46rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid color-mix(in oklab, var(--brand) 35%, white);
+    border-radius: 1rem;
+    background:
+      linear-gradient(145deg, color-mix(in oklab, var(--surface) 78%, white), color-mix(in oklab, var(--cream) 62%, white));
+    box-shadow: var(--shadow-soft);
+  }
+
+  .contact-choices h2 {
+    margin-bottom: 0.45rem;
+  }
+
+  .contact-choices-intro,
+  .contact-choices-help {
+    margin: 0.2rem 0 0.7rem;
+    color: var(--muted);
+  }
+
+  .contact-choices-list {
+    margin: 0.2rem 0 1rem;
+    padding-left: 1.25rem;
+  }
+
+  .contact-booking-btn {
+    min-height: 50px;
+    padding: 0.78rem 1.4rem;
+    font-size: 1.03rem;
+    box-shadow: 0 16px 26px -16px rgba(31, 59, 47, 0.92);
   }
 
   .contact-form-intro {
