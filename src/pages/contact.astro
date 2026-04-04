@@ -19,10 +19,13 @@ const html = page.html
   .replace(/<p>\s*Sujet\s*<br\s*\/?>\s*<\/p>/gi, "")
   .replace(/<p>\s*Votre message\s*<br\s*\/?>\s*<\/p>/gi, "")
   .replace(/<p>\s*Audrey\s*<\/p>/gi, "");
-const firebaseContactEndpoint = import.meta.env.PUBLIC_FIREBASE_CONTACT_ENDPOINT?.trim() || "";
+const contactFormEndpoint =
+  import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT?.trim() ||
+  import.meta.env.PUBLIC_FIREBASE_CONTACT_ENDPOINT?.trim() ||
+  "/contact.php";
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() || "";
 const status = Astro.url.searchParams.get("status");
-const hasConfig = Boolean(firebaseContactEndpoint && turnstileSiteKey);
+const hasConfig = Boolean(contactFormEndpoint && turnstileSiteKey);
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -81,9 +84,9 @@ const structuredData = {
         id="contact-form"
         class="contact-form"
         method="post"
-        action={firebaseContactEndpoint || "#"}
+        action={contactFormEndpoint || "#"}
         novalidate
-        data-endpoint={firebaseContactEndpoint}
+        data-endpoint={contactFormEndpoint}
       >
         <input type="hidden" name="originPath" value="/contact" />
         <input type="hidden" id="formStartedAt" name="formStartedAt" value="" />
