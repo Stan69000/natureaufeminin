@@ -1,6 +1,6 @@
 # Sanity Migration (Runbook)
 
-Le site est déjà prêt à lire Sanity avec fallback local.
+Le site lit désormais Sanity comme source unique de contenu en runtime.
 Tu peux suivre ce runbook dans l'ordre.
 
 ## 1) Créer/Configurer Sanity
@@ -62,9 +62,8 @@ Type document `page`:
 - `seoDescription` (text, optionnel)
 - `legacyWp` (object, optionnel)
 
-## 7) Quand tout est validé
+## 7) État actuel du projet
 
-On supprime le fallback WP:
-1. `src/data/wp-pages.json`
-2. `src/data/wp.ts`
-3. la logique fallback dans `src/data/content.ts`
+- import Sanity effectué (`13` pages)
+- vérification seed OK
+- build Astro OK avec Sanity

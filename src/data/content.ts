@@ -1,4 +1,4 @@
-import { getWpPage, getWpTitle, normalizeWpHtml } from "./wp";
+import mediaMap from "./wp-media-map.json";
 
 export interface SitePageContent {
   slug: string;
@@ -6,7 +6,7 @@ export interface SitePageContent {
   html: string;
   seoTitle?: string;
   seoDescription?: string;
-  source: "sanity" | "wp-local";
+  source: "sanity";
 }
 
 interface SanityPage {
@@ -17,14 +17,38 @@ interface SanityPage {
   seoDescription?: string;
 }
 
-function getLocalFallback(slug: string): SitePageContent {
-  const page = getWpPage(slug);
-  return {
-    slug,
-    title: getWpTitle(slug) || slug,
-    html: normalizeWpHtml(page?.content.rendered ?? ""),
-    source: "wp-local",
-  };
+const linkMap = new Map<string, string>([
+  ["https://naturaufeminin.fr/?page_id=16", "/contact"],
+  ["https://naturaufeminin.fr/?page_id=20", "/prestations/naturopathie"],
+  ["https://naturaufeminin.fr/?page_id=22", "/tarifs"],
+  ["https://naturaufeminin.fr/?page_id=25", "/actualites"],
+  ["https://naturaufeminin.fr/?page_id=27", "/prestations"],
+  ["https://naturaufeminin.fr/?page_id=30", "/mon-cercle"],
+  ["https://naturaufeminin.fr/?page_id=32", "/mentions-legales"],
+  ["https://naturaufeminin.fr/?page_id=34", "/prestations/ecoute-corporelle"],
+  ["https://naturaufeminin.fr/?page_id=36", "/prestations/symptothermie"],
+  ["https://naturaufeminin.fr/?page_id=38", "/prestations/doula"],
+  ["https://naturaufeminin.fr/contact/", "/contact"],
+]);
+
+function decodeEntities(input: string): string {
+  return input
+    .replaceAll("&#038;", "&")
+    .replaceAll("&rsquo;", "'")
+    .replaceAll("&nbsp;", " ")
+    .replaceAll("&ndash;", "-")
+    .replaceAll("&mdash;", "-");
+}
+
+function normalizeHtml(html: string): string {
+  let result = html;
+  for (const [from, to] of linkMap.entries()) {
+    result = result.split(from).join(to);
+  }
+  for (const [from, to] of Object.entries(mediaMap as Record<string, string>)) {
+    result = result.split(from).join(to);
+  }
+  return result;
 }
 
 function getSanityConfig() {
@@ -67,21 +91,19 @@ async function getSanityPage(slug: string): Promise<SanityPage | null> {
 }
 
 export async function getPageContent(slug: string): Promise<SitePageContent> {
-  try {
-    const sanityPage = await getSanityPage(slug);
-    if (sanityPage?.title) {
-      return {
-        slug,
-        title: sanityPage.title,
-        html: normalizeWpHtml(sanityPage.bodyHtml ?? ""),
-        seoTitle: sanityPage.seoTitle,
-        seoDescription: sanityPage.seoDescription,
-        source: "sanity",
-      };
-    }
-  } catch (error) {
-    console.warn(`[content] fallback to wp-local for "${slug}"`, error);
+  const sanityPage = await getSanityPage(slug);
+  if (!sanityPage?.title) {
+    throw new Error(`Missing Sanity page for slug "${slug}"`);
   }
 
-  return getLocalFallback(slug);
+  return {
+    slug,
+    title: decodeEntities(sanityPage.title),
+    html: normalizeHtml(sanityPage.bodyHtml ?? ""),
+    seoTitle: sanityPage.seoTitle ? decodeEntities(sanityPage.seoTitle) : undefined,
+    seoDescription: sanityPage.seoDescription
+      ? decodeEntities(sanityPage.seoDescription)
+      : undefined,
+    source: "sanity",
+  };
 }
