@@ -1,4 +1,5 @@
 import mediaMap from "./wp-media-map.json";
+import { toHTML } from "@portabletext/to-html";
 
 export interface SitePageContent {
   slug: string;
@@ -12,6 +13,7 @@ export interface SitePageContent {
 interface SanityPage {
   slug: string;
   title: string;
+  body?: unknown[];
   bodyHtml: string;
   seoTitle?: string;
   seoDescription?: string;
@@ -67,6 +69,7 @@ async function getSanityPage(slug: string): Promise<SanityPage | null> {
   const query = `*[_type == "page" && slug.current == $slug][0]{
     "slug": slug.current,
     title,
+    body,
     bodyHtml,
     seoTitle,
     seoDescription
@@ -99,7 +102,11 @@ export async function getPageContent(slug: string): Promise<SitePageContent> {
   return {
     slug,
     title: decodeEntities(sanityPage.title),
-    html: normalizeHtml(sanityPage.bodyHtml ?? ""),
+    html: normalizeHtml(
+      Array.isArray(sanityPage.body) && sanityPage.body.length > 0
+        ? toHTML(sanityPage.body as any[])
+        : sanityPage.bodyHtml ?? "",
+    ),
     seoTitle: sanityPage.seoTitle ? decodeEntities(sanityPage.seoTitle) : undefined,
     seoDescription: sanityPage.seoDescription
       ? decodeEntities(sanityPage.seoDescription)

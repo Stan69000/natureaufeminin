@@ -19,10 +19,20 @@ export const pageType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "body",
+      title: "Contenu",
+      type: "array",
+      of: [{ type: "block" }],
+      description:
+        "Editeur riche recommandé pour modifier le contenu sans HTML.",
+    }),
+    defineField({
       name: "bodyHtml",
-      title: "Contenu HTML",
+      title: "Contenu HTML (legacy)",
       type: "text",
-      rows: 20,
+      rows: 12,
+      description:
+        "Ancien contenu importé depuis WordPress. Laisser tel quel si vous utilisez le champ 'Contenu'.",
     }),
     defineField({
       name: "seoTitle",
