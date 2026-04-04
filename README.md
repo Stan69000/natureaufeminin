@@ -69,6 +69,42 @@ npm run build
 
 2. Déployer le contenu du dossier `dist/` sur l’hébergement.
 
+## CI/CD GitHub vers O2Switch
+
+Le repo inclut un workflow GitHub Actions :
+
+- `.github/workflows/deploy-o2switch.yml`
+- Build automatique à chaque push sur `main`
+- Déploiement FTP vers O2Switch après validation environnement `production`
+
+### Secrets GitHub à configurer
+
+Dans `Settings > Secrets and variables > Actions` :
+
+- `FTP_SERVER`
+- `FTP_PORT` (ex: `21`)
+- `FTP_USERNAME`
+- `FTP_PASSWORD`
+- `SANITY_PROJECT_ID`
+- `SANITY_DATASET`
+- `SANITY_API_VERSION`
+- `PUBLIC_CONTACT_FORM_ENDPOINT`
+- `PUBLIC_TURNSTILE_SITE_KEY`
+
+### Activer l’approbation manuelle (auto + approve run)
+
+Dans `Settings > Environments > production` :
+
+1. Créer l’environnement `production`
+2. Activer `Required reviewers`
+3. Ajouter ton compte (ou vos comptes)
+
+Ensuite :
+
+- Le build démarre automatiquement sur push `main`
+- Le job de déploiement attend l’approbation
+- Après validation, la publication vers O2Switch se lance
+
 ## Contenu éditorial
 
 - Le contenu de pages est géré dans Sanity.
