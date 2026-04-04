@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "media:extract": "node scripts/extract-wp-media.mjs",
-    "media:download": "node scripts/download-wp-media.mjs"
+    "media:download": "node scripts/download-wp-media.mjs",
+    "sanity:seed": "node scripts/export-sanity-seed.mjs"
   },
   "dependencies": {
     "astro": "^6.1.3"

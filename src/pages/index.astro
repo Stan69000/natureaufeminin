@@ -1,11 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getWpPage, normalizeWpHtml } from "../data/wp";
+import { getPageContent } from "../data/content";
 import { siteConfig } from "../data/site";
 
-const page = getWpPage("page-d-exemple");
+const page = await getPageContent("page-d-exemple");
 const title = "Accueil | Natur' Au Feminin";
-const html = normalizeWpHtml(page?.content.rendered ?? "");
+const html = page.html;
 ---
 
 <BaseLayout title={title}>
