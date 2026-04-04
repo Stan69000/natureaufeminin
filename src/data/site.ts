@@ -8,6 +8,7 @@ export const siteConfig = {
   phoneHref: "tel:+33644092112",
   city: "Fleurieux-sur-l'Arbresle",
   bookingUrl: "https://liberlo.com/profil/audrey-martinez-bouchet/",
+  adminUrl: "https://naturaufeminin-admin.sanity.studio/",
 };
 
 export const navItems = [

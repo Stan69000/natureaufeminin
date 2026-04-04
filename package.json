@@ -13,7 +13,8 @@
     "studio:dev": "sanity dev --host 0.0.0.0 --port 3333",
     "studio:deploy": "sanity deploy",
     "sanity:check": "node scripts/sanity-check.mjs",
-    "sanity:verify": "node scripts/sanity-verify-seed.mjs"
+    "sanity:verify": "node scripts/sanity-verify-seed.mjs",
+    "sanity:migrate:portable": "sanity exec scripts/migrate-legacy-html-to-portable-text.mjs --with-user-token"
   },
   "dependencies": {
     "@portabletext/to-html": "^2.0.17",
