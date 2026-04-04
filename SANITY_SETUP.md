@@ -15,13 +15,7 @@ Puis crée un projet Sanity (si pas déjà fait) dans le dashboard Sanity, avec 
 
 ## 2) Préparer le contenu à importer
 
-Le seed est déjà prêt dans ce repo: `sanity/seed.ndjson`.
-
-Tu peux le régénérer si besoin:
-
-```bash
-npm run sanity:seed
-```
+Le seed est prêt dans ce repo: `sanity/seed.ndjson`.
 
 ## 3) Importer le seed
 
