@@ -123,12 +123,23 @@ const structuredDataJson = JSON.stringify(defaultStructuredData);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImagePath} />
+    <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const key = "naf-theme";
+        const root = document.documentElement;
+        const savedTheme = localStorage.getItem(key);
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : prefersDark ? "dark" : "light";
+        root.dataset.theme = theme;
+      })();
+    </script>
     <script type="application/ld+json" set:html={structuredDataJson} />
     <slot name="head" />
   </head>

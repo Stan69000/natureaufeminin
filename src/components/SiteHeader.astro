@@ -21,11 +21,32 @@ const pathname = Astro.url.pathname;
         <small>Naturopathe – Conseillère en Symptothermie – Doula – Régulation Emotionnelle</small>
       </span>
     </a>
-    <a class="btn btn-primary btn-booking header-cta" href={siteConfig.bookingUrl} target="_blank" rel="noopener noreferrer">
-      Prendre rendez-vous
-    </a>
+    <div class="brand-actions">
+      <button
+        class="theme-toggle"
+        type="button"
+        aria-label="Activer le mode sombre"
+        title="Basculer le thème"
+      >
+        <span class="witch-glyph" aria-hidden="true">🧙‍♀️</span>
+        <span class="theme-toggle-text">Mode clair</span>
+      </button>
+      <a class="btn btn-primary btn-booking header-cta" href={siteConfig.bookingUrl} target="_blank" rel="noopener noreferrer">
+        Prendre rendez-vous
+      </a>
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-controls="site-main-nav"
+        aria-expanded="false"
+        aria-label="Ouvrir le menu principal"
+      >
+        <span aria-hidden="true"></span>
+        <span>Menu</span>
+      </button>
+    </div>
   </div>
-  <nav class="main-nav container" aria-label="Navigation principale">
+  <nav id="site-main-nav" class="main-nav container" aria-label="Navigation principale" data-state="open">
     <ul>
       {navItems.map((item) => (
         <li>
@@ -37,3 +58,95 @@ const pathname = Astro.url.pathname;
     </ul>
   </nav>
 </header>
+
+<script>
+  (() => {
+    const root = document.documentElement;
+    const header = document.querySelector(".site-header");
+    if (!header) return;
+
+    const themeToggle = header.querySelector(".theme-toggle");
+    const themeLabel = header.querySelector(".theme-toggle-text");
+    const themeStorageKey = "naf-theme";
+    const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const getStoredTheme = () => {
+      const savedTheme = localStorage.getItem(themeStorageKey);
+      if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+      return darkQuery.matches ? "dark" : "light";
+    };
+
+    const applyTheme = (theme) => {
+      root.dataset.theme = theme;
+      const isDark = theme === "dark";
+      if (themeToggle instanceof HTMLButtonElement) {
+        themeToggle.setAttribute("aria-label", isDark ? "Activer le mode clair" : "Activer le mode sombre");
+        themeToggle.setAttribute("aria-pressed", String(isDark));
+      }
+      if (themeLabel instanceof HTMLElement) {
+        themeLabel.textContent = isDark ? "Mode sombre" : "Mode clair";
+      }
+    };
+
+    applyTheme(getStoredTheme());
+
+    if (themeToggle instanceof HTMLButtonElement) {
+      themeToggle.addEventListener("click", () => {
+        const currentTheme = root.dataset.theme === "dark" ? "dark" : "light";
+        const nextTheme = currentTheme === "dark" ? "light" : "dark";
+        localStorage.setItem(themeStorageKey, nextTheme);
+        applyTheme(nextTheme);
+      });
+    }
+
+    darkQuery.addEventListener("change", (event) => {
+      if (localStorage.getItem(themeStorageKey)) return;
+      applyTheme(event.matches ? "dark" : "light");
+    });
+
+    const toggle = header.querySelector(".nav-toggle");
+    const nav = header.querySelector("#site-main-nav");
+    if (!(toggle instanceof HTMLButtonElement) || !(nav instanceof HTMLElement)) return;
+
+    const desktopQuery = window.matchMedia("(min-width: 881px)");
+    root.classList.add("js");
+
+    const setMenuState = (isOpen) => {
+      nav.dataset.state = isOpen ? "open" : "closed";
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.setAttribute("aria-label", isOpen ? "Fermer le menu principal" : "Ouvrir le menu principal");
+    };
+
+    const syncStateWithViewport = () => {
+      if (desktopQuery.matches) {
+        nav.dataset.state = "open";
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Ouvrir le menu principal");
+        return;
+      }
+      setMenuState(false);
+    };
+
+    syncStateWithViewport();
+
+    toggle.addEventListener("click", () => {
+      const isOpen = nav.dataset.state === "open";
+      setMenuState(!isOpen);
+    });
+
+    nav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (!desktopQuery.matches) setMenuState(false);
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && nav.dataset.state === "open" && !desktopQuery.matches) {
+        setMenuState(false);
+        toggle.focus();
+      }
+    });
+
+    desktopQuery.addEventListener("change", syncStateWithViewport);
+  })();
+</script>
