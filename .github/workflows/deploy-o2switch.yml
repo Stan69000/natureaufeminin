@@ -21,7 +21,7 @@ concurrency:
 
 env:
   PRODUCTION_SERVER_DIR: /naturaufeminin.fr/
-  PARALLEL_SERVER_DIR: /naturaufeminin-next/
+  PARALLEL_SERVER_DIR: /
 
 jobs:
   build:
