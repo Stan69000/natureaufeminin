@@ -25,6 +25,257 @@ export const pageType = defineType({
       of: [{ type: "block" }],
       description:
         "Editeur riche recommandé pour modifier le contenu sans HTML.",
+      hidden: ({ document }) => document?.slug?.current === "tarifs",
+    }),
+    defineField({
+      name: "pricingSections",
+      title: "Tarifs (sections texte)",
+      type: "array",
+      description:
+        "Pour la page Tarifs : sections éditables sans image (titre + lignes).",
+      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+      of: [
+        defineField({
+          name: "pricingSection",
+          title: "Section",
+          type: "object",
+          fields: [
+            defineField({
+              name: "title",
+              title: "Titre",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "items",
+              title: "Lignes",
+              type: "array",
+              of: [
+                defineField({
+                  name: "pricingItem",
+                  title: "Ligne",
+                  type: "object",
+                  fields: [
+                    defineField({
+                      name: "label",
+                      title: "Libellé",
+                      type: "string",
+                      validation: (rule) => rule.required(),
+                    }),
+                    defineField({
+                      name: "price",
+                      title: "Prix",
+                      type: "string",
+                      validation: (rule) => rule.required(),
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: "label",
+                      subtitle: "price",
+                    },
+                  },
+                }),
+              ],
+            }),
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "items.0.label",
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
+      name: "pricingIntro",
+      title: "Intro tarifs",
+      type: "text",
+      rows: 3,
+      description: "Texte d’introduction affiché en haut de la page Tarifs.",
+      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+    }),
+    defineField({
+      name: "pricingCtaText",
+      title: "Texte CTA tarifs",
+      type: "string",
+      description: "Question affichée à droite du bloc final des tarifs.",
+      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+    }),
+    defineField({
+      name: "pricingCtaLabel",
+      title: "Libellé lien CTA tarifs",
+      type: "string",
+      description: "Texte du lien du CTA tarifs.",
+      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+    }),
+    defineField({
+      name: "pricingCtaUrl",
+      title: "URL CTA tarifs",
+      type: "url",
+      description: "Lien du CTA tarifs.",
+      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+    }),
+    defineField({
+      name: "prestationsMenuTitle",
+      title: "Titre sous-menu prestations",
+      type: "string",
+      hidden: ({ document }) => document?.slug?.current !== "prestations",
+    }),
+    defineField({
+      name: "prestationsIntro",
+      title: "Intro prestations",
+      type: "text",
+      rows: 3,
+      hidden: ({ document }) => document?.slug?.current !== "prestations",
+    }),
+    defineField({
+      name: "prestationsMenu",
+      title: "Sous-menu prestations",
+      type: "array",
+      description: "Liens rapides vers les pages de prestations.",
+      hidden: ({ document }) => document?.slug?.current !== "prestations",
+      of: [
+        defineField({
+          name: "prestationsMenuItem",
+          title: "Lien",
+          type: "object",
+          fields: [
+            defineField({
+              name: "label",
+              title: "Libellé",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "href",
+              title: "URL",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "description",
+              title: "Description",
+              type: "string",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "label",
+              subtitle: "href",
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
+      name: "actualitesIntro",
+      title: "Intro actualités",
+      type: "text",
+      rows: 3,
+      hidden: ({ document }) => document?.slug?.current !== "que-se-passe-t-il-en-ce-moment",
+    }),
+    defineField({
+      name: "actualitesItems",
+      title: "Articles actualités",
+      type: "array",
+      description: "Publiez des news sans image, avec vidéo YouTube optionnelle.",
+      hidden: ({ document }) => document?.slug?.current !== "que-se-passe-t-il-en-ce-moment",
+      of: [
+        defineField({
+          name: "actualiteItem",
+          title: "Article",
+          type: "object",
+          fields: [
+            defineField({
+              name: "title",
+              title: "Titre",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "publishedAt",
+              title: "Date",
+              type: "datetime",
+            }),
+            defineField({
+              name: "excerpt",
+              title: "Texte",
+              type: "text",
+              rows: 6,
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "youtubeUrl",
+              title: "URL YouTube",
+              type: "url",
+              description: "Collez un lien YouTube (watch, youtu.be, shorts...).",
+            }),
+            defineField({
+              name: "ctaLabel",
+              title: "Libellé CTA",
+              type: "string",
+            }),
+            defineField({
+              name: "ctaUrl",
+              title: "URL CTA",
+              type: "url",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "publishedAt",
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
+      name: "circleIntro",
+      title: "Intro mon cercle",
+      type: "text",
+      rows: 4,
+      hidden: ({ document }) => document?.slug?.current !== "mon-cercle",
+    }),
+    defineField({
+      name: "circlePartners",
+      title: "Partenaires du cercle",
+      type: "array",
+      description: "Personnes et liens à mettre en valeur sur la page Mon cercle.",
+      hidden: ({ document }) => document?.slug?.current !== "mon-cercle",
+      of: [
+        defineField({
+          name: "circlePartnerItem",
+          title: "Partenaire",
+          type: "object",
+          fields: [
+            defineField({
+              name: "name",
+              title: "Nom",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "role",
+              title: "Rôle / activité",
+              type: "string",
+            }),
+            defineField({
+              name: "websiteUrl",
+              title: "Site web",
+              type: "url",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "name",
+              subtitle: "role",
+            },
+          },
+        }),
+      ],
     }),
     defineField({
       name: "bodyHtml",
@@ -33,6 +284,8 @@ export const pageType = defineType({
       rows: 12,
       description:
         "Ancien contenu importé depuis WordPress. Laisser tel quel si vous utilisez le champ 'Contenu'.",
+      hidden: ({ document }) =>
+        document?.slug?.current === "tarifs" || document?.slug?.current === "mon-cercle",
     }),
     defineField({
       name: "seoTitle",

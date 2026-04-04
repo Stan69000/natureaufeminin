@@ -281,6 +281,24 @@ textarea:focus-visible {
 
 .footer-grid ul { list-style: none; padding: 0; margin: 0; }
 
+.footer-credit {
+  margin-top: 1.2rem;
+  padding-top: 0.9rem;
+  border-top: 1px dashed color-mix(in oklab, var(--line) 82%, white);
+}
+
+.footer-credit p {
+  margin: 0;
+  text-align: center;
+  color: #4b5c52;
+  font-size: 0.95rem;
+}
+
+.footer-credit a {
+  font-weight: 700;
+  color: #2f5d4b;
+}
+
 input,
 textarea {
   width: min(100%, 36rem);
@@ -359,11 +377,6 @@ textarea {
   display: block;
   overflow-x: auto;
   max-width: 100%;
-}
-
-.wp-content a[target="_blank"]:not(.btn-liberlo):not([class*="btn"])::after {
-  content: " (lien externe)";
-  font-size: 0.85em;
 }
 
 .wp-content .btn-liberlo {
@@ -526,6 +539,364 @@ textarea {
   }
 }
 
+.tarifs-content {
+  background:
+    linear-gradient(180deg, #f6faf5, #edf4ed),
+    linear-gradient(45deg, transparent 96%, rgba(103, 138, 109, 0.14) 97%, transparent 98%),
+    linear-gradient(-45deg, transparent 96%, rgba(103, 138, 109, 0.14) 97%, transparent 98%);
+  background-size: auto, 34px 34px, 34px 34px;
+}
+
+.tarifs-content h1 {
+  text-align: center;
+  color: color-mix(in oklab, var(--moss) 88%, #5f7f54);
+  margin-bottom: 0.35rem;
+}
+
+.tarifs-intro {
+  text-align: left;
+  max-width: 36ch;
+  margin: 0 0 1.25rem;
+  color: #2f4f3b;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.2;
+}
+
+.tarifs-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  margin-bottom: 1rem;
+}
+
+.tarif-card {
+  border: 1px solid color-mix(in oklab, var(--line) 85%, white);
+  border-radius: 1rem;
+  padding: 1rem 1rem 0.9rem;
+  background: linear-gradient(160deg, #ffffff, #f2f8f2);
+  box-shadow: 0 14px 24px -24px rgba(41, 73, 55, 0.6);
+}
+
+.tarif-card h2 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: color-mix(in oklab, var(--moss) 88%, #668c52);
+  text-align: center;
+}
+
+.tarif-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tarif-card li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
+  border-top: 1px dashed color-mix(in oklab, var(--line) 85%, white);
+  padding: 0.5rem 0;
+}
+
+.tarif-card li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.tarif-card li span {
+  color: #324337;
+}
+
+.tarif-card li strong {
+  color: #2d523e;
+  white-space: nowrap;
+}
+
+.tarifs-side-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(300px, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.tarifs-cta-panel {
+  border: 1px solid color-mix(in oklab, var(--line) 78%, white);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(133, 170, 130, 0.18), transparent 36%),
+    linear-gradient(160deg, #f6fbf6, #eef6ee);
+  box-shadow: 0 14px 24px -24px rgba(41, 73, 55, 0.6);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.tarifs-cta-text {
+  margin: 0 0 0.35rem;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2.1rem, 4.2vw, 3rem);
+  line-height: 1.02;
+  color: #2f4f3b;
+}
+
+.tarifs-cta-panel a {
+  font-size: clamp(1.2rem, 2.1vw, 1.5rem);
+  font-weight: 700;
+  color: #1f5a44;
+}
+
+.tarifs-cta-panel .tarifs-cta-button {
+  margin-top: 0.35rem;
+  font-size: clamp(1rem, 1.45vw, 1.12rem);
+  color: #fff !important;
+}
+
+.tarifs-cta-panel .tarifs-cta-button:hover,
+.tarifs-cta-panel .tarifs-cta-button:focus-visible,
+.tarifs-cta-panel .tarifs-cta-button:visited {
+  color: #fff !important;
+}
+
+.prestations-content .prestations-submenu {
+  margin: 0.35rem 0 1.2rem;
+}
+
+.prestations-submenu-title {
+  margin: 0 0 0.45rem;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  color: #2d523f;
+}
+
+.prestations-submenu-intro {
+  margin: 0 0 0.65rem;
+  color: #405447;
+}
+
+.prestations-submenu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.prestations-submenu li {
+  margin: 0;
+}
+
+.prestations-submenu a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  height: 100%;
+  text-decoration: none;
+  border: 1px solid color-mix(in oklab, var(--line) 85%, white);
+  border-radius: 0.85rem;
+  padding: 0.7rem 0.8rem;
+  background: linear-gradient(150deg, #fff, #f1f7f1);
+  box-shadow: 0 10px 18px -24px rgba(41, 73, 55, 0.7);
+}
+
+.prestations-submenu a strong {
+  color: #285443;
+  font-size: 1.06rem;
+}
+
+.prestations-submenu a small {
+  color: #4b5f53;
+  line-height: 1.4;
+}
+
+.prestations-submenu a:hover {
+  border-color: color-mix(in oklab, var(--brand) 38%, white);
+  transform: translateY(-1px);
+}
+
+.ecoute-page {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(100, 145, 118, 0.13), transparent 32%),
+    linear-gradient(180deg, #f8fcf7, #edf5ee);
+}
+
+.ecoute-page h1 {
+  margin-bottom: 0.7rem;
+}
+
+.ecoute-lead {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid color-mix(in oklab, var(--brand) 65%, white);
+  border-radius: 0.55rem;
+  background: color-mix(in oklab, #ffffff 68%, #edf4ee);
+  font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+  color: #2e4135;
+}
+
+.ecoute-body {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.ecoute-body p {
+  margin: 0;
+  max-width: 78ch;
+  color: #33463b;
+}
+
+.ecoute-cta-wrap {
+  margin: 1rem 0 0;
+}
+
+.actualites-page {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(122, 158, 125, 0.14), transparent 30%),
+    linear-gradient(180deg, #f8fbf8, #edf4ee);
+}
+
+.actualites-intro {
+  margin: 0 0 1rem;
+  color: #405447;
+}
+
+.actualites-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.actualite-card {
+  border: 1px solid color-mix(in oklab, var(--line) 85%, white);
+  border-radius: 1rem;
+  padding: 0.95rem 1rem;
+  background: linear-gradient(160deg, #fff, #f2f8f2);
+  box-shadow: 0 14px 24px -24px rgba(41, 73, 55, 0.6);
+}
+
+.actualite-card h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.7vw, 1.95rem);
+  color: #2d523f;
+}
+
+.actualite-date {
+  margin: 0.18rem 0 0;
+  color: #5b6a61;
+  font-size: 0.95rem;
+}
+
+.actualite-text {
+  margin: 0.6rem 0 0;
+  color: #32453a;
+}
+
+.actualite-video {
+  margin-top: 0.75rem;
+}
+
+.actualite-video iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 0.8rem;
+  box-shadow: none;
+}
+
+.actualite-cta-wrap {
+  margin: 0.75rem 0 0;
+}
+
+.cercle-page {
+  background:
+    radial-gradient(circle at 86% 10%, rgba(125, 166, 130, 0.14), transparent 30%),
+    linear-gradient(180deg, #f8fbf8, #edf4ee);
+}
+
+.cercle-intro {
+  margin: 0 0 1rem;
+  max-width: 82ch;
+  color: #3f5248;
+}
+
+.cercle-grid {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  align-items: center;
+  margin-top: 1.1rem;
+}
+
+@media (min-width: 860px) {
+  .cercle-grid::before {
+    content: "";
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, transparent, rgba(63, 120, 98, 0.42), transparent);
+    pointer-events: none;
+  }
+}
+
+.cercle-card {
+  position: relative;
+  z-index: 1;
+  border: 1px solid color-mix(in oklab, var(--line) 82%, white);
+  border-radius: 999px;
+  aspect-ratio: 1 / 1;
+  min-height: 250px;
+  padding: 1.35rem;
+  background:
+    radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.92), rgba(243, 249, 243, 0.95) 58%),
+    linear-gradient(160deg, #fff, #f3f9f3);
+  box-shadow:
+    0 14px 24px -24px rgba(41, 73, 55, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.58);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 860px) {
+  .cercle-card:not(:last-child)::after { content: none; }
+}
+
+.cercle-card h2 {
+  margin: 0;
+  color: #2d523f;
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+}
+
+.cercle-card p {
+  margin: 0.45rem 0 0;
+  color: #3b4f44;
+  max-width: 24ch;
+}
+
+.cercle-link-wrap a {
+  font-weight: 700;
+}
+
+@media (max-width: 859px) {
+  .cercle-card {
+    border-radius: 1rem;
+    aspect-ratio: auto;
+    min-height: 0;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html:focus-within { scroll-behavior: auto; }
   *,
@@ -581,5 +952,15 @@ textarea {
     float: none;
     margin: 0 0 1rem 0;
     max-width: 100%;
+  }
+
+  .tarif-card li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+  }
+
+  .tarifs-side-row {
+    grid-template-columns: 1fr;
   }
 }

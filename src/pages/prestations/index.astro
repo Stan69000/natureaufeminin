@@ -1,16 +1,52 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getPageContent } from "../../data/content";
+import { serviceCards } from "../../data/site";
 
 const slug = "prestations";
 const page = await getPageContent(slug);
 const title = `${page.title} | Natur' Au Feminin`;
-const html = page.html;
+const menuTitle = page.prestationsMenuTitle?.trim() || "Nos accompagnements";
+const menuIntro =
+  page.prestationsIntro?.trim() ||
+  "Afin de vous accompagner au mieux dans vos changements de vie, voici les différentes prestations que je propose :";
+const menuItems =
+  page.prestationsMenu
+    ?.filter((item) => item.label?.trim() && item.href?.trim())
+    .map((item) => ({
+      label: item.label ?? "",
+      href: item.href ?? "",
+      description: item.description ?? "",
+    })) ??
+  [];
+const displayedMenuItems =
+  menuItems.length > 0
+    ? menuItems
+    : serviceCards.map((item) => ({
+        label: item.title,
+        href: item.href,
+        description: item.description,
+      }));
 ---
 
 <BaseLayout title={title}>
-  <article class="section wp-content" aria-labelledby="page-title">
+  <article class="section wp-content prestations-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
-    <div set:html={html}></div>
+    <nav class="prestations-submenu" aria-label="Sous-menu prestations">
+      <p class="prestations-submenu-title">{menuTitle}</p>
+      {menuIntro && <p class="prestations-submenu-intro">{menuIntro}</p>}
+      <ul>
+        {
+          displayedMenuItems.map((item) => (
+            <li>
+              <a href={item.href}>
+                <strong>{item.label}</strong>
+                {item.description && <small>{item.description}</small>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </article>
 </BaseLayout>

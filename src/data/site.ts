@@ -16,7 +16,7 @@ export const navItems = [
   { href: "/qui-suis-je", label: "Qui suis-je ?" },
   { href: "/prestations", label: "Prestations" },
   { href: "/tarifs", label: "Tarifs" },
-  { href: "/actualites", label: "Actualites" },
+  { href: "/actualites", label: "Actualités" },
   { href: "/mon-cercle", label: "Mon cercle" },
   { href: "/contact", label: "Contact" },
 ] as const;
@@ -29,7 +29,7 @@ export const serviceCards = [
       "Retrouver un equilibre durable grace a une approche globale de votre hygiene de vie.",
   },
   {
-    title: "Ecoute corporelle",
+    title: "L’écoute Corporelle par La Voie des Sens",
     href: "/prestations/ecoute-corporelle",
     description:
       "Apaiser les surcharges emotionnelles et retrouver de l'espace interieur.",

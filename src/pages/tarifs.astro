@@ -1,16 +1,113 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
+import { siteConfig } from "../data/site";
 
 const slug = "tarifs";
 const page = await getPageContent(slug);
 const title = `${page.title} | Natur' Au Feminin`;
-const html = page.html;
+const intro = page.pricingIntro?.trim() || "";
+const ctaText = page.pricingCtaText?.trim() || "Un doute sur la formule adaptée ?";
+const ctaLabel = page.pricingCtaLabel?.trim() || "Réserver un premier échange";
+const ctaUrl = page.pricingCtaUrl?.trim() || siteConfig.bookingUrl;
+
+const fallbackSections = [
+  {
+    title: "Symptothermie",
+    items: [
+      { label: "Bilan 1ère rencontre", price: "90 €" },
+      { label: "Entraînement Sympto (4 rdv + @ + tél. sur 1 an)", price: "300 €" },
+      { label: "Séance de suivi après 1 an", price: "60 €" },
+      { label: "Le cycle dans toute sa splendeur (5 séances)", price: "250 €" },
+    ],
+  },
+  {
+    title: "Accompagnement Doula",
+    items: [
+      { label: "Notre 1ère rencontre", price: "90 €" },
+      { label: "Forfait préconception (4 rendez-vous)", price: "320 €" },
+      { label: "Forfait grossesse (10 rdv)", price: "750 €" },
+      { label: "Forfait post-partum (6 rdv à domicile)", price: "540 €" },
+    ],
+  },
+  {
+    title: "Massage Ayurvédique",
+    items: [
+      { label: "Massage Ayurvédique", price: "120 €" },
+      { label: "Pack 3 massages Ayurvédiques", price: "330 €" },
+      { label: "Pack 5 massages", price: "450 €" },
+    ],
+  },
+  {
+    title: "Massage Bébé",
+    items: [
+      { label: "Notre 1ère rencontre", price: "90 €" },
+      { label: "Forfait préconception (4 rendez-vous)", price: "320 €" },
+      { label: "Forfait grossesse (10 rdv)", price: "750 €" },
+      { label: "Forfait post-partum (6 rdv à domicile)", price: "540 €" },
+    ],
+  },
+];
+
+const pricingSections =
+  page.pricingSections
+    ?.filter(
+      (section) =>
+        section.title?.trim() &&
+        section.items?.some((item) => item.label?.trim() && item.price?.trim()),
+    )
+    .map((section) => ({
+      title: section.title ?? "",
+      items:
+        section.items
+          ?.filter((item) => item.label?.trim() && item.price?.trim())
+          .map((item) => ({ label: item.label ?? "", price: item.price ?? "" })) ?? [],
+    })) ?? [];
+const displayedSections = pricingSections.length > 0 ? pricingSections : fallbackSections;
+const sideSection = displayedSections.at(-1);
+const mainSections = sideSection ? displayedSections.slice(0, -1) : displayedSections;
 ---
 
 <BaseLayout title={title}>
-  <article class="section wp-content" aria-labelledby="page-title">
+  <article class="section wp-content tarifs-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
-    <div set:html={html}></div>
+    {intro && <p class="tarifs-intro">{intro}</p>}
+
+    <div class="tarifs-grid" role="list">
+      {
+        mainSections.map((section) => (
+          <section class="tarif-card" role="listitem" aria-label={section.title}>
+            <h2>{section.title}</h2>
+            <ul>
+              {section.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+    {
+      sideSection && (
+        <section class="tarifs-side-row" aria-label="Bloc final tarifs et appel à l'action">
+          <section class="tarif-card" aria-label={sideSection.title}>
+            <h2>{sideSection.title}</h2>
+            <ul>
+              {sideSection.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
+            </ul>
+          </section>
+          <aside class="tarifs-cta-panel">
+            <p class="tarifs-cta-text">{ctaText}</p>
+            <a
+              class="btn btn-primary btn-booking tarifs-cta-button"
+              href={ctaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {ctaLabel}
+            </a>
+          </aside>
+        </section>
+      )
+    }
   </article>
 </BaseLayout>

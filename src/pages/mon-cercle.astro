@@ -5,12 +5,62 @@ import { getPageContent } from "../data/content";
 const slug = "mon-cercle";
 const page = await getPageContent(slug);
 const title = `${page.title} | Natur' Au Feminin`;
-const html = page.html;
+const intro =
+  page.circleIntro?.trim() ||
+  "Une sélection de professionnel.le.s complétant mon approche. Je connais personnellement ces accompagnant.e.s et n'ai aucun mal à vous les recommander !";
+const partners =
+  page.circlePartners
+    ?.filter((item) => item.name?.trim())
+    .map((item) => ({
+      name: item.name?.trim() || "",
+      role: item.role?.trim() || "",
+      websiteUrl: item.websiteUrl?.trim() || "",
+    })) ?? [];
+
+const fallbackPartners = [
+  {
+    name: "Andréa MALTERRE",
+    role: "Photographe médecine et doula sauvage",
+    websiteUrl: "https://www.centaureadoula.com/",
+  },
+  {
+    name: "Caroline RODRIGUES-MILLET",
+    role: "Le Cocon Doula",
+    websiteUrl: "https://www.lecocondoula.com/",
+  },
+  {
+    name: "Natascha WITTEKIND",
+    role: "Résolution émotionnelle à Sorrèze (81)",
+    websiteUrl: "https://nataschawittekind.com/",
+  },
+];
+
+const displayedPartners = partners.length > 0 ? partners : fallbackPartners;
 ---
 
 <BaseLayout title={title}>
-  <article class="section wp-content" aria-labelledby="page-title">
+  <article class="section wp-content cercle-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
-    <div set:html={html}></div>
+    <p class="cercle-intro">{intro}</p>
+
+    <div class="cercle-grid" role="list">
+      {
+        displayedPartners.map((partner) => (
+          <article class="cercle-card" role="listitem">
+            <h2>{partner.name}</h2>
+            {partner.role && <p>{partner.role}</p>}
+            {
+              partner.websiteUrl && (
+                <p class="cercle-link-wrap">
+                  <a href={partner.websiteUrl} target="_blank" rel="noopener noreferrer">
+                    Visiter le site web
+                  </a>
+                </p>
+              )
+            }
+          </article>
+        ))
+      }
+    </div>
   </article>
 </BaseLayout>

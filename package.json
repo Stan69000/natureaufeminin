@@ -14,7 +14,11 @@
     "studio:deploy": "sanity deploy",
     "sanity:check": "node scripts/sanity-check.mjs",
     "sanity:verify": "node scripts/sanity-verify-seed.mjs",
-    "sanity:migrate:portable": "sanity exec scripts/migrate-legacy-html-to-portable-text.mjs --with-user-token"
+    "sanity:migrate:portable": "sanity exec scripts/migrate-legacy-html-to-portable-text.mjs --with-user-token",
+    "sanity:sync:local": "sanity exec scripts/sync-dist-to-sanity.mjs --with-user-token",
+    "sanity:prestations:backfill": "sanity exec scripts/backfill-prestations-menu.mjs --with-user-token",
+    "sanity:actualites:backfill": "sanity exec scripts/backfill-actualites-items.mjs --with-user-token",
+    "sanity:moncercle:backfill": "sanity exec scripts/backfill-mon-cercle-partners.mjs --with-user-token"
   },
   "dependencies": {
     "@portabletext/to-html": "^2.0.17",

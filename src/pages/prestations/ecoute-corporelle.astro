@@ -1,16 +1,64 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getPageContent } from "../../data/content";
+import { siteConfig } from "../../data/site";
 
 const slug = "lecoute-corporelle-par-la-voie-des-sens";
 const page = await getPageContent(slug);
 const title = `${page.title} | Natur' Au Feminin`;
 const html = page.html;
+
+function toParagraphs(input: string): string[] {
+  const decode = (value: string) =>
+    value
+      .replace(/&amp;#x27;|&#x27;|&#39;|&rsquo;/gi, "'")
+      .replace(/&amp;|&#038;/gi, "&")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&ldquo;|&rdquo;/gi, '"')
+      .replace(/&ndash;|&mdash;/gi, "-");
+
+  const noStyle = input
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<a[^>]*class="btn-liberlo"[\s\S]*?<\/a>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|h1|h2|h3|h4|li|ul|ol|blockquote|div)>/gi, "\n\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\r/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  return decode(noStyle)
+    .split(/\n{2,}/)
+    .map((line) => line.trim())
+    .filter((line) => !/^rdv sur liberlo\.com$/i.test(line))
+    .filter(Boolean);
+}
+
+const paragraphs = toParagraphs(html);
+const lead = paragraphs[0] ?? "";
+const rest = paragraphs.slice(1);
 ---
 
 <BaseLayout title={title}>
-  <article class="section wp-content" aria-labelledby="page-title">
+  <article class="section wp-content ecoute-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
-    <div set:html={html}></div>
+
+    {lead && <p class="ecoute-lead">{lead}</p>}
+
+    <div class="ecoute-body">
+      {rest.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+
+    <p class="ecoute-cta-wrap">
+      <a
+        class="btn btn-primary btn-booking ecoute-cta"
+        href={siteConfig.bookingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Réserver un premier échange
+      </a>
+    </p>
   </article>
 </BaseLayout>

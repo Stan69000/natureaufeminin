@@ -1,16 +1,108 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
+import { siteConfig } from "../data/site";
 
 const slug = "que-se-passe-t-il-en-ce-moment";
 const page = await getPageContent(slug);
 const title = `${page.title} | Natur' Au Feminin`;
-const html = page.html;
+const intro =
+  page.actualitesIntro?.trim() ||
+  "Retrouvez ici les prochaines dates, ateliers et annonces importantes.";
+
+function getYoutubeEmbedUrl(input?: string): string | null {
+  if (!input) return null;
+  try {
+    const url = new URL(input);
+    const host = url.hostname.replace(/^www\./, "");
+    let videoId = "";
+
+    if (host === "youtu.be") {
+      videoId = url.pathname.split("/").filter(Boolean)[0] ?? "";
+    } else if (host === "youtube.com" || host === "m.youtube.com") {
+      if (url.pathname === "/watch") {
+        videoId = url.searchParams.get("v") ?? "";
+      } else if (url.pathname.startsWith("/shorts/") || url.pathname.startsWith("/embed/")) {
+        videoId = url.pathname.split("/").filter(Boolean)[1] ?? "";
+      }
+    }
+
+    if (!videoId) return null;
+    return `https://www.youtube.com/embed/${videoId}`;
+  } catch {
+    return null;
+  }
+}
+
+const newsItems =
+  page.actualitesItems
+    ?.filter((item) => item.title?.trim() || item.excerpt?.trim())
+    .map((item) => ({
+      title: item.title?.trim() || "Actualité",
+      publishedAt: item.publishedAt
+        ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(item.publishedAt))
+        : "",
+      excerpt: item.excerpt?.trim() || "",
+      youtubeEmbedUrl: getYoutubeEmbedUrl(item.youtubeUrl),
+      ctaLabel: item.ctaLabel?.trim() || "",
+      ctaUrl: item.ctaUrl?.trim() || "",
+    })) ?? [];
+
+const fallbackNewsItems = [
+  {
+    title: "Atelier Cycle Menstruel",
+    publishedAt: "",
+    excerpt:
+      "Le prochain atelier aura lieu le 27 avril à 10h sur le thème du cycle menstruel. Les places sont limitées pour privilégier la qualité des échanges.",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/KV60ZgnwJzk",
+    ctaLabel: "Réserver un premier échange",
+    ctaUrl: siteConfig.bookingUrl,
+  },
+];
+
+const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
 ---
 
 <BaseLayout title={title}>
-  <article class="section wp-content" aria-labelledby="page-title">
+  <article class="section wp-content actualites-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
-    <div set:html={html}></div>
+    <p class="actualites-intro">{intro}</p>
+
+    <div class="actualites-grid" role="list">
+      {
+        displayedNewsItems.map((item) => (
+          <article class="actualite-card" role="listitem">
+            <header>
+              <h2>{item.title}</h2>
+              {item.publishedAt && <p class="actualite-date">{item.publishedAt}</p>}
+            </header>
+            {item.excerpt && <p class="actualite-text">{item.excerpt}</p>}
+            {
+              item.youtubeEmbedUrl && (
+                <div class="actualite-video">
+                  <iframe
+                    src={item.youtubeEmbedUrl}
+                    title={`Vidéo - ${item.title}`}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                  />
+                </div>
+              )
+            }
+            {
+              item.ctaLabel && item.ctaUrl && (
+                <p class="actualite-cta-wrap">
+                  <a class="btn btn-primary btn-booking" href={item.ctaUrl} target="_blank" rel="noopener noreferrer">
+                    {item.ctaLabel}
+                  </a>
+                </p>
+              )
+            }
+          </article>
+        ))
+      }
+    </div>
   </article>
 </BaseLayout>
