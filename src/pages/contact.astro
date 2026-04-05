@@ -36,7 +36,6 @@ const contactFormEndpoint =
   import.meta.env.PUBLIC_FIREBASE_CONTACT_ENDPOINT?.trim() ||
   "/contact.php";
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() || "";
-const status = Astro.url.searchParams.get("status");
 const hasConfig = Boolean(contactFormEndpoint && turnstileSiteKey);
 
 const structuredData = {
@@ -81,16 +80,7 @@ const structuredData = {
         Réponse sous 48h ouvrées. Vos données sont utilisées uniquement pour vous recontacter.
       </p>
 
-      {status === "success" && (
-        <p id="form-status-message" class="form-alert form-alert-success" role="status">
-          Votre demande a bien été envoyée. Merci, je vous réponds rapidement.
-        </p>
-      )}
-      {status === "error" && (
-        <p id="form-status-message" class="form-alert form-alert-error" role="alert">
-          Un problème est survenu pendant l'envoi. Merci de réessayer ou d'appeler directement.
-        </p>
-      )}
+      <div id="form-status-slot"></div>
       {!hasConfig && (
         <p id="form-status-message" class="form-alert form-alert-error" role="alert">
           Le formulaire n'est pas encore configuré. Merci de me contacter par téléphone.
@@ -196,7 +186,7 @@ const structuredData = {
         const startedAtInput = document.querySelector("#formStartedAt");
         const liveRegion = document.querySelector("#form-live");
         const submitButton = form.querySelector("button[type='submit']");
-        const statusMessage = document.querySelector("#form-status-message");
+        const statusSlot = document.querySelector("#form-status-slot");
 
         if (!(submitButton instanceof HTMLButtonElement)) return;
         if (startedAtInput instanceof HTMLInputElement) {
@@ -210,11 +200,30 @@ const structuredData = {
           }
         };
 
+        const renderStatusMessage = (kind, text) => {
+          if (!(statusSlot instanceof HTMLElement)) return;
+          statusSlot.innerHTML = "";
+          const p = document.createElement("p");
+          p.id = "form-status-message";
+          p.className = `form-alert ${kind === "success" ? "form-alert-success" : "form-alert-error"}`;
+          p.setAttribute("role", kind === "success" ? "status" : "alert");
+          p.textContent = text;
+          statusSlot.appendChild(p);
+        };
+
         const clearStatusMessage = () => {
-          if (statusMessage instanceof HTMLElement) {
-            statusMessage.remove();
+          const currentStatus = document.querySelector("#form-status-message");
+          if (currentStatus instanceof HTMLElement && currentStatus.parentElement === statusSlot) {
+            currentStatus.remove();
           }
         };
+
+        const queryStatus = new URLSearchParams(window.location.search).get("status");
+        if (queryStatus === "success") {
+          renderStatusMessage("success", "Votre demande a bien été envoyée. Merci, je vous réponds rapidement.");
+        } else if (queryStatus === "error") {
+          renderStatusMessage("error", "Un problème est survenu pendant l'envoi. Merci de réessayer ou d'appeler directement.");
+        }
 
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
