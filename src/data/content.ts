@@ -1,6 +1,6 @@
-import mediaMap from "./wp-media-map.json";
 import { toHTML } from "@portabletext/to-html";
 import sanitizeHtml from "sanitize-html";
+import { sanitizeCmsUrl, sanitizeYoutubeVideoId } from "../utils/security";
 
 export interface SitePageContent {
   slug: string;
@@ -58,7 +58,6 @@ interface SanityPage {
   slug: string;
   title: string;
   body?: unknown[];
-  bodyHtml: string;
   pricingSections?: PricingSection[];
   pricingIntro?: string;
   pricingCtaText?: string;
@@ -73,6 +72,12 @@ interface SanityPage {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
+}
+
+interface SanityConfig {
+  projectId: string;
+  dataset: string;
+  apiVersion: string;
 }
 
 const linkMap = new Map<string, string>([
@@ -90,20 +95,37 @@ const linkMap = new Map<string, string>([
 ]);
 
 function decodeEntities(input: string): string {
-  return input
+  const decoded = input
     .replaceAll("&#038;", "&")
     .replaceAll("&rsquo;", "'")
     .replaceAll("&nbsp;", " ")
     .replaceAll("&ndash;", "-")
     .replaceAll("&mdash;", "-");
+
+  return decoded
+    .replace(/&#(\d+);/g, (_match, dec) => {
+      const codePoint = Number.parseInt(dec, 10);
+      if (!Number.isFinite(codePoint)) return _match;
+      try {
+        return String.fromCodePoint(codePoint);
+      } catch {
+        return _match;
+      }
+    })
+    .replace(/&#x([0-9a-fA-F]+);/g, (_match, hex) => {
+      const codePoint = Number.parseInt(hex, 16);
+      if (!Number.isFinite(codePoint)) return _match;
+      try {
+        return String.fromCodePoint(codePoint);
+      } catch {
+        return _match;
+      }
+    });
 }
 
 function normalizeHtml(html: string): string {
   let result = html;
   for (const [from, to] of linkMap.entries()) {
-    result = result.split(from).join(to);
-  }
-  for (const [from, to] of Object.entries(mediaMap as Record<string, string>)) {
     result = result.split(from).join(to);
   }
   return optimizeHtmlForSeo(sanitizeCmsHtml(result));
@@ -216,34 +238,110 @@ function optimizeHtmlForSeo(html: string): string {
   return result;
 }
 
-function hasMediaTags(html: string): boolean {
-  return /<(img|iframe|video)\b/i.test(html);
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
-const FORCE_LEGACY_HTML_SLUGS = new Set(["mentions-legales", "politique-de-confidentialite"]);
-
-function pickBestHtmlContent(page: SanityPage): string {
-  if (FORCE_LEGACY_HTML_SLUGS.has(page.slug)) {
-    return page.bodyHtml ?? "";
-  }
-
-  const portableHtml =
-    Array.isArray(page.body) && page.body.length > 0 ? toHTML(page.body as any[]) : "";
-  const legacyHtml = page.bodyHtml ?? "";
-
-  if (!portableHtml.trim()) {
-    return legacyHtml;
-  }
-
-  // Keep legacy HTML when it still contains media and portable text does not.
-  if (legacyHtml.trim() && hasMediaTags(legacyHtml) && !hasMediaTags(portableHtml)) {
-    return legacyHtml;
-  }
-
-  return portableHtml;
+function imageRefToCdnUrl(ref: string, sanity: SanityConfig): string | null {
+  const match = /^image-([a-zA-Z0-9]+)-(\d+x\d+)-([a-z0-9]+)$/i.exec(ref);
+  if (!match) return null;
+  const [, assetId, dimensions, format] = match;
+  return `https://cdn.sanity.io/images/${sanity.projectId}/${sanity.dataset}/${assetId}-${dimensions}.${format}`;
 }
 
-function getSanityConfig() {
+function renderPortableImageToHtml(value: any, sanity: SanityConfig): string {
+  const imageRef = value?.asset?._ref;
+  if (typeof imageRef !== "string") return "";
+
+  const src = imageRefToCdnUrl(imageRef, sanity);
+  if (!src) return "";
+
+  const altRaw =
+    typeof value?.alt === "string" && value.alt.trim()
+      ? value.alt.trim()
+      : "Illustration Natur Au Feminin";
+  const alt = escapeHtmlAttribute(altRaw);
+  return `<figure><img src="${src}" alt="${alt}" loading="lazy" decoding="async" /></figure>`;
+}
+
+function extractYoutubeVideoId(input?: string): string | null {
+  if (!input) return null;
+  try {
+    const url = new URL(input);
+    const host = url.hostname.replace(/^www\./, "");
+    let videoId = "";
+
+    if (host === "youtu.be") {
+      videoId = url.pathname.split("/").filter(Boolean)[0] ?? "";
+    } else if (host === "youtube.com" || host === "m.youtube.com") {
+      if (url.pathname === "/watch") {
+        videoId = url.searchParams.get("v") ?? "";
+      } else if (url.pathname.startsWith("/shorts/") || url.pathname.startsWith("/embed/")) {
+        videoId = url.pathname.split("/").filter(Boolean)[1] ?? "";
+      }
+    }
+
+    return sanitizeYoutubeVideoId(videoId);
+  } catch {
+    return null;
+  }
+}
+
+function renderPortableYoutubeToHtml(value: any): string {
+  const manualVideoId =
+    typeof value?.videoId === "string" ? sanitizeYoutubeVideoId(value.videoId.trim()) : null;
+  const urlVideoId =
+    typeof value?.url === "string" ? extractYoutubeVideoId(value.url.trim()) : null;
+  const videoId = manualVideoId || urlVideoId;
+  if (!videoId) return "";
+
+  const titleRaw =
+    typeof value?.title === "string" && value.title.trim()
+      ? value.title.trim()
+      : "Vidéo YouTube";
+  const title = escapeHtmlAttribute(titleRaw);
+
+  return `<p class="portable-youtube-wrap"><iframe src="https://www.youtube.com/embed/${videoId}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></p>`;
+}
+
+function renderPortableCtaButtonToHtml(value: any): string {
+  const labelRaw = typeof value?.label === "string" ? value.label.trim() : "";
+  if (!labelRaw) return "";
+  const href = sanitizeCmsUrl(value?.href, {
+    allowRelative: true,
+    allowedProtocols: ["https:", "mailto:", "tel:"],
+  });
+  if (!href) return "";
+
+  const label = escapeHtmlAttribute(labelRaw);
+  const targetRel =
+    href.startsWith("http")
+      ? ' target="_blank" rel="noopener noreferrer"'
+      : "";
+  return `<p class="portable-cta-wrap"><a class="btn btn-primary btn-booking portable-cta-button" href="${href}"${targetRel}>${label}</a></p>`;
+}
+
+function pickBestHtmlContent(page: SanityPage, sanity: SanityConfig): string {
+  return (
+    Array.isArray(page.body) && page.body.length > 0
+      ? toHTML(page.body as any[], {
+          components: {
+            types: {
+              image: ({ value }) => renderPortableImageToHtml(value, sanity),
+              youtubeEmbed: ({ value }) => renderPortableYoutubeToHtml(value),
+              ctaButton: ({ value }) => renderPortableCtaButtonToHtml(value),
+            },
+          },
+        })
+      : ""
+  );
+}
+
+function getSanityConfig(): SanityConfig | null {
   const projectId = import.meta.env.SANITY_PROJECT_ID;
   const dataset = import.meta.env.SANITY_DATASET;
   const apiVersion = import.meta.env.SANITY_API_VERSION || "2025-01-01";
@@ -260,7 +358,6 @@ async function getSanityPage(slug: string): Promise<SanityPage | null> {
     "slug": slug.current,
     title,
     body,
-    bodyHtml,
     pricingSections[]{
       title,
       items[]{
@@ -317,6 +414,11 @@ async function getSanityPage(slug: string): Promise<SanityPage | null> {
 }
 
 export async function getPageContent(slug: string): Promise<SitePageContent> {
+  const sanity = getSanityConfig();
+  if (!sanity) {
+    throw new Error("Missing Sanity configuration.");
+  }
+
   const sanityPage = await getSanityPage(slug);
   if (!sanityPage?.title) {
     throw new Error(`Missing Sanity page for slug "${slug}"`);
@@ -325,7 +427,7 @@ export async function getPageContent(slug: string): Promise<SitePageContent> {
   return {
     slug,
     title: decodeEntities(sanityPage.title),
-    html: normalizeHtml(pickBestHtmlContent(sanityPage)),
+    html: normalizeHtml(pickBestHtmlContent(sanityPage, sanity)),
     pricingSections: sanityPage.pricingSections?.map((section) => ({
       title: section.title ? decodeEntities(section.title) : undefined,
       items: section.items?.map((item) => ({

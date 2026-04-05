@@ -22,7 +22,90 @@ export const pageType = defineType({
       name: "body",
       title: "Contenu",
       type: "array",
-      of: [{ type: "block" }],
+      of: [
+        { type: "block" },
+        defineField({
+          name: "image",
+          title: "Image",
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Texte alternatif",
+              type: "string",
+              description: "Décrivez l’image pour l’accessibilité et le SEO.",
+            }),
+          ],
+        }),
+        defineField({
+          name: "youtubeEmbed",
+          title: "YouTube",
+          type: "object",
+          fields: [
+            defineField({
+              name: "url",
+              title: "URL YouTube",
+              type: "url",
+              description: "Lien YouTube (watch, youtu.be, shorts...).",
+            }),
+            defineField({
+              name: "videoId",
+              title: "ID vidéo",
+              type: "string",
+              description: "Optionnel si l'URL est renseignée.",
+            }),
+            defineField({
+              name: "title",
+              title: "Titre accessibilité",
+              type: "string",
+              initialValue: "Vidéo YouTube",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "url",
+            },
+            prepare(selection) {
+              return {
+                title: selection.title || "Bloc YouTube",
+                subtitle: selection.subtitle || "Sans URL",
+              };
+            },
+          },
+        }),
+        defineField({
+          name: "ctaButton",
+          title: "Bouton CTA",
+          type: "object",
+          fields: [
+            defineField({
+              name: "label",
+              title: "Texte bouton",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "href",
+              title: "URL",
+              type: "url",
+              options: { allowRelative: true },
+              validation: (rule) =>
+                rule.required().uri({
+                  allowRelative: true,
+                  scheme: ["https", "mailto", "tel"],
+                }),
+            }),
+          ],
+          preview: {
+            select: {
+              title: "label",
+              subtitle: "href",
+            },
+          },
+        }),
+      ],
       description:
         "Editeur riche recommandé pour modifier le contenu sans HTML.",
       hidden: ({ document }) => document?.slug?.current === "tarifs",
@@ -285,16 +368,6 @@ export const pageType = defineType({
       ],
     }),
     defineField({
-      name: "bodyHtml",
-      title: "Contenu HTML (legacy)",
-      type: "text",
-      rows: 12,
-      description:
-        "Ancien contenu importé depuis WordPress. Laisser tel quel si vous utilisez le champ 'Contenu'.",
-      hidden: ({ document }) =>
-        document?.slug?.current === "tarifs" || document?.slug?.current === "mon-cercle",
-    }),
-    defineField({
       name: "seoTitle",
       title: "SEO Title",
       type: "string",
@@ -304,15 +377,6 @@ export const pageType = defineType({
       title: "SEO Description",
       type: "text",
       rows: 3,
-    }),
-    defineField({
-      name: "legacyWp",
-      title: "Legacy WordPress",
-      type: "object",
-      fields: [
-        defineField({ name: "id", title: "WP ID", type: "number" }),
-        defineField({ name: "link", title: "WP Link", type: "url" }),
-      ],
     }),
   ],
   preview: {
