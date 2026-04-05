@@ -16,9 +16,6 @@ export interface SitePageContent {
   prestationsMenu?: PrestationsMenuItem[];
   actualitesIntro?: string;
   actualitesItems?: ActualiteItem[];
-  actualitesFeaturedTitle?: string;
-  actualitesFeaturedPublishedAt?: string;
-  actualitesFeaturedExcerpt?: string;
   circleIntro?: string;
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
@@ -71,9 +68,6 @@ interface SanityPage {
   prestationsMenu?: PrestationsMenuItem[];
   actualitesIntro?: string;
   actualitesItems?: ActualiteItem[];
-  actualitesFeaturedTitle?: string;
-  actualitesFeaturedPublishedAt?: string;
-  actualitesFeaturedExcerpt?: string;
   circleIntro?: string;
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
@@ -391,9 +385,6 @@ async function getSanityPage(slug: string): Promise<SanityPage | null> {
       ctaLabel,
       ctaUrl
     },
-    actualitesFeaturedTitle,
-    actualitesFeaturedPublishedAt,
-    actualitesFeaturedExcerpt,
     circleIntro,
     circlePartners[]{
       name,
@@ -476,13 +467,6 @@ export async function getPageContent(slug: string): Promise<SitePageContent> {
       ctaLabel: item.ctaLabel ? decodeEntities(item.ctaLabel) : undefined,
       ctaUrl: item.ctaUrl ? decodeEntities(item.ctaUrl) : undefined,
     })),
-    actualitesFeaturedTitle: sanityPage.actualitesFeaturedTitle
-      ? decodeEntities(sanityPage.actualitesFeaturedTitle)
-      : undefined,
-    actualitesFeaturedPublishedAt: sanityPage.actualitesFeaturedPublishedAt,
-    actualitesFeaturedExcerpt: sanityPage.actualitesFeaturedExcerpt
-      ? decodeEntities(sanityPage.actualitesFeaturedExcerpt)
-      : undefined,
     circleIntro: sanityPage.circleIntro ? decodeEntities(sanityPage.circleIntro) : undefined,
     circlePartners: sanityPage.circlePartners?.map((item) => ({
       name: item.name ? decodeEntities(item.name) : undefined,

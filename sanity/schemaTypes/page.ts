@@ -287,13 +287,14 @@ export const pageType = defineType({
       title: "Intro actualités",
       type: "text",
       rows: 3,
+      description: "Petit texte affiché au-dessus de la liste des actualités.",
       hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
     }),
     defineField({
       name: "actualitesItems",
       title: "Articles actualités",
       type: "array",
-      description: "Publiez des news sans image, avec vidéo YouTube optionnelle.",
+      description: "Ajoutez vos actualités (lien et YouTube optionnels).",
       hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
       of: [
         defineField({
@@ -311,6 +312,7 @@ export const pageType = defineType({
               name: "publishedAt",
               title: "Date",
               type: "datetime",
+              validation: (rule) => rule.required(),
             }),
             defineField({
               name: "excerpt",
@@ -327,13 +329,18 @@ export const pageType = defineType({
             }),
             defineField({
               name: "ctaLabel",
-              title: "Libellé CTA",
+              title: "Texte du lien (optionnel)",
               type: "string",
             }),
             defineField({
               name: "ctaUrl",
-              title: "URL CTA",
+              title: "URL du lien (optionnel)",
               type: "url",
+              validation: (rule) =>
+                rule.uri({
+                  allowRelative: true,
+                  scheme: ["https", "mailto", "tel"],
+                }),
             }),
           ],
           preview: {
@@ -344,25 +351,6 @@ export const pageType = defineType({
           },
         }),
       ],
-    }),
-    defineField({
-      name: "actualitesFeaturedTitle",
-      title: "Actu mise en avant - titre",
-      type: "string",
-      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
-    }),
-    defineField({
-      name: "actualitesFeaturedPublishedAt",
-      title: "Actu mise en avant - date",
-      type: "date",
-      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
-    }),
-    defineField({
-      name: "actualitesFeaturedExcerpt",
-      title: "Actu mise en avant - texte",
-      type: "text",
-      rows: 5,
-      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
     }),
     defineField({
       name: "circleIntro",

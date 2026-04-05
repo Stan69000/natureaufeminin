@@ -21,6 +21,7 @@
     "sanity:sync:local": "sanity exec scripts/sync-dist-to-sanity.mjs --with-user-token",
     "sanity:prestations:backfill": "sanity exec scripts/backfill-prestations-menu.mjs --with-user-token",
     "sanity:actualites:backfill": "sanity exec scripts/backfill-actualites-items.mjs --with-user-token",
+    "sanity:actualites:reset": "sanity exec scripts/reset-actualites-page.mjs --with-user-token",
     "sanity:moncercle:backfill": "sanity exec scripts/backfill-mon-cercle-partners.mjs --with-user-token",
     "sanity:legal:update": "sanity exec scripts/update-legal-pages-content.mjs --with-user-token",
     "sanity:home:rename": "sanity exec scripts/rename-home-slug-to-accueil.mjs --with-user-token"

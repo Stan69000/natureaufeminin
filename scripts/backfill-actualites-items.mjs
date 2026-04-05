@@ -20,10 +20,6 @@ async function main() {
       title: "Actualités",
       actualitesIntro:
         "Retrouvez ici les prochaines dates, ateliers et annonces importantes.",
-      actualitesFeaturedTitle: "Refonte du site: version grand public",
-      actualitesFeaturedPublishedAt: "2025-04-04",
-      actualitesFeaturedExcerpt:
-        "Le nouveau site est en ligne. J'ai simplifié la navigation, clarifié les contenus importants et amélioré la lecture sur mobile comme sur ordinateur pour que les informations utiles soient trouvées plus facilement.",
       actualitesItems: [
         {
           _key: randomUUID().slice(0, 12),
