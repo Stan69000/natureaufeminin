@@ -15,6 +15,13 @@ const html = page.html
     /<p>\s*Nous pouvons nous rencontrer[\s\S]*?<\/p>\s*<p>\s*Afin de prendre rendez-vous,[\s\S]*?<\/p>\s*<p>\s*<a class="btn-liberlo"[\s\S]*?<\/p>\s*<p>\s*Pour me contacter depuis ce site,[\s\S]*?<\/p>/gi,
     "",
   )
+  .replace(/<p[^>]*>[\s\S]*?Nous pouvons nous rencontrer[\s\S]*?<\/p>/gi, "")
+  .replace(/<p[^>]*>[\s\S]*?Afin de prendre rendez-vous[\s\S]*?<\/p>/gi, "")
+  .replace(/<p[^>]*>[\s\S]*?RDV sur Liberlo\.com[\s\S]*?<\/p>/gi, "")
+  .replace(/<p[^>]*>[\s\S]*?Pour me contacter depuis ce site[\s\S]*?<\/p>/gi, "")
+  .replace(/<p[^>]*>[\s\S]*?Votre nom[\s\S]*?<\/p>/gi, "")
+  .replace(/<p[^>]*>[\s\S]*?Votre mail[\s\S]*?<\/p>/gi, "")
+  .replace(/<p[^>]*>[\s\S]*?Votre message[\s\S]*?<\/p>/gi, "")
   .replace(/<p[^>]*>\s*Nous pouvons nous rencontrer à mon cabinet, à votre domicile ou par visio \(Zoom par exemple\)\.\s*<\/p>/gi, "")
   .replace(/<p[^>]*>\s*Afin de prendre rendez-vous, merci de cliquer sur le bouton ci-dessous\s*:?\s*<\/p>/gi, "")
   .replace(/<p[^>]*>[\s\S]*?RDV sur Liberlo\.com[\s\S]*?<\/p>/gi, "")
