@@ -92,6 +92,22 @@ Dans `Settings > Secrets and variables > Actions` :
 - `SANITY_API_VERSION`
 - `PUBLIC_CONTACT_FORM_ENDPOINT`
 - `PUBLIC_TURNSTILE_SITE_KEY`
+- `TRUSTED_PROXY_IPS` (liste d'IP proxies/CDN de confiance, séparées par virgule ou retour ligne)
+
+Exemple de valeur `TRUSTED_PROXY_IPS` :
+
+```txt
+203.0.113.10,203.0.113.11
+```
+
+ou
+
+```txt
+203.0.113.10
+203.0.113.11
+```
+
+Si ce secret est défini, le workflow écrit `dist/.trusted_proxy_ips` au build et `public/contact.php` l'utilise pour valider l'usage de `CF-Connecting-IP` / `X-Forwarded-For`.
 
 ### Activer l’approbation manuelle (auto + approve run)
 
@@ -106,6 +122,14 @@ Ensuite :
 - Le build démarre automatiquement sur push `main`
 - Le déploiement se fait vers `/naturaufeminin-next/` (site parallèle)
 - Pour publier en prod (`/naturaufeminin.fr/`), lancer manuellement le workflow avec `target=production`
+
+### Branch protection recommandée (`main`)
+
+Dans `Settings > Branches > Branch protection rules > main`, cocher `Require status checks to pass before merging` et ajouter :
+
+- `Dependency Audit`
+- `CodeQL`
+- `Secret Scan`
 
 ## Stratégie recommandée : nouveau site en parallèle puis bascule
 

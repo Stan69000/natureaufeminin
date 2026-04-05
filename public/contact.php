@@ -64,15 +64,73 @@ function safeHeaderValue(string $value): string
   return str_replace(["\r", "\n"], "", $value);
 }
 
+function isValidPublicIp(string $value): bool
+{
+  return filter_var(
+    $value,
+    FILTER_VALIDATE_IP,
+    FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+  ) !== false;
+}
+
+function trustedProxyIps(): array
+{
+  $raw = getenv("TRUSTED_PROXY_IPS");
+  if (!is_string($raw) || trim($raw) === "") {
+    $fallbackPath = __DIR__ . "/.trusted_proxy_ips";
+    if (is_file($fallbackPath)) {
+      $fileRaw = file_get_contents($fallbackPath);
+      if (is_string($fileRaw)) {
+        $raw = $fileRaw;
+      }
+    }
+  }
+
+  if (!is_string($raw) || trim($raw) === "") {
+    return [];
+  }
+
+  $normalized = str_replace(["\r\n", "\r"], "\n", $raw);
+  $parts = preg_split('/[,\n]+/', $normalized) ?: [];
+  $parts = array_map("trim", $parts);
+  $trusted = [];
+  foreach ($parts as $part) {
+    if ($part !== "" && filter_var($part, FILTER_VALIDATE_IP)) {
+      $trusted[] = $part;
+    }
+  }
+  return $trusted;
+}
+
 function clientIp(): string
 {
+  $remoteAddr = $_SERVER["REMOTE_ADDR"] ?? "unknown";
+  if (!is_string($remoteAddr) || !filter_var($remoteAddr, FILTER_VALIDATE_IP)) {
+    return "unknown";
+  }
+
+  $trustedProxies = trustedProxyIps();
+  if (!in_array($remoteAddr, $trustedProxies, true)) {
+    return $remoteAddr;
+  }
+
+  $cfConnectingIp = $_SERVER["HTTP_CF_CONNECTING_IP"] ?? "";
+  if (is_string($cfConnectingIp) && isValidPublicIp($cfConnectingIp)) {
+    return $cfConnectingIp;
+  }
+
   $forwarded = $_SERVER["HTTP_X_FORWARDED_FOR"] ?? "";
   if (is_string($forwarded) && $forwarded !== "") {
     $parts = explode(",", $forwarded);
-    return trim($parts[0]) ?: "unknown";
+    foreach ($parts as $part) {
+      $candidate = trim($part);
+      if (isValidPublicIp($candidate)) {
+        return $candidate;
+      }
+    }
   }
-  $remoteAddr = $_SERVER["REMOTE_ADDR"] ?? "unknown";
-  return is_string($remoteAddr) ? $remoteAddr : "unknown";
+
+  return $remoteAddr;
 }
 
 function isRateLimited(string $ip): bool
