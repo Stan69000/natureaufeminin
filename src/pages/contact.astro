@@ -188,12 +188,6 @@ const structuredData = {
         const submitButton = form.querySelector("button[type='submit']");
         const statusSlot = document.querySelector("#form-status-slot");
 
-        if (!(submitButton instanceof HTMLButtonElement)) return;
-        if (startedAtInput instanceof HTMLInputElement) {
-          startedAtInput.value = new Date().toISOString();
-        }
-        if (!endpoint) return;
-
         const setLiveText = (message) => {
           if (liveRegion instanceof HTMLElement) {
             liveRegion.textContent = message;
@@ -221,9 +215,16 @@ const structuredData = {
         const queryStatus = new URLSearchParams(window.location.search).get("status");
         if (queryStatus === "success") {
           renderStatusMessage("success", "Votre demande a bien été envoyée. Merci, je vous réponds rapidement.");
+          setLiveText("Votre demande a bien été envoyée.");
         } else if (queryStatus === "error") {
           renderStatusMessage("error", "Un problème est survenu pendant l'envoi. Merci de réessayer ou d'appeler directement.");
         }
+
+        if (!(submitButton instanceof HTMLButtonElement)) return;
+        if (startedAtInput instanceof HTMLInputElement) {
+          startedAtInput.value = new Date().toISOString();
+        }
+        if (!endpoint) return;
 
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
