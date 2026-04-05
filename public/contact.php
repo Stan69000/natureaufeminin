@@ -185,8 +185,12 @@ if ($phone !== "" && !preg_match('/^[+\d\s().-]{6,30}$/', $phone)) {
 if ($subject === "" || mb_strlen($subject) > 120) {
   jsonResponse(400, ["error" => "Invalid subject"]);
 }
-if (mb_strlen($message) < 10 || mb_strlen($message) > 5000) {
-  jsonResponse(400, ["error" => "Invalid message"]);
+$messageLength = mb_strlen($message);
+if ($messageLength < 1) {
+  jsonResponse(400, ["error" => "Invalid message: empty"]);
+}
+if ($messageLength > 5000) {
+  jsonResponse(400, ["error" => "Invalid message: too long"]);
 }
 
 $startedAtTimestamp = strtotime($formStartedAt);
