@@ -79,8 +79,10 @@ jobs:
           PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
 
       - name: Write trusted proxy IPs config
-        if: ${{ secrets.TRUSTED_PROXY_IPS != '' }}
-        run: printf "%s" "$TRUSTED_PROXY_IPS" > dist/.trusted_proxy_ips
+        run: |
+          if [ -n "${TRUSTED_PROXY_IPS:-}" ]; then
+            printf "%s" "$TRUSTED_PROXY_IPS" > dist/.trusted_proxy_ips
+          fi
         env:
           TRUSTED_PROXY_IPS: ${{ secrets.TRUSTED_PROXY_IPS }}
 
