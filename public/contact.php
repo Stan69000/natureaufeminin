@@ -19,6 +19,22 @@ $siteBaseUrl = "https://naturaufeminin.fr";
 
 function jsonResponse(int $status, array $payload): void
 {
+  $accept = $_SERVER["HTTP_ACCEPT"] ?? "";
+  $contentType = $_SERVER["CONTENT_TYPE"] ?? "";
+  $expectsJson = (
+    (is_string($accept) && stripos($accept, "application/json") !== false) ||
+    (is_string($contentType) && stripos($contentType, "application/json") === 0)
+  );
+
+  if (
+    !$expectsJson &&
+    ($_SERVER["REQUEST_METHOD"] ?? "") === "POST"
+  ) {
+    $redirectStatus = ($status >= 200 && $status < 300) ? "success" : "error";
+    header("Location: /contact?status=" . $redirectStatus, true, 303);
+    exit;
+  }
+
   http_response_code($status);
   echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
   exit;
