@@ -19,6 +19,7 @@
     "sanity:cleanup:bodyhtml": "sanity exec scripts/remove-bodyhtml-field.mjs --with-user-token",
     "sanity:qui:add-media-cta": "sanity exec scripts/add-qui-video-cta-blocks.mjs --with-user-token",
     "sanity:sync:local": "sanity exec scripts/sync-dist-to-sanity.mjs --with-user-token",
+    "sanity:footer:sync": "sanity exec scripts/sync-footer-settings.mjs --with-user-token",
     "sanity:prestations:backfill": "sanity exec scripts/backfill-prestations-menu.mjs --with-user-token",
     "sanity:actualites:backfill": "sanity exec scripts/backfill-actualites-items.mjs --with-user-token",
     "sanity:actualites:reset": "sanity exec scripts/reset-actualites-page.mjs --with-user-token",
