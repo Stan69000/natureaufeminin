@@ -216,7 +216,7 @@ const structuredData = {
         const queryStatus = new URLSearchParams(window.location.search).get("status");
         if (queryStatus === "success") {
           renderStatusMessage("success", "Message envoyé avec succès. Merci, je vous réponds rapidement.");
-          setLiveText("Votre demande a bien été envoyée.");
+          setLiveText("Message envoyé avec succès. Merci, je vous réponds rapidement.");
         } else if (queryStatus === "error") {
           renderStatusMessage("error", "Un problème est survenu pendant l'envoi. Merci de réessayer ou d'appeler directement.");
         }
@@ -272,7 +272,8 @@ const structuredData = {
 
             form.reset();
             window.turnstile?.reset();
-            setLiveText("Votre message a bien été envoyé.");
+            renderStatusMessage("success", "Message envoyé avec succès. Merci, je vous réponds rapidement.");
+            setLiveText("Message envoyé avec succès. Merci, je vous réponds rapidement.");
           } catch (error) {
             const message =
               error instanceof Error && error.message
