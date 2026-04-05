@@ -139,7 +139,7 @@ const structuredData = {
             name="message"
             rows="7"
             required
-            minlength="20"
+            minlength="10"
             maxlength="5000"
           ></textarea>
         </div>
@@ -238,14 +238,25 @@ const structuredData = {
             });
 
             if (!response.ok) {
-              throw new Error("Envoi refusé");
+              let serverMessage = "Envoi refusé";
+              try {
+                const data = await response.json();
+                if (data && typeof data.error === "string" && data.error.trim()) {
+                  serverMessage = data.error;
+                }
+              } catch {}
+              throw new Error(serverMessage);
             }
 
             form.reset();
             window.turnstile?.reset();
             setLiveText("Votre message a bien été envoyé.");
-          } catch {
-            setLiveText("L'envoi a échoué. Merci de réessayer dans quelques instants.");
+          } catch (error) {
+            const message =
+              error instanceof Error && error.message
+                ? `L'envoi a échoué: ${error.message}.`
+                : "L'envoi a échoué. Merci de réessayer dans quelques instants.";
+            setLiveText(message);
           } finally {
             submitButton.disabled = false;
             submitButton.removeAttribute("aria-busy");

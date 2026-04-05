@@ -34,6 +34,15 @@ function cleanText(mixed $value): string
   return $value ?? "";
 }
 
+function cleanMessage(mixed $value): string
+{
+  if (!is_string($value)) {
+    return "";
+  }
+  $value = str_replace(["\r\n", "\r"], "\n", $value);
+  return trim($value);
+}
+
 function safeHeaderValue(string $value): string
 {
   return str_replace(["\r", "\n"], "", $value);
@@ -144,7 +153,7 @@ $lastName = cleanText($body["lastName"] ?? "");
 $email = strtolower(cleanText($body["email"] ?? ""));
 $phone = cleanText($body["phone"] ?? "");
 $subject = cleanText($body["subject"] ?? "");
-$message = cleanText($body["message"] ?? "");
+$message = cleanMessage($body["message"] ?? "");
 $consent = cleanText($body["consent"] ?? "");
 $website = cleanText($body["website"] ?? "");
 $originPath = cleanText($body["originPath"] ?? "");
@@ -176,7 +185,7 @@ if ($phone !== "" && !preg_match('/^[+\d\s().-]{6,30}$/', $phone)) {
 if ($subject === "" || mb_strlen($subject) > 120) {
   jsonResponse(400, ["error" => "Invalid subject"]);
 }
-if (mb_strlen($message) < 20 || mb_strlen($message) > 5000) {
+if (mb_strlen($message) < 10 || mb_strlen($message) > 5000) {
   jsonResponse(400, ["error" => "Invalid message"]);
 }
 
