@@ -4,7 +4,7 @@ import { getPageContent } from "../data/content";
 import { getDefaultPageSeo } from "../data/seo";
 import { siteConfig } from "../data/site";
 
-const page = await getPageContent("page-d-exemple");
+const page = await getPageContent("accueil");
 const defaultSeo = getDefaultPageSeo("/");
 const title = page.seoTitle?.trim() || defaultSeo.title;
 const description = page.seoDescription?.trim() || defaultSeo.description;

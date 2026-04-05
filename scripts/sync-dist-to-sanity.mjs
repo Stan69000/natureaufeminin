@@ -33,6 +33,45 @@ function stripTags(input) {
   return decodeEntities(String(input || "").replace(/<[^>]+>/g, "")).trim();
 }
 
+function htmlToPortableBlocks(html) {
+  const cleaned = String(html || "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+    .replace(/<table[\s\S]*?<\/table>/gi, "");
+
+  const withBreaks = cleaned
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|h1|h2|h3|h4|h5|h6|li|ul|ol|blockquote|div|figure)>/gi, "\n\n");
+
+  const textOnly = withBreaks
+    .replace(/<[^>]+>/g, "")
+    .replace(/\r/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  if (!textOnly) return [];
+
+  return decodeEntities(textOnly)
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((text) => ({
+      _key: randomUUID().slice(0, 12),
+      _type: "block",
+      style: "normal",
+      markDefs: [],
+      children: [
+        {
+          _key: randomUUID().slice(0, 12),
+          _type: "span",
+          marks: [],
+          text,
+        },
+      ],
+    }));
+}
+
 async function listAstroPages(dir) {
   const { readdir } = await import("node:fs/promises");
   const entries = await readdir(dir, { withFileTypes: true });
@@ -166,10 +205,11 @@ async function main() {
       continue;
     }
 
+    const body = htmlToPortableBlocks(articleInner);
     const patch = client.patch(pageDoc._id).set({
       ...(title ? { title } : {}),
-      bodyHtml: articleInner,
-    });
+      ...(body.length > 0 ? { body } : {}),
+    }).unset(["bodyHtml"]);
 
     if (sanitySlug === "tarifs") {
       const pricingSections = extractTarifsSections(articleInner);

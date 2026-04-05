@@ -8,11 +8,92 @@ const page = await getPageContent(slug);
 const defaultSeo = getDefaultPageSeo("/qui-suis-je");
 const title = page.seoTitle?.trim() || defaultSeo.title;
 const description = page.seoDescription?.trim() || defaultSeo.description;
-const html = page.html;
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function formatTrainingSection(sourceHtml: string): string {
+  const sectionPattern =
+    /(<p>Enfin, j'ai à cœur[\s\S]*?<\/p>\s*<p>Voici un récapitulatif[\s\S]*?<\/p>\s*)((?:<p>\d{4}[\s\S]*?<\/p>\s*){4,})/i;
+  const match = sourceHtml.match(sectionPattern);
+  if (!match) return sourceHtml;
+
+  const introHtml = match[1];
+  const entriesHtml = match[2];
+  const entryMatches = [...entriesHtml.matchAll(/<p>([\s\S]*?)<\/p>/gi)];
+  if (entryMatches.length === 0) return sourceHtml;
+
+  const cards = entryMatches
+    .map((entry) => entry[1].trim().replace(/\s+/g, " "))
+    .map((line) => {
+      const separatorIndex = line.indexOf(":");
+      if (separatorIndex < 0) {
+        return `<article class="qui-training-card"><p class="qui-training-text">${escapeHtml(line)}</p></article>`;
+      }
+
+      const period = line.slice(0, separatorIndex).trim();
+      const details = line.slice(separatorIndex + 1).trim();
+      return `<article class="qui-training-card"><p class="qui-training-period">${escapeHtml(period)}</p><p class="qui-training-text">${escapeHtml(details)}</p></article>`;
+    })
+    .join("");
+
+  const visualSection = `<section class="qui-training-section" aria-label="Formations"><div class="qui-training-intro">${introHtml}</div><div class="qui-training-grid">${cards}</div></section>`;
+  return sourceHtml.replace(sectionPattern, visualSection);
+}
+
+function formatIntroStorySection(sourceHtml: string): string {
+  if (sourceHtml.includes('class="qui-intro-story"')) return sourceHtml;
+  const contactMatch = sourceHtml.match(/<p>Afin que nous fassions connaissance[\s\S]*?<\/p>/i);
+  if (!contactMatch) return sourceHtml;
+
+  const marker = contactMatch[0];
+  const markerIndex = sourceHtml.indexOf(marker);
+  if (markerIndex <= 0) return sourceHtml;
+
+  const introHtml = sourceHtml.slice(0, markerIndex).trim();
+  const restHtml = sourceHtml.slice(markerIndex).trimStart();
+  if (!introHtml) return sourceHtml;
+
+  const adaptedIntroHtml = introHtml
+    .replace(
+      /(<p>Les différentes formations[\s\S]*?<\/p>\s*<p>C'est à cette puissance[\s\S]*?<\/p>\s*<p>Sachez aussi[\s\S]*?<\/p>)/i,
+      '<div class="qui-intro-focus">$1</div>',
+    )
+    .replace(
+      /<p>(C'est à cette puissance[\s\S]*?)<\/p>/i,
+      '<blockquote class="qui-intro-quote"><p>$1</p></blockquote>',
+    );
+
+  const focusToken = '<div class="qui-intro-focus">';
+  const focusIndex = adaptedIntroHtml.indexOf(focusToken);
+  const partitionedIntroHtml =
+    focusIndex >= 0
+      ? `<div class="qui-intro-top">${adaptedIntroHtml.slice(0, focusIndex).trim()}</div>${adaptedIntroHtml.slice(focusIndex)}`
+      : `<div class="qui-intro-top">${adaptedIntroHtml}</div>`;
+
+  const wrappedIntro = `<section class="qui-intro-story" aria-label="Parcours Audrey"><h2>Une approche née de l'expérience, du cœur et du vécu</h2>${partitionedIntroHtml}</section>`;
+  return `${wrappedIntro}${restHtml}`;
+}
+
+function formatContactBandSection(sourceHtml: string): string {
+  const contactPattern =
+    /(<p>Afin que nous fassions connaissance[\s\S]*?<\/p>\s*<p class="portable-cta-wrap">[\s\S]*?<\/p>)/i;
+  const match = sourceHtml.match(contactPattern);
+  if (!match) return sourceHtml;
+  const wrapped = `<section class="qui-contact-band" aria-label="Contact rapide">${match[1]}</section>`;
+  return sourceHtml.replace(contactPattern, wrapped);
+}
+
+const html = formatContactBandSection(formatIntroStorySection(formatTrainingSection(page.html)));
 ---
 
 <BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
-  <article class="section wp-content" aria-labelledby="page-title">
+  <article class="section wp-content qui-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <div set:html={html}></div>
   </article>

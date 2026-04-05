@@ -743,6 +743,404 @@ textarea {
   border-radius: 0.4rem;
 }
 
+.qui-page figure:first-of-type {
+  float: right;
+  margin: 0.2rem 0 1.3rem 1.6rem;
+  width: min(40%, 420px);
+}
+
+.qui-page figure:first-of-type img {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, var(--line) 88%, white);
+}
+
+.qui-page {
+  position: relative;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 90%, white), var(--surface));
+  border: 1px solid color-mix(in oklab, var(--line) 82%, white);
+  border-radius: 1.1rem;
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.05rem, 2.2vw, 1.55rem);
+}
+
+.qui-page::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 4px;
+  border-radius: 1.1rem 1.1rem 0 0;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--brand) 84%, white), color-mix(in oklab, var(--moss) 60%, white));
+}
+
+.qui-page h1#page-title {
+  margin-bottom: 0.65rem;
+  padding-right: 0;
+  text-align: center;
+}
+
+.qui-page h2 {
+  margin-top: 1.4rem;
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.32rem, 2.2vw, 1.72rem);
+  color: color-mix(in oklab, var(--brand-deep) 78%, var(--text));
+}
+
+.qui-page p,
+.qui-page li {
+  color: color-mix(in oklab, var(--text) 92%, var(--muted));
+  line-height: 1.76;
+}
+
+.qui-page p {
+  max-width: 76ch;
+  margin: 0.58rem 0;
+  font-size: clamp(1.03rem, 1.26vw, 1.12rem);
+}
+
+.qui-page ul {
+  margin-top: 0.75rem;
+  padding-left: 1.05rem;
+  max-width: 92ch;
+}
+
+.qui-page li {
+  margin: 0.42rem 0;
+}
+
+.qui-page p a {
+  font-weight: 700;
+}
+
+.qui-page > div > p:first-of-type {
+  font-size: clamp(1.08rem, 1.4vw, 1.2rem);
+  line-height: 1.7;
+  max-width: 66ch;
+}
+
+.qui-video-wrap,
+.portable-youtube-wrap {
+  margin: 1.35rem 0 1rem;
+  width: min(100%, 760px);
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.qui-video-wrap iframe,
+.portable-youtube-wrap iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 0.85rem;
+}
+
+.qui-page p.portable-youtube-wrap {
+  max-width: none;
+  width: min(100%, 760px);
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.qui-cta-wrap,
+.portable-cta-wrap {
+  margin: 0.9rem 0 1.15rem;
+  text-align: left;
+}
+
+.qui-page .portable-cta-wrap .btn-booking {
+  min-height: 48px;
+  padding: 0.72rem 1.35rem;
+  font-size: 1rem;
+}
+
+.qui-contact-band {
+  margin: 1rem 0 1.35rem;
+  padding: 0.9rem 0.95rem 1rem;
+  border-radius: 0.95rem;
+  border: 1px solid color-mix(in oklab, var(--line) 80%, white);
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--brand) 16%, white), transparent 44%),
+    color-mix(in oklab, var(--surface) 90%, white);
+}
+
+.qui-contact-band > p:first-child {
+  margin-top: 0;
+  margin-bottom: 0.65rem;
+  font-size: clamp(1.05rem, 1.4vw, 1.15rem);
+}
+
+.qui-contact-band .portable-cta-wrap {
+  margin: 0;
+  text-align: left;
+}
+
+.qui-intro-story {
+  position: relative;
+  margin: 0.35rem 0 1rem;
+  padding: 1rem 1.05rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, var(--line) 76%, white);
+  background:
+    radial-gradient(circle at 95% 2%, color-mix(in oklab, var(--brand) 20%, white), transparent 40%),
+    linear-gradient(165deg, color-mix(in oklab, var(--surface) 90%, white), color-mix(in oklab, var(--surface-strong) 84%, white));
+}
+
+.qui-intro-story::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  border-radius: 1rem 1rem 0 0;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--brand) 85%, white), color-mix(in oklab, var(--brand-deep) 75%, white));
+}
+
+.qui-intro-story h2 {
+  margin: 0 0 0.7rem;
+  font-size: clamp(1.35rem, 2.45vw, 1.92rem);
+  max-width: 100%;
+  width: 100%;
+  color: color-mix(in oklab, var(--brand-deep) 84%, var(--text));
+}
+
+.qui-intro-story p {
+  max-width: 72ch;
+}
+
+.qui-intro-top {
+  margin-top: 0.2rem;
+  padding: 0.86rem 0.9rem;
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in oklab, var(--line) 80%, white);
+  background: color-mix(in oklab, var(--surface) 86%, white);
+}
+
+.qui-intro-top > p:first-of-type {
+  margin-top: 0.05rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: color-mix(in oklab, var(--brand-deep) 68%, var(--text));
+}
+
+.qui-intro-top figure {
+  float: right;
+  margin: 0.2rem 0 0.9rem 1.25rem;
+  width: min(34%, 340px);
+}
+
+.qui-intro-top figure img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, var(--line) 80%, white);
+  box-shadow: 0 16px 28px -20px rgba(27, 42, 35, 0.72);
+}
+
+.qui-intro-top::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.qui-intro-focus {
+  clear: both;
+  margin-top: 0.9rem;
+  padding: 0.86rem 0.9rem;
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in oklab, var(--line) 80%, white);
+  background: color-mix(in oklab, var(--surface) 84%, white);
+}
+
+.qui-intro-focus p {
+  max-width: 100%;
+  margin: 0.5rem 0;
+  line-height: 1.78;
+}
+
+.qui-intro-focus p:first-child {
+  margin-top: 0.2rem;
+}
+
+.qui-intro-focus p:last-child {
+  margin-bottom: 0.2rem;
+}
+
+.qui-intro-quote {
+  margin: 0.75rem 0;
+  padding: 0.75rem 0.85rem 0.78rem;
+  border-left: 4px solid color-mix(in oklab, var(--brand) 78%, white);
+  border-radius: 0.55rem;
+  background: color-mix(in oklab, var(--surface) 92%, white);
+}
+
+.qui-intro-quote p {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(1.06rem, 1.45vw, 1.2rem);
+  line-height: 1.68;
+  font-weight: 600;
+  color: color-mix(in oklab, var(--brand-deep) 70%, var(--text));
+}
+
+.qui-training-section {
+  margin: 1.3rem 0 1.5rem;
+  padding: 1.15rem 1.15rem 1.2rem;
+  border-radius: 1.1rem;
+  border: 1px solid color-mix(in oklab, var(--line) 74%, white);
+  background:
+    radial-gradient(circle at 92% 0%, color-mix(in oklab, var(--brand) 22%, white), transparent 38%),
+    linear-gradient(160deg, color-mix(in oklab, var(--surface) 88%, white), color-mix(in oklab, var(--surface-strong) 84%, white));
+  box-shadow: 0 24px 34px -30px rgba(27, 45, 36, 0.62);
+}
+
+.qui-training-intro p {
+  max-width: none;
+}
+
+.qui-training-grid {
+  position: relative;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.68rem;
+  padding-left: 1.85rem;
+}
+
+.qui-training-grid::before {
+  content: "";
+  position: absolute;
+  top: 0.12rem;
+  bottom: 0.12rem;
+  left: 0.7rem;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--brand) 70%, white),
+    color-mix(in oklab, var(--brand-deep) 58%, white)
+  );
+}
+
+.qui-training-card {
+  position: relative;
+  border-radius: 0.9rem;
+  border: 1px solid color-mix(in oklab, var(--line) 80%, white);
+  background:
+    linear-gradient(
+      140deg,
+      color-mix(in oklab, var(--surface) 92%, white),
+      color-mix(in oklab, var(--surface-strong) 85%, white)
+    );
+  box-shadow: 0 14px 24px -22px rgba(26, 40, 33, 0.75);
+  padding: 0.8rem 0.9rem 0.86rem;
+}
+
+.qui-training-card::before {
+  content: "";
+  position: absolute;
+  left: -1.45rem;
+  top: 0.88rem;
+  width: 0.82rem;
+  height: 0.82rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--brand) 85%, white),
+    color-mix(in oklab, var(--brand-deep) 70%, white)
+  );
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--surface) 80%, white),
+    0 8px 14px -10px rgba(23, 44, 34, 0.85);
+}
+
+.qui-training-period {
+  margin: 0 0 0.24rem;
+  font-weight: 800;
+  color: color-mix(in oklab, var(--brand-deep) 84%, var(--text));
+  line-height: 1.35;
+  font-size: 0.96rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.qui-training-text {
+  margin: 0;
+  line-height: 1.55;
+  font-size: 1rem;
+}
+
+@media (max-width: 860px) {
+  .qui-page figure:first-of-type {
+    float: none;
+    width: min(100%, 420px);
+    margin: 0 auto 1rem;
+  }
+
+  .qui-page h1#page-title {
+    padding-right: 0;
+  }
+
+  .qui-page p,
+  .qui-page ul {
+    max-width: 100%;
+  }
+
+  .qui-intro-story {
+    padding: 0.9rem;
+  }
+
+  .qui-intro-story h2 {
+    max-width: 100%;
+    margin-bottom: 0.6rem;
+  }
+
+  .qui-intro-top {
+    padding: 0.75rem 0.78rem;
+  }
+
+  .qui-intro-top figure {
+    float: none;
+    width: min(100%, 420px);
+    margin: 0 auto 0.95rem;
+  }
+
+  .qui-contact-band {
+    padding: 0.78rem 0.8rem 0.85rem;
+  }
+
+  .qui-intro-focus {
+    margin-top: 0.8rem;
+  }
+
+  .qui-intro-focus p,
+  .qui-intro-story p {
+    max-width: 100%;
+  }
+
+  .qui-training-section {
+    padding: 0.92rem;
+  }
+
+  .qui-training-grid {
+    padding-left: 1.55rem;
+  }
+
+  .qui-training-grid::before {
+    left: 0.5rem;
+  }
+
+  .qui-training-card::before {
+    left: -1.22rem;
+  }
+}
+
 .wp-content iframe {
   display: block;
   width: 100% !important;

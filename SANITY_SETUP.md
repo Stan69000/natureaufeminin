@@ -51,10 +51,9 @@ Attendu:
 Type document `page`:
 - `title` (string)
 - `slug` (slug)
-- `bodyHtml` (text)
+- `body` (array de blocks Portable Text, incluant blocs image)
 - `seoTitle` (string, optionnel)
 - `seoDescription` (text, optionnel)
-- `legacyWp` (object, optionnel)
 
 ## 7) État actuel du projet
 
