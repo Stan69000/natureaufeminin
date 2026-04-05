@@ -84,6 +84,11 @@ const naturopathieSection =
 
 const featuredSections = new Set([massageBebeSection, naturopathieSection].filter(Boolean));
 const mainSections = displayedSections.filter((section) => !featuredSections.has(section));
+const formatPrice = (value) => {
+  const raw = (value ?? "").trim();
+  if (!raw) return "";
+  return /€|euro/i.test(raw) ? raw : `${raw} €`;
+};
 ---
 
 <BaseLayout title={title} description={description}>
@@ -97,7 +102,7 @@ const mainSections = displayedSections.filter((section) => !featuredSections.has
           <section class="tarif-card" role="listitem" aria-label={section.title}>
             <h2>{section.title}</h2>
             <ul>
-              {section.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
+              {section.items?.map((item) => <li><span>{item.label}</span><strong>{formatPrice(item.price)}</strong></li>)}
             </ul>
           </section>
         ))
@@ -110,7 +115,7 @@ const mainSections = displayedSections.filter((section) => !featuredSections.has
           <section class="tarif-card" aria-label={massageBebeSection.title}>
             <h2>{massageBebeSection.title}</h2>
             <ul>
-              {massageBebeSection.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
+              {massageBebeSection.items?.map((item) => <li><span>{item.label}</span><strong>{formatPrice(item.price)}</strong></li>)}
             </ul>
           </section>
           <aside class="tarifs-cta-panel">
@@ -134,7 +139,7 @@ const mainSections = displayedSections.filter((section) => !featuredSections.has
           <section class="tarif-card tarif-card--full" aria-label={naturopathieSection.title}>
             <h2>{naturopathieSection.title}</h2>
             <ul>
-              {naturopathieSection.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
+              {naturopathieSection.items?.map((item) => <li><span>{item.label}</span><strong>{formatPrice(item.price)}</strong></li>)}
             </ul>
           </section>
         </section>
