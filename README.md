@@ -75,8 +75,9 @@ Le repo inclut un workflow GitHub Actions :
 
 - `.github/workflows/deploy-o2switch.yml`
 - Build automatique à chaque push sur `main`
-- Déploiement FTP en parallèle vers `/public_html_new/` (ne touche pas le site actuel)
+- Déploiement FTP en parallèle vers `/` (racine du compte FTP utilisé)
 - Possibilité de déployer en production via `workflow_dispatch` avec `target=production`
+- Déclenchement auto possible depuis Sanity via `repository_dispatch` (`sanity_content_updated`)
 
 ### Secrets GitHub à configurer
 
@@ -133,6 +134,43 @@ La bascule est quasi instantanée (pas de propagation DNS si on garde le même h
 
 1. `/naturaufeminin.fr/` (nouveau) -> `/naturaufeminin.fr_failed_YYYYMMDD/`
 2. `/naturaufeminin.fr_backup_YYYYMMDD/` -> `/naturaufeminin.fr/`
+
+## Déploiement auto après modification Sanity
+
+Le workflow accepte l'événement GitHub `repository_dispatch` avec le type:
+
+- `sanity_content_updated`
+
+Quand cet événement est reçu, le workflow déploie automatiquement en cible `production`.
+
+### Configuration webhook Sanity (une fois)
+
+1. Dans Sanity Manage: `API > Webhooks > Create webhook`
+2. URL:
+   - `https://api.github.com/repos/Stan69000/natureaufeminin/dispatches`
+3. Method:
+   - `POST`
+4. Headers:
+   - `Accept: application/vnd.github+json`
+   - `Authorization: Bearer <GITHUB_DISPATCH_TOKEN>`
+   - `X-GitHub-Api-Version: 2022-11-28`
+5. Payload JSON:
+
+```json
+{
+  "event_type": "sanity_content_updated",
+  "client_payload": {
+    "source": "sanity"
+  }
+}
+```
+
+6. Trigger:
+   - sur publish/update du type document `page`
+
+### Secret GitHub conseillé
+
+Créer un token GitHub (fine-grained) avec accès `Actions` et `Contents` sur ce repo, puis l'utiliser dans Sanity comme valeur du header `Authorization`.
 
 ## Contenu éditorial
 
