@@ -193,10 +193,8 @@ if ($messageLength > 5000) {
   jsonResponse(400, ["error" => "Invalid message: too long"]);
 }
 
-$startedAtTimestamp = strtotime($formStartedAt);
-if ($startedAtTimestamp === false || (time() - $startedAtTimestamp) < 2) {
-  jsonResponse(400, ["error" => "Form submitted too quickly"]);
-}
+// Timing-based rejection removed: Turnstile, honeypot and IP rate limiting
+// already provide anti-spam protection without blocking legitimate users.
 
 $turnstilePayload = http_build_query([
   "secret" => $turnstileSecretKey,
