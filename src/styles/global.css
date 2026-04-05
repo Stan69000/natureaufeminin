@@ -923,14 +923,6 @@ textarea {
   align-items: stretch;
 }
 
-.tarifs-full-width-row {
-  margin-top: 1rem;
-}
-
-.tarif-card--full {
-  width: 100%;
-}
-
 .tarifs-cta-panel {
   border: 1px solid color-mix(in oklab, var(--line) 78%, white);
   border-radius: 1rem;
