@@ -43,24 +43,31 @@ function getYoutubeEmbedUrl(input?: string): string | null {
 const newsItems =
   page.actualitesItems
     ?.filter((item) => item.title?.trim() || item.excerpt?.trim())
-    .map((item) => ({
-      title: item.title?.trim() || "Actualité",
-      publishedAt: item.publishedAt
+    .map((item) => {
+      const excerpt = item.excerpt?.trim() || "";
+      const publishedAt = item.publishedAt
         ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(item.publishedAt))
-        : "",
-      excerpt: item.excerpt?.trim() || "",
-      youtubeEmbedUrl: getYoutubeEmbedUrl(item.youtubeUrl),
-      ctaLabel: item.ctaLabel?.trim() || "",
-      ctaUrl:
-        sanitizeCmsUrl(item.ctaUrl, {
-          allowedProtocols: ["https:", "mailto:", "tel:"],
-        }) || "",
-    })) ?? [];
+        : /27\s+avril/i.test(excerpt)
+          ? "27 avril 2025"
+          : "";
+
+      return {
+        title: item.title?.trim() || "Actualité",
+        publishedAt,
+        excerpt,
+        youtubeEmbedUrl: getYoutubeEmbedUrl(item.youtubeUrl),
+        ctaLabel: item.ctaLabel?.trim() || "",
+        ctaUrl:
+          sanitizeCmsUrl(item.ctaUrl, {
+            allowedProtocols: ["https:", "mailto:", "tel:"],
+          }) || "",
+      };
+    }) ?? [];
 
 const fallbackNewsItems = [
   {
     title: "Atelier Cycle Menstruel",
-    publishedAt: "",
+    publishedAt: "27 avril 2025",
     excerpt:
       "Le prochain atelier aura lieu le 27 avril à 10h sur le thème du cycle menstruel. Les places sont limitées pour privilégier la qualité des échanges.",
     youtubeEmbedUrl: "https://www.youtube.com/embed/KV60ZgnwJzk",
@@ -75,7 +82,7 @@ const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
 <BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
   <article class="section wp-content actualites-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
-    <p class="actualites-intro">{intro}</p>
+    <p class="actualites-intro actualites-intro-highlight">{intro}</p>
 
     <div class="actualites-grid" role="list">
       {
@@ -112,6 +119,18 @@ const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
           </article>
         ))
       }
+
+      <article class="actualite-card actualite-card-refonte" role="listitem">
+        <header>
+          <h2>Refonte du site: version grand public</h2>
+          <p class="actualite-date">Avril 2025</p>
+        </header>
+        <p class="actualite-text">
+          Le site évolue pour devenir plus clair, plus lisible et plus simple à utiliser au quotidien. Cette version
+          grand public met l'accent sur une navigation fluide, des informations essentielles accessibles rapidement et
+          une meilleure expérience sur mobile comme sur ordinateur.
+        </p>
+      </article>
     </div>
   </article>
 </BaseLayout>

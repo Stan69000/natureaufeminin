@@ -1615,6 +1615,17 @@ textarea {
   color: #405447;
 }
 
+.actualites-intro-highlight {
+  display: inline-block;
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in oklab, var(--brand) 38%, white);
+  background: linear-gradient(140deg, color-mix(in oklab, var(--cream) 75%, white), #ffffff);
+  font-weight: 700;
+  color: #244535;
+  box-shadow: 0 12px 22px -18px rgba(36, 69, 53, 0.85);
+}
+
 .actualites-grid {
   display: grid;
   gap: 1rem;
@@ -1643,6 +1654,13 @@ textarea {
 .actualite-text {
   margin: 0.6rem 0 0;
   color: #32453a;
+}
+
+.actualite-card-refonte {
+  border-color: color-mix(in oklab, var(--brand) 45%, white);
+  background:
+    radial-gradient(circle at 94% 8%, rgba(126, 168, 133, 0.2), transparent 30%),
+    linear-gradient(165deg, #ffffff, #ecf6ee);
 }
 
 .actualite-video {
