@@ -45,7 +45,7 @@ jobs:
             echo "deploy_env_name=production" >> "$GITHUB_OUTPUT"
             echo "deploy_env_url=https://naturaufeminin.fr" >> "$GITHUB_OUTPUT"
             echo "server_dir=${{ env.PRODUCTION_SERVER_DIR }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.target }}" = "production" ]; then
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.target }}" = "production" ]; then
             echo "deploy_target=production" >> "$GITHUB_OUTPUT"
             echo "deploy_env_name=production" >> "$GITHUB_OUTPUT"
             echo "deploy_env_url=https://naturaufeminin.fr" >> "$GITHUB_OUTPUT"
