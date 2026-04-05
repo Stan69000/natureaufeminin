@@ -178,7 +178,7 @@ const structuredData = {
       referrerpolicy="no-referrer"
     ></script>
     <script is:inline>
-      (() => {
+      window.addEventListener("DOMContentLoaded", () => {
         const form = document.querySelector("#contact-form");
         if (!(form instanceof HTMLFormElement)) return;
 
@@ -283,7 +283,7 @@ const structuredData = {
             submitButton.removeAttribute("aria-busy");
           }
         });
-      })();
+      });
     </script>
   </Fragment>
 </BaseLayout>
