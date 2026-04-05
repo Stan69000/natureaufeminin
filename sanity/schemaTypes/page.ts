@@ -131,7 +131,10 @@ export const pageType = defineType({
       ],
       description:
         "Editeur riche recommandé pour modifier le contenu sans HTML.",
-      hidden: ({ document }) => getDocumentSlug(document) === "tarifs",
+      hidden: ({ document }) => {
+        const slug = getDocumentSlug(document);
+        return slug === "tarifs" || slug === "que-se-passe-t-il-en-ce-moment";
+      },
     }),
     defineField({
       name: "pricingSections",

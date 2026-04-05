@@ -2,7 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
 import { getDefaultPageSeo } from "../data/seo";
-import { siteConfig } from "../data/site";
 import { sanitizeCmsUrl, sanitizeYoutubeVideoId } from "../utils/security";
 
 const slug = "que-se-passe-t-il-en-ce-moment";
@@ -13,10 +12,6 @@ const description = page.seoDescription?.trim() || defaultSeo.description;
 const intro =
   page.actualitesIntro?.trim() ||
   "Retrouvez ici les prochaines dates, ateliers et annonces importantes.";
-const featuredTitle = "Refonte du site: version grand public";
-const featuredPublishedAt = "4 avril 2025";
-const featuredExcerpt =
-  "Le nouveau site est en ligne. J'ai simplifié la navigation, clarifié les contenus importants et amélioré la lecture sur mobile comme sur ordinateur pour que les informations utiles soient trouvées plus facilement.";
 
 function getYoutubeEmbedUrl(input?: string): string | null {
   if (!input) return null;
@@ -59,14 +54,19 @@ function parseSafeDate(input?: string): Date | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+const featuredTitle = page.actualitesFeaturedTitle?.trim() || "";
+const featuredPublishedAtDate = parseSafeDate(page.actualitesFeaturedPublishedAt);
+const featuredPublishedAt = featuredPublishedAtDate ? formatFrenchDate(featuredPublishedAtDate) : "";
+const featuredExcerpt = page.actualitesFeaturedExcerpt?.trim() || "";
+const showFeatured = Boolean(featuredTitle || featuredPublishedAt || featuredExcerpt);
+
 const newsItems =
   page.actualitesItems
     ?.filter((item) => item.title?.trim() || item.excerpt?.trim())
     .map((item) => {
       const excerpt = item.excerpt?.trim() || "";
-      const siteTruthDate = /27\s+avril/i.test(excerpt) ? new Date("2025-04-27") : null;
       const cmsPublishedAtDate = parseSafeDate(item.publishedAt);
-      const publishedAtDate = siteTruthDate ?? cmsPublishedAtDate;
+      const publishedAtDate = cmsPublishedAtDate;
       const publishedAt = publishedAtDate ? formatFrenchDate(publishedAtDate) : "";
 
       return {
@@ -82,21 +82,7 @@ const newsItems =
           }) || "",
       };
     }) ?? [];
-
-const fallbackNewsItems = [
-  {
-    title: "Atelier Cycle Menstruel",
-    publishedAt: "27 avril 2025",
-    publishedAtDate: new Date("2025-04-27"),
-    excerpt:
-      "Le prochain atelier aura lieu le 27 avril à 10h sur le thème du cycle menstruel. Les places sont limitées pour privilégier la qualité des échanges.",
-    youtubeEmbedUrl: "https://www.youtube.com/embed/KV60ZgnwJzk",
-    ctaLabel: "Réserver un premier échange",
-    ctaUrl: siteConfig.bookingUrl,
-  },
-];
-
-const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
+const displayedNewsItems = newsItems;
 const archiveCutoffYear = 2025;
 const archivedNewsItems = displayedNewsItems.filter(
   (item) => item.publishedAtDate && item.publishedAtDate.getUTCFullYear() <= archiveCutoffYear,
@@ -112,13 +98,17 @@ const currentNewsItems = displayedNewsItems.filter(
     <p class="actualites-intro actualites-intro-highlight">{intro}</p>
 
     <div class="actualites-grid" role="list">
-      <article class="actualite-card actualite-card-refonte" role="listitem">
-        <header>
-          <h2>{featuredTitle}</h2>
-          <p class="actualite-date">{featuredPublishedAt}</p>
-        </header>
-        <p class="actualite-text">{featuredExcerpt}</p>
-      </article>
+      {
+        showFeatured && (
+          <article class="actualite-card actualite-card-refonte" role="listitem">
+            <header>
+              <h2>{featuredTitle || "Actualité mise en avant"}</h2>
+              {featuredPublishedAt && <p class="actualite-date">{featuredPublishedAt}</p>}
+            </header>
+            {featuredExcerpt && <p class="actualite-text">{featuredExcerpt}</p>}
+          </article>
+        )
+      }
 
       {
         currentNewsItems.map((item) => (
