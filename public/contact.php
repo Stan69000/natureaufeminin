@@ -113,18 +113,30 @@ if (isRateLimited(clientIp())) {
 }
 
 $contentType = $_SERVER["CONTENT_TYPE"] ?? "";
-if (!is_string($contentType) || stripos($contentType, "application/json") !== 0) {
+$body = null;
+
+if (is_string($contentType) && stripos($contentType, "application/json") === 0) {
+  $rawBody = file_get_contents("php://input");
+  if (!is_string($rawBody) || $rawBody === "") {
+    jsonResponse(400, ["error" => "Empty body"]);
+  }
+
+  $decoded = json_decode($rawBody, true);
+  if (!is_array($decoded)) {
+    jsonResponse(400, ["error" => "Invalid JSON payload"]);
+  }
+  $body = $decoded;
+} elseif (
+  is_string($contentType) &&
+  (stripos($contentType, "application/x-www-form-urlencoded") === 0 ||
+    stripos($contentType, "multipart/form-data") === 0)
+) {
+  if (!is_array($_POST) || count($_POST) === 0) {
+    jsonResponse(400, ["error" => "Empty form payload"]);
+  }
+  $body = $_POST;
+} else {
   jsonResponse(415, ["error" => "Unsupported content type"]);
-}
-
-$rawBody = file_get_contents("php://input");
-if (!is_string($rawBody) || $rawBody === "") {
-  jsonResponse(400, ["error" => "Empty body"]);
-}
-
-$body = json_decode($rawBody, true);
-if (!is_array($body)) {
-  jsonResponse(400, ["error" => "Invalid JSON payload"]);
 }
 
 $firstName = cleanText($body["firstName"] ?? "");
