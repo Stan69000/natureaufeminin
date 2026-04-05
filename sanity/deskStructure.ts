@@ -7,6 +7,13 @@ export const deskStructure: StructureResolver = (S) =>
     .title("Contenus")
     .items([
       S.listItem()
+        .title("Footer")
+        .child(
+          S.document()
+            .schemaType("footerSettings")
+            .documentId("footerSettings"),
+        ),
+      S.listItem()
         .title("Pages légales")
         .child(
           S.documentTypeList("page")

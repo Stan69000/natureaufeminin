@@ -1,14 +1,15 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
-import { getDefaultPageDescription } from "../data/seo";
+import { getDefaultPageSeo } from "../data/seo";
 import { siteConfig } from "../data/site";
 import { sanitizeCmsUrl, sanitizeYoutubeVideoId } from "../utils/security";
 
 const slug = "que-se-passe-t-il-en-ce-moment";
 const page = await getPageContent(slug);
-const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
-const description = page.seoDescription?.trim() || getDefaultPageDescription("/actualites");
+const defaultSeo = getDefaultPageSeo("/actualites");
+const title = page.seoTitle?.trim() || defaultSeo.title;
+const description = page.seoDescription?.trim() || defaultSeo.description;
 const intro =
   page.actualitesIntro?.trim() ||
   "Retrouvez ici les prochaines dates, ateliers et annonces importantes.";
@@ -71,7 +72,7 @@ const fallbackNewsItems = [
 const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
   <article class="section wp-content actualites-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <p class="actualites-intro">{intro}</p>

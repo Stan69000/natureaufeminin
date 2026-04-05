@@ -1,33 +1,76 @@
 ---
-import { siteConfig } from "../data/site";
+import { getFooterContent } from "../data/footer";
+
+const footerContent = await getFooterContent();
 ---
 
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div>
+    <section class="footer-card footer-about">
       <p class="footer-brand">
-        <img src="/branding/logo.webp" width="56" height="56" alt="Logo Natur' Au Feminin" />
-        <strong>{siteConfig.name}</strong>
+        <img
+          src="/branding/logo.webp"
+          width="56"
+          height="56"
+          alt="Logo Natur' Au Feminin"
+          loading="lazy"
+          decoding="async"
+        />
+        <strong>{footerContent.brandName}</strong>
       </p>
-      <p>Naturopathe – Conseillère en Symptothermie – Doula – Régulation Emotionnelle</p>
-    </div>
-    <div>
-      <h2>Contact</h2>
-      <p><a href={siteConfig.phoneHref}>{siteConfig.phone}</a></p>
-      <p>{siteConfig.city}</p>
-      <p><a href="/contact">Prendre rendez-vous</a></p>
-    </div>
-    <div>
-      <h2>Informations</h2>
-      <ul>
-        <li><a href="/mentions-legales">Mentions legales</a></li>
-        <li><a href="/politique-de-confidentialite">Politique de confidentialite</a></li>
-        <li><a href="/sitemap.xml">Plan du site (XML)</a></li>
-        <li>
-          <a href={siteConfig.adminUrl} target="_blank" rel="noopener noreferrer">Admin</a>
-        </li>
+      <ul class="footer-about-points">
+        {
+          footerContent.brandPoints.map((item) => (
+            <li>{item}</li>
+          ))
+        }
       </ul>
-    </div>
+    </section>
+    <section class="footer-card">
+      <h2>{footerContent.contactTitle}</h2>
+      {
+        footerContent.contactItems.map((item) => (
+          <p>{item.href ? <a href={item.href}>{item.label}</a> : item.label}</p>
+        ))
+      }
+    </section>
+    <section class="footer-card">
+      <h2>{footerContent.accompagnementsTitle}</h2>
+      <ul>
+        {
+          footerContent.accompagnements.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <p><a href={footerContent.accompagnementsAllHref}>{footerContent.accompagnementsAllLabel}</a></p>
+    </section>
+    <section class="footer-card">
+      <h2>{footerContent.informationsTitle}</h2>
+      <ul>
+        {
+          footerContent.informations.map((item) => (
+            <li>
+              <a href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    <section class="footer-card footer-specialites">
+      <h2>{footerContent.specialitesTitle}</h2>
+      <ul class="footer-tags" aria-label="Specialites d'accompagnement">
+        {
+          footerContent.specialites.map((item) => (
+            <li>
+              <span>{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
   </div>
   <div class="container footer-credit">
     <p>

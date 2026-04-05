@@ -3,10 +3,12 @@ import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { navItems, serviceCards, siteConfig } from "../data/site";
+import { getDefaultPageKeywords } from "../data/seo";
 
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
   ogImage?: string;
   noindex?: boolean;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
@@ -15,6 +17,7 @@ interface Props {
 const {
   title = siteConfig.title,
   description = siteConfig.description,
+  keywords,
   ogImage = "/branding/og-default-1200x630.jpg",
   noindex = false,
   structuredData,
@@ -24,6 +27,7 @@ const pathname = Astro.url.pathname;
 const canonicalUrl = new URL(pathname, siteConfig.url).toString();
 const ogImagePath = ogImage.startsWith("http") ? ogImage : new URL(ogImage, siteConfig.url).toString();
 const robotsContent = noindex ? "noindex,nofollow" : "index,follow";
+const keywordsContent = keywords?.trim() || getDefaultPageKeywords(pathname);
 
 const pathnameLabels = new Map<string, string>([
   ["/", "Accueil"],
@@ -106,6 +110,7 @@ const structuredDataJson = JSON.stringify(defaultStructuredData);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywordsContent} />
     <meta name="robots" content={robotsContent} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="author" content={siteConfig.name} />
@@ -124,6 +129,12 @@ const structuredDataJson = JSON.stringify(defaultStructuredData);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImagePath} />
     <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Nunito+Sans:wght@400;500;600;700&display=swap"
+    />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

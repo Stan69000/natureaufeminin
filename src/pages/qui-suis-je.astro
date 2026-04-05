@@ -1,16 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
-import { getDefaultPageDescription } from "../data/seo";
+import { getDefaultPageSeo } from "../data/seo";
 
 const slug = "qui-suis-je";
 const page = await getPageContent(slug);
-const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
-const description = page.seoDescription?.trim() || getDefaultPageDescription("/qui-suis-je");
+const defaultSeo = getDefaultPageSeo("/qui-suis-je");
+const title = page.seoTitle?.trim() || defaultSeo.title;
+const description = page.seoDescription?.trim() || defaultSeo.description;
 const html = page.html;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
   <article class="section wp-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <div set:html={html}></div>

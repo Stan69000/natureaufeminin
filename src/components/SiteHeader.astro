@@ -15,7 +15,15 @@ const pathname = Astro.url.pathname;
   </div>
   <div class="container brand-band">
     <a class="brand-mark" href="/" aria-label="Accueil Natur' Au Feminin">
-      <img src="/branding/logo.webp" width="120" height="120" alt="Logo Natur' Au Feminin" />
+      <img
+        src="/branding/logo.webp"
+        width="120"
+        height="120"
+        alt="Logo Natur' Au Feminin"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
       <span class="brand-text">
         <strong>{siteConfig.name}</strong>
         <small>Naturopathe – Conseillère en Symptothermie – Doula – Régulation Emotionnelle</small>

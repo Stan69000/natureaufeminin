@@ -1,16 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPageContent } from "../data/content";
-import { getDefaultPageDescription } from "../data/seo";
+import { getDefaultPageSeo } from "../data/seo";
 import { siteConfig } from "../data/site";
 
 const page = await getPageContent("page-d-exemple");
-const title = page.seoTitle?.trim() || "Accueil | Natur' Au Feminin";
-const description = page.seoDescription?.trim() || getDefaultPageDescription("/");
+const defaultSeo = getDefaultPageSeo("/");
+const title = page.seoTitle?.trim() || defaultSeo.title;
+const description = page.seoDescription?.trim() || defaultSeo.description;
 const html = page.html;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
   <section class="home-hero section" aria-labelledby="home-hero-title">
     <div class="hero-grid">
       <div>
@@ -37,6 +38,7 @@ const html = page.html;
               alt="Logo Natur' Au Feminin"
               loading="eager"
               decoding="async"
+              fetchpriority="high"
             />
           </div>
           <ul>

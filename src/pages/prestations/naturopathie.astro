@@ -2,19 +2,25 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PrestationSupportBlocks from "../../components/PrestationSupportBlocks.astro";
 import { getPageContent } from "../../data/content";
-import { getDefaultPageDescription } from "../../data/seo";
+import { getDefaultPageSeo } from "../../data/seo";
 import { getPrestationSeo } from "../../data/prestations-seo";
 
 const slug = "naturopathie";
 const path = "/prestations/naturopathie";
 const page = await getPageContent(slug);
-const title = page.seoTitle?.trim() || `${page.title} | Natur' Au Feminin`;
-const description = page.seoDescription?.trim() || getDefaultPageDescription(path);
+const defaultSeo = getDefaultPageSeo(path);
+const title = page.seoTitle?.trim() || defaultSeo.title;
+const description = page.seoDescription?.trim() || defaultSeo.description;
 const html = page.html;
 const prestationSeo = getPrestationSeo(path);
 ---
 
-<BaseLayout title={title} description={description} structuredData={prestationSeo.structuredData}>
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={defaultSeo.keywords}
+  structuredData={prestationSeo.structuredData}
+>
   <article class="section wp-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <div set:html={html}></div>
