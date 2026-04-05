@@ -127,9 +127,11 @@ const sectionsWithOrderedDoula = orderedSections.map((section) => {
 
 const sideSection =
   sectionsWithOrderedDoula.find((section) => normalizeSectionTitle(section.title) === "massage bebe") ?? null;
-const mainSections = sideSection
-  ? sectionsWithOrderedDoula.filter((section) => section !== sideSection)
-  : sectionsWithOrderedDoula;
+const fullWidthSection =
+  sectionsWithOrderedDoula.find((section) => normalizeSectionTitle(section.title) === "naturopathie") ?? null;
+const mainSections = sectionsWithOrderedDoula.filter(
+  (section) => section !== sideSection && section !== fullWidthSection,
+);
 const formatPrice = (value) => {
   const raw = (value ?? "").trim();
   if (!raw) return "";
@@ -141,6 +143,19 @@ const formatPrice = (value) => {
   <article class="section wp-content tarifs-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     {intro && <p class="tarifs-intro">{intro}</p>}
+
+    {
+      fullWidthSection && (
+        <section class="tarifs-full-width-row" aria-label={fullWidthSection.title}>
+          <section class="tarif-card tarif-card--full" aria-label={fullWidthSection.title}>
+            <h2>{fullWidthSection.title}</h2>
+            <ul>
+              {fullWidthSection.items?.map((item) => <li><span>{item.label}</span><strong>{formatPrice(item.price)}</strong></li>)}
+            </ul>
+          </section>
+        </section>
+      )
+    }
 
     <div class="tarifs-grid" role="list">
       {
