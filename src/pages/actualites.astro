@@ -13,6 +13,13 @@ const description = page.seoDescription?.trim() || defaultSeo.description;
 const intro =
   page.actualitesIntro?.trim() ||
   "Retrouvez ici les prochaines dates, ateliers et annonces importantes.";
+const now = new Date();
+const today = new Intl.DateTimeFormat("fr-FR", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Europe/Paris",
+}).format(now);
 
 function getYoutubeEmbedUrl(input?: string): string | null {
   if (!input) return null;
@@ -40,20 +47,38 @@ function getYoutubeEmbedUrl(input?: string): string | null {
   }
 }
 
+function formatFrenchDate(input: Date): string {
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Paris",
+  }).format(input);
+}
+
+function parseSafeDate(input?: string): Date | null {
+  if (!input) return null;
+  const parsed = new Date(input);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 const newsItems =
   page.actualitesItems
     ?.filter((item) => item.title?.trim() || item.excerpt?.trim())
     .map((item) => {
       const excerpt = item.excerpt?.trim() || "";
-      const publishedAt = item.publishedAt
-        ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(item.publishedAt))
+      const cmsPublishedAtDate = parseSafeDate(item.publishedAt);
+      const publishedAtDate = cmsPublishedAtDate
+        ? cmsPublishedAtDate
         : /27\s+avril/i.test(excerpt)
-          ? "27 avril 2025"
-          : "";
+          ? new Date("2025-04-27")
+          : null;
+      const publishedAt = publishedAtDate ? formatFrenchDate(publishedAtDate) : "";
 
       return {
         title: item.title?.trim() || "Actualité",
         publishedAt,
+        publishedAtDate,
         excerpt,
         youtubeEmbedUrl: getYoutubeEmbedUrl(item.youtubeUrl),
         ctaLabel: item.ctaLabel?.trim() || "",
@@ -68,6 +93,7 @@ const fallbackNewsItems = [
   {
     title: "Atelier Cycle Menstruel",
     publishedAt: "27 avril 2025",
+    publishedAtDate: new Date("2025-04-27"),
     excerpt:
       "Le prochain atelier aura lieu le 27 avril à 10h sur le thème du cycle menstruel. Les places sont limitées pour privilégier la qualité des échanges.",
     youtubeEmbedUrl: "https://www.youtube.com/embed/KV60ZgnwJzk",
@@ -77,6 +103,13 @@ const fallbackNewsItems = [
 ];
 
 const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
+const archiveCutoffYear = 2025;
+const archivedNewsItems = displayedNewsItems.filter(
+  (item) => item.publishedAtDate && item.publishedAtDate.getUTCFullYear() <= archiveCutoffYear,
+);
+const currentNewsItems = displayedNewsItems.filter(
+  (item) => !item.publishedAtDate || item.publishedAtDate.getUTCFullYear() > archiveCutoffYear,
+);
 ---
 
 <BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
@@ -85,8 +118,19 @@ const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
     <p class="actualites-intro actualites-intro-highlight">{intro}</p>
 
     <div class="actualites-grid" role="list">
+      <article class="actualite-card actualite-card-refonte" role="listitem">
+        <header>
+          <h2>Refonte du site: version grand public</h2>
+          <p class="actualite-date">{today}</p>
+        </header>
+        <p class="actualite-text">
+          Le nouveau site est en ligne. J’ai simplifié la navigation, clarifié les contenus importants et amélioré la
+          lecture sur mobile comme sur ordinateur pour que les informations utiles soient trouvées plus facilement.
+        </p>
+      </article>
+
       {
-        displayedNewsItems.map((item) => (
+        currentNewsItems.map((item) => (
           <article class="actualite-card" role="listitem">
             <header>
               <h2>{item.title}</h2>
@@ -119,18 +163,50 @@ const displayedNewsItems = newsItems.length > 0 ? newsItems : fallbackNewsItems;
           </article>
         ))
       }
-
-      <article class="actualite-card actualite-card-refonte" role="listitem">
-        <header>
-          <h2>Refonte du site: version grand public</h2>
-          <p class="actualite-date">Avril 2025</p>
-        </header>
-        <p class="actualite-text">
-          Le site évolue pour devenir plus clair, plus lisible et plus simple à utiliser au quotidien. Cette version
-          grand public met l'accent sur une navigation fluide, des informations essentielles accessibles rapidement et
-          une meilleure expérience sur mobile comme sur ordinateur.
-        </p>
-      </article>
     </div>
+
+    {
+      archivedNewsItems.length > 0 && (
+        <section aria-labelledby="actualites-archives-title">
+          <h2 id="actualites-archives-title">Archives</h2>
+          <div class="actualites-grid" role="list">
+            {
+              archivedNewsItems.map((item) => (
+                <article class="actualite-card" role="listitem">
+                  <header>
+                    <h3>{item.title}</h3>
+                    {item.publishedAt && <p class="actualite-date">{item.publishedAt}</p>}
+                  </header>
+                  {item.excerpt && <p class="actualite-text">{item.excerpt}</p>}
+                  {
+                    item.youtubeEmbedUrl && (
+                      <div class="actualite-video">
+                        <iframe
+                          src={item.youtubeEmbedUrl}
+                          title={`Vidéo - ${item.title}`}
+                          loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                        />
+                      </div>
+                    )
+                  }
+                  {
+                    item.ctaLabel && item.ctaUrl && (
+                      <p class="actualite-cta-wrap">
+                        <a class="btn btn-primary btn-booking" href={item.ctaUrl} target="_blank" rel="noopener noreferrer">
+                          {item.ctaLabel}
+                        </a>
+                      </p>
+                    )
+                  }
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      )
+    }
   </article>
 </BaseLayout>
