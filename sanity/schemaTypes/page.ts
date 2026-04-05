@@ -1,5 +1,10 @@
 import { defineField, defineType } from "sanity";
 
+function getDocumentSlug(document: unknown): string {
+  const candidate = document as { slug?: { current?: string } } | null | undefined;
+  return candidate?.slug?.current ?? "";
+}
+
 export const pageType = defineType({
   name: "page",
   title: "Page",
@@ -90,7 +95,6 @@ export const pageType = defineType({
               name: "href",
               title: "URL",
               type: "url",
-              options: { allowRelative: true },
               validation: (rule) =>
                 rule.required().uri({
                   allowRelative: true,
@@ -108,7 +112,7 @@ export const pageType = defineType({
       ],
       description:
         "Editeur riche recommandé pour modifier le contenu sans HTML.",
-      hidden: ({ document }) => document?.slug?.current === "tarifs",
+      hidden: ({ document }) => getDocumentSlug(document) === "tarifs",
     }),
     defineField({
       name: "pricingSections",
@@ -116,7 +120,7 @@ export const pageType = defineType({
       type: "array",
       description:
         "Pour la page Tarifs : sections éditables sans image (titre + lignes).",
-      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+      hidden: ({ document }) => getDocumentSlug(document) !== "tarifs",
       of: [
         defineField({
           name: "pricingSection",
@@ -177,48 +181,48 @@ export const pageType = defineType({
       type: "text",
       rows: 3,
       description: "Texte d’introduction affiché en haut de la page Tarifs.",
-      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+      hidden: ({ document }) => getDocumentSlug(document) !== "tarifs",
     }),
     defineField({
       name: "pricingCtaText",
       title: "Texte CTA tarifs",
       type: "string",
       description: "Question affichée à droite du bloc final des tarifs.",
-      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+      hidden: ({ document }) => getDocumentSlug(document) !== "tarifs",
     }),
     defineField({
       name: "pricingCtaLabel",
       title: "Libellé lien CTA tarifs",
       type: "string",
       description: "Texte du lien du CTA tarifs.",
-      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+      hidden: ({ document }) => getDocumentSlug(document) !== "tarifs",
     }),
     defineField({
       name: "pricingCtaUrl",
       title: "URL CTA tarifs",
       type: "url",
       description: "Lien du CTA tarifs.",
-      hidden: ({ document }) => document?.slug?.current !== "tarifs",
+      hidden: ({ document }) => getDocumentSlug(document) !== "tarifs",
     }),
     defineField({
       name: "prestationsMenuTitle",
       title: "Titre sous-menu prestations",
       type: "string",
-      hidden: ({ document }) => document?.slug?.current !== "prestations",
+      hidden: ({ document }) => getDocumentSlug(document) !== "prestations",
     }),
     defineField({
       name: "prestationsIntro",
       title: "Intro prestations",
       type: "text",
       rows: 3,
-      hidden: ({ document }) => document?.slug?.current !== "prestations",
+      hidden: ({ document }) => getDocumentSlug(document) !== "prestations",
     }),
     defineField({
       name: "prestationsMenu",
       title: "Sous-menu prestations",
       type: "array",
       description: "Liens rapides vers les pages de prestations.",
-      hidden: ({ document }) => document?.slug?.current !== "prestations",
+      hidden: ({ document }) => getDocumentSlug(document) !== "prestations",
       of: [
         defineField({
           name: "prestationsMenuItem",
@@ -235,9 +239,6 @@ export const pageType = defineType({
               name: "href",
               title: "URL",
               type: "url",
-              options: {
-                allowRelative: true,
-              },
               validation: (rule) =>
                 rule.required().uri({
                   allowRelative: true,
@@ -264,14 +265,14 @@ export const pageType = defineType({
       title: "Intro actualités",
       type: "text",
       rows: 3,
-      hidden: ({ document }) => document?.slug?.current !== "que-se-passe-t-il-en-ce-moment",
+      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
     }),
     defineField({
       name: "actualitesItems",
       title: "Articles actualités",
       type: "array",
       description: "Publiez des news sans image, avec vidéo YouTube optionnelle.",
-      hidden: ({ document }) => document?.slug?.current !== "que-se-passe-t-il-en-ce-moment",
+      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
       of: [
         defineField({
           name: "actualiteItem",
@@ -323,18 +324,37 @@ export const pageType = defineType({
       ],
     }),
     defineField({
+      name: "actualitesFeaturedTitle",
+      title: "Actu mise en avant - titre",
+      type: "string",
+      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
+    }),
+    defineField({
+      name: "actualitesFeaturedPublishedAt",
+      title: "Actu mise en avant - date",
+      type: "date",
+      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
+    }),
+    defineField({
+      name: "actualitesFeaturedExcerpt",
+      title: "Actu mise en avant - texte",
+      type: "text",
+      rows: 5,
+      hidden: ({ document }) => getDocumentSlug(document) !== "que-se-passe-t-il-en-ce-moment",
+    }),
+    defineField({
       name: "circleIntro",
       title: "Intro mon cercle",
       type: "text",
       rows: 4,
-      hidden: ({ document }) => document?.slug?.current !== "mon-cercle",
+      hidden: ({ document }) => getDocumentSlug(document) !== "mon-cercle",
     }),
     defineField({
       name: "circlePartners",
       title: "Partenaires du cercle",
       type: "array",
       description: "Personnes et liens à mettre en valeur sur la page Mon cercle.",
-      hidden: ({ document }) => document?.slug?.current !== "mon-cercle",
+      hidden: ({ document }) => getDocumentSlug(document) !== "mon-cercle",
       of: [
         defineField({
           name: "circlePartnerItem",

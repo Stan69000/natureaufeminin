@@ -30,11 +30,11 @@ const robotsContent = noindex ? "noindex,nofollow" : "index,follow";
 const keywordsContent = keywords?.trim() || getDefaultPageKeywords(pathname);
 
 const pathnameLabels = new Map<string, string>([
-  ["/", "Accueil"],
-  ...navItems.map((item) => [item.href, item.label]),
-  ...serviceCards.map((item) => [item.href, item.title]),
-  ["/mentions-legales", "Mentions légales"],
-  ["/politique-de-confidentialite", "Politique de confidentialité"],
+  ["/", "Accueil"] as const,
+  ...navItems.map((item): readonly [string, string] => [item.href, item.label]),
+  ...serviceCards.map((item): readonly [string, string] => [item.href, item.title]),
+  ["/mentions-legales", "Mentions légales"] as const,
+  ["/politique-de-confidentialite", "Politique de confidentialité"] as const,
 ]);
 
 function toPathLabel(input: string): string {

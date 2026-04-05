@@ -16,9 +16,6 @@ function linkItemField(name: string, title: string) {
         name: "href",
         title: "URL",
         type: "url",
-        options: {
-          allowRelative: true,
-        },
         validation: (rule) =>
           rule.uri({
             allowRelative: true,
@@ -81,7 +78,6 @@ export const footerSettingsType = defineType({
       name: "accompagnementsAllHref",
       title: "URL lien 'voir tout'",
       type: "url",
-      options: { allowRelative: true },
       validation: (rule) =>
         rule.uri({
           allowRelative: true,
@@ -115,4 +111,3 @@ export const footerSettingsType = defineType({
     }),
   ],
 });
-

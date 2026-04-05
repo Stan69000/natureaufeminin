@@ -18,7 +18,17 @@ const ctaUrl =
     allowedProtocols: ["https:", "mailto:", "tel:"],
   }) || siteConfig.bookingUrl;
 
-const fallbackSections = [
+interface PriceItem {
+  label: string;
+  price: string;
+}
+
+interface PricingSectionView {
+  title: string;
+  items: PriceItem[];
+}
+
+const fallbackSections: PricingSectionView[] = [
   {
     title: "Symptothermie",
     items: [
@@ -56,7 +66,7 @@ const fallbackSections = [
   },
 ];
 
-const pricingSections =
+const pricingSections: PricingSectionView[] =
   page.pricingSections
     ?.filter(
       (section) =>
@@ -71,7 +81,7 @@ const pricingSections =
           .map((item) => ({ label: item.label ?? "", price: item.price ?? "" })) ?? [],
     })) ?? [];
 const displayedSections = pricingSections.length > 0 ? pricingSections : fallbackSections;
-const normalizeSectionTitle = (value) =>
+const normalizeSectionTitle = (value: string | undefined) =>
   (value ?? "")
     .toLowerCase()
     .normalize("NFD")
@@ -86,54 +96,61 @@ const desiredSectionOrder = [
   "massage bebe",
 ];
 
-const sectionByNormalizedTitle = new Map(
+const sectionByNormalizedTitle = new Map<string, PricingSectionView>(
   displayedSections.map((section) => [normalizeSectionTitle(section.title), section]),
 );
 
-const orderedSections = [
-  ...desiredSectionOrder
-    .map((title) => sectionByNormalizedTitle.get(title))
-    .filter(Boolean),
-  ...displayedSections.filter(
-    (section) => !desiredSectionOrder.includes(normalizeSectionTitle(section.title)),
-  ),
+const prioritizedSections = desiredSectionOrder
+  .map((sectionTitle) => sectionByNormalizedTitle.get(sectionTitle))
+  .filter((section): section is PricingSectionView => Boolean(section));
+const remainingSections = displayedSections.filter(
+  (section) => !desiredSectionOrder.includes(normalizeSectionTitle(section.title)),
+);
+const orderedSections: PricingSectionView[] = [
+  ...prioritizedSections,
+  ...remainingSections,
 ];
 
-const reorderDoulaItems = (items = []) => {
-  const firstMeetingIndex = items.findIndex(
-    (item) => (item?.label ?? "").trim().toLowerCase() === "notre 1ère rencontre",
+const reorderDoulaItems = (items: PriceItem[] = []): PriceItem[] => {
+  const normalizedItems = items.map((item) => ({
+    label: item.label ?? "",
+    price: item.price ?? "",
+  }));
+  const firstMeetingIndex = normalizedItems.findIndex(
+    (item) => item.label.trim().toLowerCase() === "notre 1ère rencontre",
   );
-  const followupIndex = items.findIndex(
-    (item) => (item?.label ?? "").trim().toLowerCase() === "séance de suivi doula",
+  const followupIndex = normalizedItems.findIndex(
+    (item) => item.label.trim().toLowerCase() === "séance de suivi doula",
   );
 
-  if (firstMeetingIndex === -1 || followupIndex === -1) return items;
-  if (followupIndex === firstMeetingIndex + 1) return items;
+  if (firstMeetingIndex === -1 || followupIndex === -1) return normalizedItems;
+  if (followupIndex === firstMeetingIndex + 1) return normalizedItems;
 
-  const nextItems = [...items];
+  const nextItems = [...normalizedItems];
   const [followupItem] = nextItems.splice(followupIndex, 1);
-  const insertIndex = firstMeetingIndex < followupIndex ? firstMeetingIndex + 1 : firstMeetingIndex + 1;
+  if (!followupItem) return normalizedItems;
+  const insertIndex = firstMeetingIndex + 1;
   nextItems.splice(insertIndex, 0, followupItem);
   return nextItems;
 };
 
 const normalizedDoulaTitle = "accompagnement doula";
-const sectionsWithOrderedDoula = orderedSections.map((section) => {
+const sectionsWithOrderedDoula: PricingSectionView[] = orderedSections.map((section) => {
   if (normalizeSectionTitle(section.title) !== normalizedDoulaTitle) return section;
   return {
     ...section,
-    items: reorderDoulaItems(section.items ?? []),
+    items: reorderDoulaItems(section.items),
   };
 });
 
-const sideSection =
+const sideSection: PricingSectionView | null =
   sectionsWithOrderedDoula.find((section) => normalizeSectionTitle(section.title) === "massage bebe") ?? null;
-const fullWidthSection =
+const fullWidthSection: PricingSectionView | null =
   sectionsWithOrderedDoula.find((section) => normalizeSectionTitle(section.title) === "naturopathie") ?? null;
-const mainSections = sectionsWithOrderedDoula.filter(
+const mainSections: PricingSectionView[] = sectionsWithOrderedDoula.filter(
   (section) => section !== sideSection && section !== fullWidthSection,
 );
-const formatPrice = (value) => {
+const formatPrice = (value: string | undefined) => {
   const raw = (value ?? "").trim();
   if (!raw) return "";
   return /€|euro/i.test(raw) ? raw : `${raw} €`;

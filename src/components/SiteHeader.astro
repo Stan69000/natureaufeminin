@@ -84,7 +84,7 @@ const pathname = Astro.url.pathname;
       return darkQuery.matches ? "dark" : "light";
     };
 
-    const applyTheme = (theme) => {
+    const applyTheme = (theme: "light" | "dark") => {
       root.dataset.theme = theme;
       const isDark = theme === "dark";
       if (themeToggle instanceof HTMLButtonElement) {
@@ -119,7 +119,7 @@ const pathname = Astro.url.pathname;
     const desktopQuery = window.matchMedia("(min-width: 881px)");
     root.classList.add("js");
 
-    const setMenuState = (isOpen) => {
+    const setMenuState = (isOpen: boolean) => {
       nav.dataset.state = isOpen ? "open" : "closed";
       toggle.setAttribute("aria-expanded", String(isOpen));
       toggle.setAttribute("aria-label", isOpen ? "Fermer le menu principal" : "Ouvrir le menu principal");

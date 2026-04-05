@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "studio:dev": "sanity dev --host 0.0.0.0 --port 3333",
+    "studio:dev": "sanity dev --host localhost --port 3333",
     "studio:deploy": "sanity deploy",
     "sanity:check": "node scripts/sanity-check.mjs",
     "sanity:verify": "node scripts/sanity-verify-seed.mjs",
@@ -32,6 +32,9 @@
     "styled-components": "^6.3.12"
   },
   "devDependencies": {
-    "sanity": "^5.19.0"
+    "@astrojs/check": "^0.9.8",
+    "@types/sanitize-html": "^2.16.1",
+    "sanity": "^5.19.0",
+    "typescript": "^5.9.3"
   }
 }
