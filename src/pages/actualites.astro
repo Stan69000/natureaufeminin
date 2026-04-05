@@ -13,6 +13,10 @@ const description = page.seoDescription?.trim() || defaultSeo.description;
 const intro =
   page.actualitesIntro?.trim() ||
   "Retrouvez ici les prochaines dates, ateliers et annonces importantes.";
+const featuredTitle = "Refonte du site: version grand public";
+const featuredPublishedAt = "4 avril 2025";
+const featuredExcerpt =
+  "Le nouveau site est en ligne. J'ai simplifié la navigation, clarifié les contenus importants et amélioré la lecture sur mobile comme sur ordinateur pour que les informations utiles soient trouvées plus facilement.";
 
 function getYoutubeEmbedUrl(input?: string): string | null {
   if (!input) return null;
@@ -55,24 +59,14 @@ function parseSafeDate(input?: string): Date | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
-const featuredTitle = page.actualitesFeaturedTitle?.trim() || "Refonte du site: version grand public";
-const featuredPublishedAtDate = parseSafeDate(page.actualitesFeaturedPublishedAt) ?? new Date("2025-04-04");
-const featuredPublishedAt = formatFrenchDate(featuredPublishedAtDate);
-const featuredExcerpt =
-  page.actualitesFeaturedExcerpt?.trim() ||
-  "Le nouveau site est en ligne. J'ai simplifié la navigation, clarifié les contenus importants et amélioré la lecture sur mobile comme sur ordinateur pour que les informations utiles soient trouvées plus facilement.";
-
 const newsItems =
   page.actualitesItems
     ?.filter((item) => item.title?.trim() || item.excerpt?.trim())
     .map((item) => {
       const excerpt = item.excerpt?.trim() || "";
+      const siteTruthDate = /27\s+avril/i.test(excerpt) ? new Date("2025-04-27") : null;
       const cmsPublishedAtDate = parseSafeDate(item.publishedAt);
-      const publishedAtDate = cmsPublishedAtDate
-        ? cmsPublishedAtDate
-        : /27\s+avril/i.test(excerpt)
-          ? new Date("2025-04-27")
-          : null;
+      const publishedAtDate = siteTruthDate ?? cmsPublishedAtDate;
       const publishedAt = publishedAtDate ? formatFrenchDate(publishedAtDate) : "";
 
       return {

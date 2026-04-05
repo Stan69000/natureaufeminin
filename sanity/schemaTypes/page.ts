@@ -24,6 +24,25 @@ export const pageType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "legacyWp",
+      title: "Legacy WordPress",
+      type: "object",
+      hidden: true,
+      readOnly: true,
+      fields: [
+        defineField({
+          name: "id",
+          title: "ID",
+          type: "number",
+        }),
+        defineField({
+          name: "link",
+          title: "Lien",
+          type: "string",
+        }),
+      ],
+    }),
+    defineField({
       name: "body",
       title: "Contenu",
       type: "array",

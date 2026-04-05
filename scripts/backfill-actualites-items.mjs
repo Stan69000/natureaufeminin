@@ -29,7 +29,7 @@ async function main() {
           _key: randomUUID().slice(0, 12),
           _type: "actualiteItem",
           title: "Atelier Cycle Menstruel",
-          publishedAt: new Date().toISOString(),
+          publishedAt: "2025-04-27T10:00:00.000Z",
           excerpt:
             "Le prochain atelier aura lieu le 27 avril à 10h sur le thème du cycle menstruel. Les places sont limitées pour privilégier la qualité des échanges.",
           youtubeUrl: "https://www.youtube.com/watch?v=KV60ZgnwJzk",
