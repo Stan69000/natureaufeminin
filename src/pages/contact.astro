@@ -199,9 +199,10 @@ const structuredData = {
           statusSlot.innerHTML = "";
           const p = document.createElement("p");
           p.id = "form-status-message";
-          p.className = `form-alert ${kind === "success" ? "form-alert-success" : "form-alert-error"}`;
+          p.className = `form-alert form-alert-prominent ${kind === "success" ? "form-alert-success" : "form-alert-error"}`;
           p.setAttribute("role", kind === "success" ? "status" : "alert");
-          p.textContent = text;
+          const icon = kind === "success" ? "✅" : "⚠️";
+          p.textContent = `${icon} ${text}`;
           statusSlot.appendChild(p);
         };
 
@@ -214,7 +215,7 @@ const structuredData = {
 
         const queryStatus = new URLSearchParams(window.location.search).get("status");
         if (queryStatus === "success") {
-          renderStatusMessage("success", "Votre demande a bien été envoyée. Merci, je vous réponds rapidement.");
+          renderStatusMessage("success", "Message envoyé avec succès. Merci, je vous réponds rapidement.");
           setLiveText("Votre demande a bien été envoyée.");
         } else if (queryStatus === "error") {
           renderStatusMessage("error", "Un problème est survenu pendant l'envoi. Merci de réessayer ou d'appeler directement.");
@@ -404,14 +405,27 @@ const structuredData = {
     margin-bottom: 1rem;
   }
 
+  .form-alert-prominent {
+    margin-top: 1rem;
+    margin-bottom: 1.1rem;
+    padding: 1rem 1.1rem;
+    border-width: 2px;
+    font-size: 1.06rem;
+    font-weight: 800;
+    line-height: 1.45;
+    box-shadow: 0 16px 24px -18px rgba(19, 39, 31, 0.85);
+  }
+
   .form-alert-success {
     border: 1px solid color-mix(in oklab, #2d7a4f 50%, white);
     background: color-mix(in oklab, #2d7a4f 12%, white);
+    color: #144a31;
   }
 
   .form-alert-error {
     border: 1px solid color-mix(in oklab, #a92f2f 45%, white);
     background: color-mix(in oklab, #a92f2f 10%, white);
+    color: #5f1616;
   }
 
   .form-live {
