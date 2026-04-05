@@ -70,8 +70,20 @@ const pricingSections =
           .map((item) => ({ label: item.label ?? "", price: item.price ?? "" })) ?? [],
     })) ?? [];
 const displayedSections = pricingSections.length > 0 ? pricingSections : fallbackSections;
-const sideSection = displayedSections.at(-1);
-const mainSections = sideSection ? displayedSections.slice(0, -1) : displayedSections;
+const normalizeSectionTitle = (value) =>
+  (value ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+const massageBebeSection =
+  displayedSections.find((section) => normalizeSectionTitle(section.title) === "massage bebe") ?? null;
+const naturopathieSection =
+  displayedSections.find((section) => normalizeSectionTitle(section.title) === "naturopathie") ?? null;
+
+const featuredSections = new Set([massageBebeSection, naturopathieSection].filter(Boolean));
+const mainSections = displayedSections.filter((section) => !featuredSections.has(section));
 ---
 
 <BaseLayout title={title} description={description}>
@@ -93,12 +105,12 @@ const mainSections = sideSection ? displayedSections.slice(0, -1) : displayedSec
     </div>
 
     {
-      sideSection && (
-        <section class="tarifs-side-row" aria-label="Bloc final tarifs et appel à l'action">
-          <section class="tarif-card" aria-label={sideSection.title}>
-            <h2>{sideSection.title}</h2>
+      massageBebeSection && (
+        <section class="tarifs-side-row" aria-label="Bloc Massage Bébé et appel à l'action">
+          <section class="tarif-card" aria-label={massageBebeSection.title}>
+            <h2>{massageBebeSection.title}</h2>
             <ul>
-              {sideSection.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
+              {massageBebeSection.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
             </ul>
           </section>
           <aside class="tarifs-cta-panel">
@@ -112,6 +124,19 @@ const mainSections = sideSection ? displayedSections.slice(0, -1) : displayedSec
               {ctaLabel}
             </a>
           </aside>
+        </section>
+      )
+    }
+
+    {
+      naturopathieSection && (
+        <section class="tarifs-full-width-row" aria-label={naturopathieSection.title}>
+          <section class="tarif-card tarif-card--full" aria-label={naturopathieSection.title}>
+            <h2>{naturopathieSection.title}</h2>
+            <ul>
+              {naturopathieSection.items?.map((item) => <li><span>{item.label}</span><strong>{item.price}</strong></li>)}
+            </ul>
+          </section>
         </section>
       )
     }
