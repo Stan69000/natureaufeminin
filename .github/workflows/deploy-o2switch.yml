@@ -78,6 +78,12 @@ jobs:
           PUBLIC_CONTACT_FORM_ENDPOINT: ${{ secrets.PUBLIC_CONTACT_FORM_ENDPOINT }}
           PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
 
+      - name: Write trusted proxy IPs config
+        if: ${{ secrets.TRUSTED_PROXY_IPS != '' }}
+        run: printf "%s" "$TRUSTED_PROXY_IPS" > dist/.trusted_proxy_ips
+        env:
+          TRUSTED_PROXY_IPS: ${{ secrets.TRUSTED_PROXY_IPS }}
+
       - name: Upload dist artifact
         uses: actions/upload-artifact@v5
         with:
