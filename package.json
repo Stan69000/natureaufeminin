@@ -28,7 +28,7 @@
     "sanity:home:rename": "sanity exec scripts/rename-home-slug-to-accueil.mjs --with-user-token"
   },
   "dependencies": {
-    "@portabletext/to-html": "^2.0.17",
+    "@portabletext/to-html": "^5.0.2",
     "astro": "^6.1.4",
     "sanitize-html": "^2.17.0",
     "styled-components": "^6.3.12"
