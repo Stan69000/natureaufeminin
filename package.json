@@ -37,6 +37,6 @@
     "@astrojs/check": "^0.9.8",
     "@types/sanitize-html": "^2.16.1",
     "sanity": "^5.14.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }
