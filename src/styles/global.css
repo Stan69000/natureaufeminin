@@ -414,13 +414,16 @@ textarea:focus-visible {
 :root[data-theme="dark"] .wp-content p,
 :root[data-theme="dark"] .wp-content li,
 :root[data-theme="dark"] .wp-content small,
+:root[data-theme="dark"] .actualite-text,
+:root[data-theme="dark"] .cercle-card p,
+:root[data-theme="dark"] .ecoute-body p {
+  color: color-mix(in oklab, var(--text) 90%, var(--muted));
+}
+
 :root[data-theme="dark"] .prestations-submenu-intro,
 :root[data-theme="dark"] .actualites-intro,
 :root[data-theme="dark"] .actualite-date,
-:root[data-theme="dark"] .actualite-text,
 :root[data-theme="dark"] .cercle-intro,
-:root[data-theme="dark"] .cercle-card p,
-:root[data-theme="dark"] .ecoute-body p,
 :root[data-theme="dark"] .footer-credit p {
   color: var(--muted);
 }
@@ -432,7 +435,7 @@ textarea:focus-visible {
 :root[data-theme="dark"] .actualite-card h2,
 :root[data-theme="dark"] .cercle-card h2,
 :root[data-theme="dark"] .prestation-seo-block h2 {
-  color: color-mix(in oklab, var(--brand-deep) 84%, white);
+  color: color-mix(in oklab, var(--text) 76%, var(--brand));
 }
 
 :root[data-theme="dark"] .tarifs-intro {
@@ -477,6 +480,60 @@ textarea:focus-visible {
 :root[data-theme="dark"] .ecoute-lead {
   color: color-mix(in oklab, var(--text) 92%, white);
   background: color-mix(in oklab, var(--surface-strong) 92%, #000);
+}
+
+:root[data-theme="dark"] .actualites-intro-highlight {
+  border-color: color-mix(in oklab, var(--line) 88%, white);
+  background: linear-gradient(
+    150deg,
+    color-mix(in oklab, var(--surface-strong) 95%, #000),
+    color-mix(in oklab, var(--surface) 92%, #000)
+  );
+  color: color-mix(in oklab, var(--text) 94%, var(--muted));
+  box-shadow: 0 12px 22px -18px rgba(0, 0, 0, 0.72);
+}
+
+:root[data-theme="dark"] .qui-page {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--surface) 96%, #000),
+    color-mix(in oklab, var(--surface-strong) 98%, #000)
+  );
+  border-color: color-mix(in oklab, var(--line) 90%, white);
+}
+
+:root[data-theme="dark"] .qui-intro-story,
+:root[data-theme="dark"] .qui-training-section {
+  background:
+    radial-gradient(circle at 95% 2%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 40%),
+    linear-gradient(
+      165deg,
+      color-mix(in oklab, var(--surface) 94%, #000),
+      color-mix(in oklab, var(--surface-strong) 96%, #000)
+    );
+  border-color: color-mix(in oklab, var(--line) 88%, white);
+}
+
+:root[data-theme="dark"] .qui-intro-top,
+:root[data-theme="dark"] .qui-intro-focus,
+:root[data-theme="dark"] .qui-contact-band,
+:root[data-theme="dark"] .qui-training-card,
+:root[data-theme="dark"] .qui-intro-quote {
+  background: color-mix(in oklab, var(--surface-strong) 94%, #000);
+  border-color: color-mix(in oklab, var(--line) 88%, white);
+}
+
+:root[data-theme="dark"] .qui-intro-story h2,
+:root[data-theme="dark"] .qui-intro-top > p:first-of-type,
+:root[data-theme="dark"] .qui-intro-quote p,
+:root[data-theme="dark"] .qui-training-period {
+  color: color-mix(in oklab, var(--text) 80%, var(--brand));
+}
+
+:root[data-theme="dark"] .qui-page p,
+:root[data-theme="dark"] .qui-page li,
+:root[data-theme="dark"] .qui-training-text {
+  color: color-mix(in oklab, var(--text) 92%, var(--muted));
 }
 
 .section {
