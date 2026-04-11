@@ -331,8 +331,11 @@ const structuredData = {
 
   .contact-booking-btn {
     min-height: 50px;
-    padding: 0.78rem 1.4rem;
-    font-size: 1.03rem;
+    padding: 0.72rem clamp(0.85rem, 2.8vw, 1.4rem);
+    font-size: clamp(0.86rem, 2.5vw, 1.03rem);
+    white-space: nowrap;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
     box-shadow: 0 16px 26px -16px rgba(31, 59, 47, 0.92);
   }
 
