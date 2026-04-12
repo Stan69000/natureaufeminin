@@ -124,3 +124,12 @@ jobs:
           local-dir: ./dist/
           server-dir: ${{ needs.build.outputs.server_dir }}
           dangerous-clean-slate: false
+
+      - name: Verify critical CSP header
+        run: |
+          set -euo pipefail
+          TARGET_URL="${{ needs.build.outputs.deploy_env_url }}"
+          echo "Checking CSP on ${TARGET_URL}"
+          HEADERS="$(curl -sSI --max-time 20 "$TARGET_URL")"
+          echo "$HEADERS"
+          echo "$HEADERS" | grep -qi '^content-security-policy:'
