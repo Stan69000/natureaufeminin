@@ -147,6 +147,8 @@ const defaultFooterContent: FooterContent = {
   ],
   informationsTitle: "Informations",
   informations: [
+    { label: "Naturopathe Ouest lyonnais", href: "/ouest-lyonnais" },
+    { label: "Zones desservies", href: "/zones-desservies" },
     { label: "Mentions legales", href: "/mentions-legales" },
     { label: "Politique de confidentialite", href: "/politique-de-confidentialite" },
     { label: "Plan du site (XML)", href: "/sitemap.xml" },
@@ -225,4 +227,3 @@ export async function getFooterContent(): Promise<FooterContent> {
     informations: informations.length > 0 ? informations : defaultFooterContent.informations,
   };
 }
-

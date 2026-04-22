@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { communeSeoItems } from "../../data/communes-seo";
+
+export function getStaticPaths() {
+  return communeSeoItems.map((commune) => ({
+    params: { slug: commune.slug },
+    props: { commune },
+  }));
+}
+
+const { commune } = Astro.props;
+
+const title = `Naturopathe, Symptothermie et Doula à ${commune.name} | Natur' Au Feminin`;
+const description = `Accompagnement en naturopathie, symptothermie et doula à ${commune.name} (${commune.nearbyLabel ?? "secteur Ouest lyonnais"}), au cabinet, à domicile selon disponibilité ou en visio partout en France.`;
+const keywords = `naturopathe ${commune.name.toLowerCase()}, doula ${commune.name.toLowerCase()}, symptothermie ${commune.name.toLowerCase()}, accompagnement feminin ${commune.name.toLowerCase()}, ouest lyonnais`;
+const canonicalPath = `/communes/${commune.slug}`;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: `Accompagnement santé féminine à ${commune.name}`,
+  serviceType: "Naturopathie, symptothermie et doula",
+  areaServed: [{ "@type": "City", name: commune.name }, { "@type": "Country", name: "France" }],
+  availableChannel: [
+    {
+      "@type": "ServiceChannel",
+      serviceLocation: { "@type": "Place", name: "Cabinet à Fleurieux-sur-l'Arbresle" },
+    },
+    {
+      "@type": "ServiceChannel",
+      serviceUrl: "https://naturaufeminin.fr/contact",
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} structuredData={structuredData}>
+  <article class="section wp-content" aria-labelledby="page-title">
+    <h1 id="page-title">Accompagnement à {commune.name}</h1>
+    <p>
+      Vous recherchez une naturopathe, une conseillère en symptothermie ou une doula à
+      <strong> {commune.name}</strong> ? Je vous accompagne avec une approche personnalisée, centrée
+      sur la santé féminine.
+    </p>
+
+    <h2>Modalités d'accompagnement</h2>
+    <ul>
+      <li><strong>Cabinet</strong> : à Fleurieux-sur-l'Arbresle, proche de {commune.name}.</li>
+      <li><strong>Domicile</strong> : selon disponibilités et secteur.</li>
+      <li><strong>Visio</strong> : partout en France.</li>
+    </ul>
+
+    <h2>Accompagnements proposés</h2>
+    <ul>
+      <li><a href="/prestations/naturopathie">Naturopathie féminine</a></li>
+      <li><a href="/prestations/symptothermie">Symptothermie</a></li>
+      <li><a href="/prestations/doula">Accompagnement doula</a></li>
+      <li><a href="/prestations/ecoute-corporelle">Écoute corporelle</a></li>
+    </ul>
+
+    <p>
+      <a href="/contact">Prendre rendez-vous</a> ou consulter toutes les <a href="/zones-desservies">zones desservies</a>.
+    </p>
+
+    <p>
+      <small>URL locale: {canonicalPath}</small>
+    </p>
+  </article>
+</BaseLayout>

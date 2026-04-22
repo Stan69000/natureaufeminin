@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { communeSeoItems } from "../data/communes-seo";
+import { getDefaultPageSeo } from "../data/seo";
+import { serviceAreas } from "../data/site";
+
+const path = "/zones-desservies";
+const defaultSeo = getDefaultPageSeo(path);
+
+const title = defaultSeo.title;
+const description = defaultSeo.description;
+const keywords = defaultSeo.keywords;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Accompagnements en naturopathie, symptothermie et doula",
+  serviceType: "Accompagnement santé féminine",
+  areaServed: [
+    ...serviceAreas.localCommunes.map((city) => ({ "@type": "City", name: city })),
+    ...serviceAreas.regionalAreas.map((region) => ({ "@type": "AdministrativeArea", name: region })),
+    { "@type": "Country", name: "France" },
+  ],
+  availableChannel: [
+    {
+      "@type": "ServiceChannel",
+      serviceLocation: { "@type": "Place", name: "Cabinet à Fleurieux-sur-l'Arbresle" },
+    },
+    {
+      "@type": "ServiceChannel",
+      serviceLocation: { "@type": "Place", name: "Déplacements à domicile selon secteur" },
+    },
+    {
+      "@type": "ServiceChannel",
+      serviceUrl: "https://naturaufeminin.fr/contact",
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} structuredData={structuredData}>
+  <article class="section wp-content" aria-labelledby="page-title">
+    <h1 id="page-title">Zones desservies</h1>
+    <p>
+      Je vous accompagne en <strong>naturopathie</strong>, <strong>symptothermie</strong> et
+      <strong>doula</strong> selon 3 modalités: au cabinet, à domicile et en visio.
+    </p>
+
+    <h2>Local: cabinet à Fleurieux-sur-l'Arbresle</h2>
+    <p>
+      Les rendez-vous au cabinet se font à Fleurieux-sur-l'Arbresle, à proximité immédiate des
+      communes suivantes:
+    </p>
+    <ul>
+      {
+        communeSeoItems.map((commune) => (
+          <li>
+            <a href={`/communes/${commune.slug}`}>{commune.name}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>Régional: déplacements autour de l'Ouest lyonnais</h2>
+    <p>
+      Les accompagnements à domicile sont possibles selon disponibilités sur le secteur
+      <strong> Ouest lyonnais / Rhône / Métropole de Lyon</strong>.
+    </p>
+    <p>
+      Pour une page dédiée à cette recherche, consultez <a href="/ouest-lyonnais">Naturopathe Ouest lyonnais</a>.
+    </p>
+
+    <h2>National: accompagnement en visio partout en France</h2>
+    <p>
+      Si vous êtes hors secteur local, l'accompagnement est disponible en visio sur l'ensemble du
+      territoire.
+    </p>
+    <p>
+      <a href="/contact">Prendre rendez-vous</a> ou consulter les <a href="/prestations">prestations</a>.
+    </p>
+  </article>
+</BaseLayout>

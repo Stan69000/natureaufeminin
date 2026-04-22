@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-import { navItems, serviceCards, siteConfig } from "../data/site";
+import { navItems, serviceAreas, serviceCards, siteConfig } from "../data/site";
 import { getDefaultPageKeywords } from "../data/seo";
 
 interface Props {
@@ -70,7 +70,11 @@ const defaultStructuredData: Record<string, unknown>[] = [
     url: siteConfig.url,
     description: siteConfig.description,
     telephone: siteConfig.phone,
-    areaServed: "France",
+    areaServed: [
+      ...serviceAreas.localCommunes.map((city) => ({ "@type": "City", name: city })),
+      ...serviceAreas.regionalAreas.map((region) => ({ "@type": "AdministrativeArea", name: region })),
+      { "@type": "Country", name: "France" },
+    ],
     availableLanguage: ["fr-FR"],
     address: {
       "@type": "PostalAddress",

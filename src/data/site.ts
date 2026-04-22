@@ -11,6 +11,21 @@ export const siteConfig = {
   adminUrl: "https://naturaufeminin-admin.sanity.studio/",
 };
 
+export const serviceAreas = {
+  localCommunes: [
+    "Fleurieux-sur-l'Arbresle",
+    "L'Arbresle",
+    "Sain-Bel",
+    "Savigny",
+    "Éveux",
+    "Lentilly",
+    "Lozanne",
+    "Chessy-les-Mines",
+  ],
+  regionalAreas: ["Ouest lyonnais", "Rhône", "Métropole de Lyon"],
+  nationalLabel: "Visio partout en France",
+} as const;
+
 export const navItems = [
   { href: "/", label: "Accueil" },
   { href: "/qui-suis-je", label: "Qui suis-je ?" },

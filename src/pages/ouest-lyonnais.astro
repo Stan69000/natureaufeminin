@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { communeSeoItems } from "../data/communes-seo";
+import { getDefaultPageSeo } from "../data/seo";
+
+const path = "/ouest-lyonnais";
+const defaultSeo = getDefaultPageSeo(path);
+
+const title = defaultSeo.title;
+const description = defaultSeo.description;
+const keywords = defaultSeo.keywords;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Naturopathe dans l'Ouest lyonnais",
+  serviceType: "Naturopathie, symptothermie et doula",
+  areaServed: [
+    { "@type": "AdministrativeArea", name: "Ouest lyonnais" },
+    ...communeSeoItems.map((commune) => ({ "@type": "City", name: commune.name })),
+  ],
+  availableChannel: [
+    {
+      "@type": "ServiceChannel",
+      serviceLocation: { "@type": "Place", name: "Cabinet à Fleurieux-sur-l'Arbresle" },
+    },
+    {
+      "@type": "ServiceChannel",
+      serviceUrl: "https://naturaufeminin.fr/contact",
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} structuredData={structuredData}>
+  <article class="section wp-content" aria-labelledby="page-title">
+    <h1 id="page-title">Naturopathe dans l'Ouest lyonnais</h1>
+    <p>
+      J'accompagne les femmes de l'<strong>Ouest lyonnais</strong> en naturopathie, symptothermie,
+      écoute corporelle et accompagnement doula, avec des consultations en cabinet, à domicile
+      selon disponibilités et en visio.
+    </p>
+
+    <h2>Communes fréquemment accompagnées</h2>
+    <ul>
+      {
+        communeSeoItems.map((commune) => (
+          <li>
+            <a href={`/communes/${commune.slug}`}>{commune.name}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>Accompagnements disponibles</h2>
+    <ul>
+      <li><a href="/prestations/naturopathie">Naturopathie féminine</a></li>
+      <li><a href="/prestations/symptothermie">Symptothermie</a></li>
+      <li><a href="/prestations/doula">Doula</a></li>
+      <li><a href="/prestations/ecoute-corporelle">Écoute corporelle</a></li>
+    </ul>
+
+    <p>
+      Pour la vue complète par secteur, consultez les <a href="/zones-desservies">zones desservies</a>.
+      Pour réserver, passez par la page <a href="/contact">contact</a>.
+    </p>
+  </article>
+</BaseLayout>
