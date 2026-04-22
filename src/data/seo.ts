@@ -9,11 +9,11 @@ interface DefaultPageSeo {
 const defaultPageSeoByPath: Record<string, DefaultPageSeo> = {
   "/": {
     title:
-      "Naturopathe, Symptothermie & Doula a Fleurieux-sur-l'Arbresle | Natur' Au Feminin",
+      "Naturopathe Ouest Lyonnais, Symptothermie & Doula a Fleurieux-sur-l'Arbresle | Natur' Au Feminin",
     description:
-      "Naturopathe, conseillere en symptothermie et doula a Fleurieux-sur-l'Arbresle. Consultations au cabinet, a domicile ou en visio.",
+      "Naturopathe dans l'Ouest lyonnais, conseillere en symptothermie et doula a Fleurieux-sur-l'Arbresle. Consultations au cabinet, a domicile ou en visio.",
     keywords:
-      "naturopathe fleurieux-sur-l'arbresle, symptothermie, doula, sante feminine, gestion du stress, accompagnement feminin",
+      "naturopathe ouest lyonnais, naturopathe fleurieux-sur-l'arbresle, symptothermie, doula, sante feminine, gestion du stress, accompagnement feminin",
   },
   "/qui-suis-je": {
     title: "Qui suis-je ? Naturopathe, Symptothermie & Doula | Natur' Au Feminin",
@@ -84,6 +84,20 @@ const defaultPageSeoByPath: Record<string, DefaultPageSeo> = {
     keywords:
       "contact naturopathe, rendez-vous symptothermie, rendez-vous doula, fleurieux-sur-l'arbresle, visio",
   },
+  "/zones-desservies": {
+    title: "Zones desservies: Fleurieux, Ouest Lyonnais, Rhône, France | Natur' Au Feminin",
+    description:
+      "Accompagnements en cabinet a Fleurieux-sur-l'Arbresle, a domicile autour de L'Arbresle et en visio partout en France.",
+    keywords:
+      "naturopathe l'arbresle, naturopathe lentilly, naturopathe lozanne, doula ouest lyonnais, symptothermie rhone, visio france",
+  },
+  "/ouest-lyonnais": {
+    title: "Naturopathe Ouest Lyonnais: consultations cabinet, domicile et visio | Natur' Au Feminin",
+    description:
+      "Accompagnement en naturopathie, symptothermie et doula dans l'Ouest lyonnais: Fleurieux-sur-l'Arbresle, L'Arbresle, Lentilly, Lozanne et communes voisines.",
+    keywords:
+      "naturopathe ouest lyonnais, doula ouest lyonnais, symptothermie ouest lyonnais, naturopathe lentilly, naturopathe lozanne, naturopathe l'arbresle",
+  },
   "/mentions-legales": {
     title: "Mentions legales | Natur' Au Feminin",
     description: "Consultez les mentions legales du site Natur' Au Feminin.",
@@ -103,7 +117,7 @@ export function getDefaultPageSeo(pathname: string): DefaultPageSeo {
       title: siteConfig.title,
       description: siteConfig.description,
       keywords:
-        "naturopathie feminine, symptothermie, doula, sante feminine, fleurieux-sur-l'arbresle",
+        "naturopathie feminine, symptothermie, doula, sante feminine, fleurieux-sur-l'arbresle, ouest lyonnais, rhone",
     }
   );
 }

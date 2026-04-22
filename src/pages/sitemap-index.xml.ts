@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { communeSeoItems } from '../data/communes-seo';
 import { siteConfig } from '../data/site';
 
 const routes = [
@@ -13,8 +14,15 @@ const routes = [
   { path: '/actualites', priority: '0.7', changefreq: 'weekly' },
   { path: '/mon-cercle', priority: '0.6', changefreq: 'monthly' },
   { path: '/contact', priority: '0.9', changefreq: 'monthly' },
+  { path: '/zones-desservies', priority: '0.8', changefreq: 'monthly' },
+  { path: '/ouest-lyonnais', priority: '0.9', changefreq: 'monthly' },
   { path: '/mentions-legales', priority: '0.2', changefreq: 'yearly' },
   { path: '/politique-de-confidentialite', priority: '0.2', changefreq: 'yearly' },
+  ...communeSeoItems.map((commune) => ({
+    path: `/communes/${commune.slug}`,
+    priority: '0.7',
+    changefreq: 'monthly',
+  })),
 ] as const;
 
 export const GET: APIRoute = () => {
