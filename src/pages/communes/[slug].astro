@@ -12,27 +12,44 @@ export function getStaticPaths() {
 const { commune } = Astro.props;
 
 const title = `Naturopathe, Symptothermie et Doula à ${commune.name} | Natur' Au Feminin`;
-const description = `Accompagnement en naturopathie, symptothermie et doula à ${commune.name} (${commune.nearbyLabel ?? "secteur Ouest lyonnais"}), au cabinet, à domicile selon disponibilité ou en visio partout en France.`;
+const description = `Accompagnement en naturopathie, symptothermie et doula à ${commune.name} (${commune.nearbyLabel}), au cabinet, à domicile selon disponibilité ou en visio partout en France.`;
 const keywords = `naturopathe ${commune.name.toLowerCase()}, doula ${commune.name.toLowerCase()}, symptothermie ${commune.name.toLowerCase()}, accompagnement feminin ${commune.name.toLowerCase()}, ouest lyonnais`;
-const canonicalPath = `/communes/${commune.slug}`;
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "Service",
-  name: `Accompagnement santé féminine à ${commune.name}`,
-  serviceType: "Naturopathie, symptothermie et doula",
-  areaServed: [{ "@type": "City", name: commune.name }, { "@type": "Country", name: "France" }],
-  availableChannel: [
-    {
-      "@type": "ServiceChannel",
-      serviceLocation: { "@type": "Place", name: "Cabinet à Fleurieux-sur-l'Arbresle" },
-    },
-    {
-      "@type": "ServiceChannel",
-      serviceUrl: "https://naturaufeminin.fr/contact",
-    },
-  ],
-};
+const nearbyLinks = commune.nearbyCommunes
+  .map((communeName) => communeSeoItems.find((item) => item.name === communeName))
+  .filter((item): item is (typeof communeSeoItems)[number] => Boolean(item));
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `Accompagnement santé féminine à ${commune.name}`,
+    serviceType: "Naturopathie, symptothermie et doula",
+    areaServed: [{ "@type": "City", name: commune.name }, { "@type": "Country", name: "France" }],
+    availableChannel: [
+      {
+        "@type": "ServiceChannel",
+        serviceLocation: { "@type": "Place", name: "Cabinet à Fleurieux-sur-l'Arbresle" },
+      },
+      {
+        "@type": "ServiceChannel",
+        serviceUrl: "https://naturaufeminin.fr/contact",
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: commune.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  },
+];
 ---
 
 <BaseLayout title={title} description={description} keywords={keywords} structuredData={structuredData}>
@@ -43,12 +60,19 @@ const structuredData = {
       <strong> {commune.name}</strong> ? Je vous accompagne avec une approche personnalisée, centrée
       sur la santé féminine.
     </p>
+    <p>{commune.localAngle}</p>
 
     <h2>Modalités d'accompagnement</h2>
+    <p>{commune.mobilityHint}</p>
     <ul>
       <li><strong>Cabinet</strong> : à Fleurieux-sur-l'Arbresle, proche de {commune.name}.</li>
       <li><strong>Domicile</strong> : selon disponibilités et secteur.</li>
       <li><strong>Visio</strong> : partout en France.</li>
+    </ul>
+
+    <h2>Besoins fréquemment accompagnés à {commune.name}</h2>
+    <ul>
+      {commune.audienceNeeds.map((need) => <li>{need}</li>)}
     </ul>
 
     <h2>Accompagnements proposés</h2>
@@ -59,12 +83,29 @@ const structuredData = {
       <li><a href="/prestations/ecoute-corporelle">Écoute corporelle</a></li>
     </ul>
 
-    <p>
-      <a href="/contact">Prendre rendez-vous</a> ou consulter toutes les <a href="/zones-desservies">zones desservies</a>.
-    </p>
+    {nearbyLinks.length > 0 && (
+      <>
+        <h2>Communes proches</h2>
+        <ul>
+          {nearbyLinks.map((item) => <li><a href={`/communes/${item.slug}`}>{item.name}</a></li>)}
+        </ul>
+      </>
+    )}
+
+    <h2>Questions fréquentes à {commune.name}</h2>
+    <div class="prestation-faq-grid">
+      {
+        commune.faq.map((item) => (
+          <article class="prestation-faq-item">
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
+          </article>
+        ))
+      }
+    </div>
 
     <p>
-      <small>URL locale: {canonicalPath}</small>
+      <a href="/contact">Prendre rendez-vous</a> ou consulter toutes les <a href="/zones-desservies">zones desservies</a>.
     </p>
   </article>
 </BaseLayout>
