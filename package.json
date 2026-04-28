@@ -34,7 +34,7 @@
     "styled-components": "^6.4.1"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.8",
+    "@astrojs/check": "^0.9.9",
     "@types/sanitize-html": "^2.16.1",
     "sanity": "^5.22.0",
     "typescript": "^5.9.3"
