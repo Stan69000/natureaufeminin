@@ -69,4 +69,4 @@ jobs:
           sudo install -m 0755 gitleaks /usr/local/bin/gitleaks
 
       - name: Run gitleaks
-        run: gitleaks git --verbose --redact --source .
+        run: gitleaks git --verbose --redact .
