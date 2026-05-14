@@ -3,6 +3,14 @@
 Options -Indexes
 DirectoryIndex index.html
 
+## Legacy URL redirects (serve true HTTP 301 before static fallback files)
+Redirect 301 /contact-prise-de-rendez-vous /contact
+Redirect 301 /que-se-passe-t-il-en-ce-moment /actualites
+Redirect 301 /gestion-naturelle-de-la-fertilite-symptothermie /prestations/symptothermie
+Redirect 301 /doula-un-bebe-pour-bientot /prestations/doula
+Redirect 301 /lecoute-corporelle-par-la-voie-des-sens /prestations/ecoute-corporelle
+Redirect 301 /naturopathie /prestations/naturopathie
+
 <IfModule mod_headers.c>
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
   Header always set X-Frame-Options "DENY"
