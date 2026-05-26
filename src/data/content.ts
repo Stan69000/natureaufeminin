@@ -363,14 +363,22 @@ interface AdminPage {
 
 async function getAdminPage(slug: string): Promise<AdminPage | null> {
   const base = import.meta.env.NAF_ADMIN_API_URL;
-  if (!base) return null;
+  if (!base) {
+    console.warn(`[NAF] NAF_ADMIN_API_URL not set, skipping admin fetch for "${slug}"`);
+    return null;
+  }
+  const url = `${base}/api/public/naf/pages/${slug}`;
   try {
-    const res = await fetch(`${base}/api/public/naf/pages/${slug}`, {
-      headers: { accept: "application/json" },
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as AdminPage;
-  } catch {
+    const res = await fetch(url, { headers: { accept: "application/json" } });
+    if (!res.ok) {
+      console.error(`[NAF] Admin fetch failed for "${slug}": HTTP ${res.status} — ${url}`);
+      return null;
+    }
+    const data = (await res.json()) as AdminPage;
+    console.log(`[NAF] Admin page loaded: "${slug}" (source: admin)`);
+    return data;
+  } catch (err) {
+    console.error(`[NAF] Admin fetch error for "${slug}": ${String(err)} — ${url}`);
     return null;
   }
 }
