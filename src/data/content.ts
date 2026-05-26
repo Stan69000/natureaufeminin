@@ -20,7 +20,7 @@ export interface SitePageContent {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
-  source: "sanity";
+  source: "sanity" | "admin";
 }
 
 interface PricingItem {
@@ -341,6 +341,48 @@ function pickBestHtmlContent(page: SanityPage, sanity: SanityConfig): string {
   );
 }
 
+interface AdminPage {
+  slug: string;
+  title: string;
+  bodyHtml: string;
+  pricingSections?: PricingSection[];
+  pricingIntro?: string;
+  pricingCtaText?: string;
+  pricingCtaLabel?: string;
+  pricingCtaUrl?: string;
+  prestationsMenuTitle?: string;
+  prestationsIntro?: string;
+  prestationsMenu?: PrestationsMenuItem[];
+  actualitesIntro?: string;
+  actualitesItems?: ActualiteItem[];
+  circleIntro?: string;
+  circlePartners?: CirclePartnerItem[];
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+async function getAdminPage(slug: string): Promise<AdminPage | null> {
+  const base = import.meta.env.NAF_ADMIN_API_URL;
+  if (!base) {
+    console.warn(`[NAF] NAF_ADMIN_API_URL not set, skipping admin fetch for "${slug}"`);
+    return null;
+  }
+  const url = `${base}/api/public/naf/pages/${slug}`;
+  try {
+    const res = await fetch(url, { headers: { accept: "application/json" } });
+    if (!res.ok) {
+      console.error(`[NAF] Admin fetch failed for "${slug}": HTTP ${res.status} — ${url}`);
+      return null;
+    }
+    const data = (await res.json()) as AdminPage;
+    console.log(`[NAF] Admin page loaded: "${slug}" (source: admin)`);
+    return data;
+  } catch (err) {
+    console.error(`[NAF] Admin fetch error for "${slug}": ${String(err)} — ${url}`);
+    return null;
+  }
+}
+
 function getSanityConfig(): SanityConfig | null {
   const projectId = import.meta.env.SANITY_PROJECT_ID;
   const dataset = import.meta.env.SANITY_DATASET;
@@ -414,6 +456,30 @@ async function getSanityPage(slug: string): Promise<SanityPage | null> {
 }
 
 export async function getPageContent(slug: string): Promise<SitePageContent> {
+  const adminPage = await getAdminPage(slug);
+  if (adminPage?.title) {
+    return {
+      slug,
+      title: adminPage.title,
+      html: normalizeHtml(adminPage.bodyHtml ?? ""),
+      pricingSections: adminPage.pricingSections,
+      pricingIntro: adminPage.pricingIntro,
+      pricingCtaText: adminPage.pricingCtaText,
+      pricingCtaLabel: adminPage.pricingCtaLabel,
+      pricingCtaUrl: adminPage.pricingCtaUrl,
+      prestationsMenuTitle: adminPage.prestationsMenuTitle,
+      prestationsIntro: adminPage.prestationsIntro,
+      prestationsMenu: adminPage.prestationsMenu,
+      actualitesIntro: adminPage.actualitesIntro,
+      actualitesItems: adminPage.actualitesItems,
+      circleIntro: adminPage.circleIntro,
+      circlePartners: adminPage.circlePartners,
+      seoTitle: adminPage.seoTitle,
+      seoDescription: adminPage.seoDescription,
+      source: "admin",
+    };
+  }
+
   const sanity = getSanityConfig();
   if (!sanity) {
     throw new Error("Missing Sanity configuration.");
