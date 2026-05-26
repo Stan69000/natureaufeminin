@@ -53,6 +53,20 @@ function getSanityConfig() {
   return { projectId, dataset, apiVersion };
 }
 
+async function getAdminFooterSettings(): Promise<SanityFooterSettings | null> {
+  const base = import.meta.env.NAF_ADMIN_API_URL;
+  if (!base) return null;
+  try {
+    const res = await fetch(`${base}/api/public/naf/footer`, {
+      headers: { accept: "application/json" },
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as SanityFooterSettings;
+  } catch {
+    return null;
+  }
+}
+
 async function getSanityFooterSettings(): Promise<SanityFooterSettings | null> {
   const sanity = getSanityConfig();
   if (!sanity) return null;
@@ -159,7 +173,7 @@ const defaultFooterContent: FooterContent = {
 export async function getFooterContent(): Promise<FooterContent> {
   let sanityFooter: SanityFooterSettings | null = null;
   try {
-    sanityFooter = await getSanityFooterSettings();
+    sanityFooter = await getAdminFooterSettings() ?? await getSanityFooterSettings();
   } catch {
     return defaultFooterContent;
   }
