@@ -11,6 +11,9 @@ const page = await getPageContent(slug);
 const defaultSeo = getDefaultPageSeo(path);
 const title = page.seoTitle?.trim() || defaultSeo.title;
 const description = page.seoDescription?.trim() || defaultSeo.description;
+const keywords = page.seoKeywords?.trim() || defaultSeo.keywords;
+const ogImage = page.seoOgImage?.trim() || undefined;
+const noindex = page.seoNoindex ?? false;
 const html = page.html;
 const prestationSeo = getPrestationSeo(path);
 ---
@@ -18,7 +21,7 @@ const prestationSeo = getPrestationSeo(path);
 <BaseLayout
   title={title}
   description={description}
-  keywords={defaultSeo.keywords}
+  keywords={keywords} ogImage={ogImage} noindex={noindex}
   structuredData={prestationSeo.structuredData}
 >
   <article class="section wp-content" aria-labelledby="page-title">

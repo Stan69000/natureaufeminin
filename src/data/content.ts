@@ -20,6 +20,9 @@ export interface SitePageContent {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
+  seoKeywords?: string;
+  seoOgImage?: string;
+  seoNoindex?: boolean;
   source: "sanity" | "admin";
 }
 
@@ -359,6 +362,9 @@ interface AdminPage {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
+  seoKeywords?: string;
+  seoOgImage?: string;
+  seoNoindex?: boolean;
 }
 
 async function getAdminPage(slug: string): Promise<AdminPage | null> {
@@ -476,6 +482,9 @@ export async function getPageContent(slug: string): Promise<SitePageContent> {
       circlePartners: adminPage.circlePartners,
       seoTitle: adminPage.seoTitle,
       seoDescription: adminPage.seoDescription,
+      seoKeywords: adminPage.seoKeywords,
+      seoOgImage: adminPage.seoOgImage,
+      seoNoindex: adminPage.seoNoindex,
       source: "admin",
     };
   }
@@ -544,5 +553,6 @@ export async function getPageContent(slug: string): Promise<SitePageContent> {
       ? decodeEntities(sanityPage.seoDescription)
       : undefined,
     source: "sanity",
+    // seoKeywords / seoOgImage / seoNoindex : non gérés côté Sanity
   };
 }

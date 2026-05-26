@@ -8,10 +8,13 @@ const page = await getPageContent("accueil");
 const defaultSeo = getDefaultPageSeo("/");
 const title = page.seoTitle?.trim() || defaultSeo.title;
 const description = page.seoDescription?.trim() || defaultSeo.description;
+const keywords = page.seoKeywords?.trim() || defaultSeo.keywords;
+const ogImage = page.seoOgImage?.trim() || undefined;
+const noindex = page.seoNoindex ?? false;
 const html = page.html;
 ---
 
-<BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
+<BaseLayout title={title} description={description} keywords={keywords} ogImage={ogImage} noindex={noindex}>
   <section class="home-hero section" aria-labelledby="home-hero-title">
     <div class="hero-grid">
       <div>

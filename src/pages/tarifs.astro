@@ -10,6 +10,9 @@ const page = await getPageContent(slug);
 const defaultSeo = getDefaultPageSeo("/tarifs");
 const title = page.seoTitle?.trim() || defaultSeo.title;
 const description = page.seoDescription?.trim() || defaultSeo.description;
+const keywords = page.seoKeywords?.trim() || defaultSeo.keywords;
+const ogImage = page.seoOgImage?.trim() || undefined;
+const noindex = page.seoNoindex ?? false;
 const intro = page.pricingIntro?.trim() || "";
 const ctaText = page.pricingCtaText?.trim() || "Un doute sur la formule adaptée ?";
 const ctaLabel = page.pricingCtaLabel?.trim() || "Réserver un premier échange";
@@ -157,7 +160,7 @@ const formatPrice = (value: string | undefined) => {
 };
 ---
 
-<BaseLayout title={title} description={description} keywords={defaultSeo.keywords}>
+<BaseLayout title={title} description={description} keywords={keywords} ogImage={ogImage} noindex={noindex}>
   <article class="section wp-content tarifs-content" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     {intro && <p class="tarifs-intro">{intro}</p>}
