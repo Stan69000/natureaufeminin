@@ -72,9 +72,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
-          SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
-          SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
           PUBLIC_CONTACT_FORM_ENDPOINT: ${{ secrets.PUBLIC_CONTACT_FORM_ENDPOINT }}
           PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
           NAF_ADMIN_API_URL: ${{ secrets.NAF_ADMIN_API_URL }}
