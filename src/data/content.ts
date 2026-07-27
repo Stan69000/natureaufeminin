@@ -1,6 +1,4 @@
-import { toHTML } from "@portabletext/to-html";
 import sanitizeHtml from "sanitize-html";
-import { sanitizeCmsUrl, sanitizeYoutubeVideoId } from "../utils/security";
 
 export interface SitePageContent {
   slug: string;
@@ -20,7 +18,7 @@ export interface SitePageContent {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
-  source: "sanity" | "admin";
+  source: "admin";
 }
 
 interface PricingItem {
@@ -54,32 +52,6 @@ interface CirclePartnerItem {
   websiteUrl?: string;
 }
 
-interface SanityPage {
-  slug: string;
-  title: string;
-  body?: unknown[];
-  pricingSections?: PricingSection[];
-  pricingIntro?: string;
-  pricingCtaText?: string;
-  pricingCtaLabel?: string;
-  pricingCtaUrl?: string;
-  prestationsMenuTitle?: string;
-  prestationsIntro?: string;
-  prestationsMenu?: PrestationsMenuItem[];
-  actualitesIntro?: string;
-  actualitesItems?: ActualiteItem[];
-  circleIntro?: string;
-  circlePartners?: CirclePartnerItem[];
-  seoTitle?: string;
-  seoDescription?: string;
-}
-
-interface SanityConfig {
-  projectId: string;
-  dataset: string;
-  apiVersion: string;
-}
-
 const linkMap = new Map<string, string>([
   ["https://naturaufeminin.fr/?page_id=16", "/contact"],
   ["https://naturaufeminin.fr/?page_id=20", "/prestations/naturopathie"],
@@ -93,35 +65,6 @@ const linkMap = new Map<string, string>([
   ["https://naturaufeminin.fr/?page_id=38", "/prestations/doula"],
   ["https://naturaufeminin.fr/contact/", "/contact"],
 ]);
-
-function decodeEntities(input: string): string {
-  const decoded = input
-    .replaceAll("&#038;", "&")
-    .replaceAll("&rsquo;", "'")
-    .replaceAll("&nbsp;", " ")
-    .replaceAll("&ndash;", "-")
-    .replaceAll("&mdash;", "-");
-
-  return decoded
-    .replace(/&#(\d+);/g, (_match, dec) => {
-      const codePoint = Number.parseInt(dec, 10);
-      if (!Number.isFinite(codePoint)) return _match;
-      try {
-        return String.fromCodePoint(codePoint);
-      } catch {
-        return _match;
-      }
-    })
-    .replace(/&#x([0-9a-fA-F]+);/g, (_match, hex) => {
-      const codePoint = Number.parseInt(hex, 16);
-      if (!Number.isFinite(codePoint)) return _match;
-      try {
-        return String.fromCodePoint(codePoint);
-      } catch {
-        return _match;
-      }
-    });
-}
 
 function normalizeHtml(html: string): string {
   let result = html;
@@ -197,7 +140,7 @@ function optimizeHtmlForSeo(html: string): string {
     .replace(/<\/h1>/gi, "</h2>");
 
   // Ensure external links opened in new tabs always include noopener/noreferrer.
-  result = result.replace(/<a([^>]*target="_blank"[^>]*)>/gi, (match, attrs: string) => {
+  result = result.replace(/<a([^>]*target="_blank"[^>]*)>/gi, (_match, attrs: string) => {
     if (/rel\s*=/.test(attrs)) {
       return `<a${attrs.replace(/rel\s*=\s*["']([^"']*)["']/i, (_relMatch, relValue: string) => {
         const relTokens = new Set(
@@ -215,7 +158,7 @@ function optimizeHtmlForSeo(html: string): string {
   });
 
   // Improve image technical attributes and provide fallback alt text when missing.
-  result = result.replace(/<img\b([^>]*)>/gi, (match, attrs: string) => {
+  result = result.replace(/<img\b([^>]*)>/gi, (_match, attrs: string) => {
     let nextAttrs = attrs.replace(/\s*\/\s*$/, "").trimEnd();
 
     if (!/\bloading\s*=/.test(nextAttrs)) {
@@ -238,109 +181,6 @@ function optimizeHtmlForSeo(html: string): string {
   return result;
 }
 
-function escapeHtmlAttribute(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
-
-function imageRefToCdnUrl(ref: string, sanity: SanityConfig): string | null {
-  const match = /^image-([a-zA-Z0-9]+)-(\d+x\d+)-([a-z0-9]+)$/i.exec(ref);
-  if (!match) return null;
-  const [, assetId, dimensions, format] = match;
-  return `https://cdn.sanity.io/images/${sanity.projectId}/${sanity.dataset}/${assetId}-${dimensions}.${format}`;
-}
-
-function renderPortableImageToHtml(value: any, sanity: SanityConfig): string {
-  const imageRef = value?.asset?._ref;
-  if (typeof imageRef !== "string") return "";
-
-  const src = imageRefToCdnUrl(imageRef, sanity);
-  if (!src) return "";
-
-  const altRaw =
-    typeof value?.alt === "string" && value.alt.trim()
-      ? value.alt.trim()
-      : "Illustration Natur Au Feminin";
-  const alt = escapeHtmlAttribute(altRaw);
-  return `<figure><img src="${src}" alt="${alt}" loading="lazy" decoding="async" /></figure>`;
-}
-
-function extractYoutubeVideoId(input?: string): string | null {
-  if (!input) return null;
-  try {
-    const url = new URL(input);
-    const host = url.hostname.replace(/^www\./, "");
-    let videoId = "";
-
-    if (host === "youtu.be") {
-      videoId = url.pathname.split("/").filter(Boolean)[0] ?? "";
-    } else if (host === "youtube.com" || host === "m.youtube.com") {
-      if (url.pathname === "/watch") {
-        videoId = url.searchParams.get("v") ?? "";
-      } else if (url.pathname.startsWith("/shorts/") || url.pathname.startsWith("/embed/")) {
-        videoId = url.pathname.split("/").filter(Boolean)[1] ?? "";
-      }
-    }
-
-    return sanitizeYoutubeVideoId(videoId);
-  } catch {
-    return null;
-  }
-}
-
-function renderPortableYoutubeToHtml(value: any): string {
-  const manualVideoId =
-    typeof value?.videoId === "string" ? sanitizeYoutubeVideoId(value.videoId.trim()) : null;
-  const urlVideoId =
-    typeof value?.url === "string" ? extractYoutubeVideoId(value.url.trim()) : null;
-  const videoId = manualVideoId || urlVideoId;
-  if (!videoId) return "";
-
-  const titleRaw =
-    typeof value?.title === "string" && value.title.trim()
-      ? value.title.trim()
-      : "Vidéo YouTube";
-  const title = escapeHtmlAttribute(titleRaw);
-
-  return `<p class="portable-youtube-wrap"><iframe src="https://www.youtube.com/embed/${videoId}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></p>`;
-}
-
-function renderPortableCtaButtonToHtml(value: any): string {
-  const labelRaw = typeof value?.label === "string" ? value.label.trim() : "";
-  if (!labelRaw) return "";
-  const href = sanitizeCmsUrl(value?.href, {
-    allowRelative: true,
-    allowedProtocols: ["https:", "mailto:", "tel:"],
-  });
-  if (!href) return "";
-
-  const label = escapeHtmlAttribute(labelRaw);
-  const targetRel =
-    href.startsWith("http")
-      ? ' target="_blank" rel="noopener noreferrer"'
-      : "";
-  return `<p class="portable-cta-wrap"><a class="btn btn-primary btn-booking portable-cta-button" href="${href}"${targetRel}>${label}</a></p>`;
-}
-
-function pickBestHtmlContent(page: SanityPage, sanity: SanityConfig): string {
-  return (
-    Array.isArray(page.body) && page.body.length > 0
-      ? toHTML(page.body as any[], {
-          components: {
-            types: {
-              image: ({ value }) => renderPortableImageToHtml(value, sanity),
-              youtubeEmbed: ({ value }) => renderPortableYoutubeToHtml(value),
-              ctaButton: ({ value }) => renderPortableCtaButtonToHtml(value),
-            },
-          },
-        })
-      : ""
-  );
-}
-
 interface AdminPage {
   slug: string;
   title: string;
@@ -361,188 +201,62 @@ interface AdminPage {
   seoDescription?: string;
 }
 
-async function getAdminPage(slug: string): Promise<AdminPage | null> {
+async function getAdminPage(slug: string): Promise<AdminPage> {
   const base = import.meta.env.NAF_ADMIN_API_URL;
   if (!base) {
-    console.warn(`[NAF] NAF_ADMIN_API_URL not set, skipping admin fetch for "${slug}"`);
-    return null;
+    throw new Error("Missing NAF_ADMIN_API_URL configuration.");
   }
   const url = `${base}/api/public/naf/pages/${slug}`;
-  try {
-    const res = await fetch(url, { headers: { accept: "application/json" } });
-    if (!res.ok) {
-      console.error(`[NAF] Admin fetch failed for "${slug}": HTTP ${res.status} — ${url}`);
-      return null;
-    }
-    const data = (await res.json()) as AdminPage;
-    console.log(`[NAF] Admin page loaded: "${slug}" (source: admin)`);
-    return data;
-  } catch (err) {
-    console.error(`[NAF] Admin fetch error for "${slug}": ${String(err)} — ${url}`);
-    return null;
-  }
-}
+  const maxAttempts = 3;
+  let lastError: unknown;
 
-function getSanityConfig(): SanityConfig | null {
-  const projectId = import.meta.env.SANITY_PROJECT_ID;
-  const dataset = import.meta.env.SANITY_DATASET;
-  const apiVersion = import.meta.env.SANITY_API_VERSION || "2025-01-01";
-
-  if (!projectId || !dataset) return null;
-  return { projectId, dataset, apiVersion };
-}
-
-async function getSanityPage(slug: string): Promise<SanityPage | null> {
-  const sanity = getSanityConfig();
-  if (!sanity) return null;
-
-  const query = `*[_type == "page" && slug.current == $slug][0]{
-    "slug": slug.current,
-    title,
-    body,
-    pricingSections[]{
-      title,
-      items[]{
-        label,
-        price
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const res = await fetch(url, { headers: { accept: "application/json" } });
+      if (!res.ok) {
+        const error = new Error(`HTTP ${res.status}`);
+        if (![429, 502, 503, 504].includes(res.status)) throw error;
+        lastError = error;
+      } else {
+        const data = (await res.json()) as AdminPage;
+        if (!data?.title) {
+          throw new Error("response does not contain a page title");
+        }
+        console.log(`[NAF] Admin page loaded: "${slug}" (source: admin)`);
+        return data;
       }
-    },
-    pricingIntro,
-    pricingCtaText,
-    pricingCtaLabel,
-    pricingCtaUrl,
-    prestationsMenuTitle,
-    prestationsIntro,
-    prestationsMenu[]{
-      label,
-      href,
-      description
-    },
-    actualitesIntro,
-    actualitesItems[]{
-      title,
-      publishedAt,
-      excerpt,
-      youtubeUrl,
-      ctaLabel,
-      ctaUrl
-    },
-    circleIntro,
-    circlePartners[]{
-      name,
-      role,
-      websiteUrl
-    },
-    seoTitle,
-    seoDescription
-  }`;
+    } catch (err) {
+      lastError = err;
+    }
 
-  const url = new URL(
-    `https://${sanity.projectId}.api.sanity.io/v${sanity.apiVersion}/data/query/${sanity.dataset}`,
-  );
-  url.searchParams.set("query", query);
-  url.searchParams.set("$slug", JSON.stringify(slug));
-
-  const response = await fetch(url, {
-    headers: { accept: "application/json" },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Sanity query failed: ${response.status}`);
+    if (attempt < maxAttempts) {
+      await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+    }
   }
 
-  const payload = await response.json();
-  return (payload?.result as SanityPage | null) ?? null;
+  throw new Error(`[NAF] Admin fetch failed for "${slug}" at ${url}: ${String(lastError)}`);
 }
 
 export async function getPageContent(slug: string): Promise<SitePageContent> {
   const adminPage = await getAdminPage(slug);
-  if (adminPage?.title) {
-    return {
-      slug,
-      title: adminPage.title,
-      html: normalizeHtml(adminPage.bodyHtml ?? ""),
-      pricingSections: adminPage.pricingSections,
-      pricingIntro: adminPage.pricingIntro,
-      pricingCtaText: adminPage.pricingCtaText,
-      pricingCtaLabel: adminPage.pricingCtaLabel,
-      pricingCtaUrl: adminPage.pricingCtaUrl,
-      prestationsMenuTitle: adminPage.prestationsMenuTitle,
-      prestationsIntro: adminPage.prestationsIntro,
-      prestationsMenu: adminPage.prestationsMenu,
-      actualitesIntro: adminPage.actualitesIntro,
-      actualitesItems: adminPage.actualitesItems,
-      circleIntro: adminPage.circleIntro,
-      circlePartners: adminPage.circlePartners,
-      seoTitle: adminPage.seoTitle,
-      seoDescription: adminPage.seoDescription,
-      source: "admin",
-    };
-  }
-
-  const sanity = getSanityConfig();
-  if (!sanity) {
-    throw new Error("Missing Sanity configuration.");
-  }
-
-  const sanityPage = await getSanityPage(slug);
-  if (!sanityPage?.title) {
-    throw new Error(`Missing Sanity page for slug "${slug}"`);
-  }
-
   return {
     slug,
-    title: decodeEntities(sanityPage.title),
-    html: normalizeHtml(pickBestHtmlContent(sanityPage, sanity)),
-    pricingSections: sanityPage.pricingSections?.map((section) => ({
-      title: section.title ? decodeEntities(section.title) : undefined,
-      items: section.items?.map((item) => ({
-        label: item.label ? decodeEntities(item.label) : undefined,
-        price: item.price ? decodeEntities(item.price) : undefined,
-      })),
-    })),
-    pricingIntro: sanityPage.pricingIntro
-      ? decodeEntities(sanityPage.pricingIntro)
-      : undefined,
-    pricingCtaText: sanityPage.pricingCtaText
-      ? decodeEntities(sanityPage.pricingCtaText)
-      : undefined,
-    pricingCtaLabel: sanityPage.pricingCtaLabel
-      ? decodeEntities(sanityPage.pricingCtaLabel)
-      : undefined,
-    pricingCtaUrl: sanityPage.pricingCtaUrl ? decodeEntities(sanityPage.pricingCtaUrl) : undefined,
-    prestationsMenuTitle: sanityPage.prestationsMenuTitle
-      ? decodeEntities(sanityPage.prestationsMenuTitle)
-      : undefined,
-    prestationsIntro: sanityPage.prestationsIntro
-      ? decodeEntities(sanityPage.prestationsIntro)
-      : undefined,
-    prestationsMenu: sanityPage.prestationsMenu?.map((item) => ({
-      label: item.label ? decodeEntities(item.label) : undefined,
-      href: item.href ? decodeEntities(item.href) : undefined,
-      description: item.description ? decodeEntities(item.description) : undefined,
-    })),
-    actualitesIntro: sanityPage.actualitesIntro
-      ? decodeEntities(sanityPage.actualitesIntro)
-      : undefined,
-    actualitesItems: sanityPage.actualitesItems?.map((item) => ({
-      title: item.title ? decodeEntities(item.title) : undefined,
-      publishedAt: item.publishedAt,
-      excerpt: item.excerpt ? decodeEntities(item.excerpt) : undefined,
-      youtubeUrl: item.youtubeUrl ? decodeEntities(item.youtubeUrl) : undefined,
-      ctaLabel: item.ctaLabel ? decodeEntities(item.ctaLabel) : undefined,
-      ctaUrl: item.ctaUrl ? decodeEntities(item.ctaUrl) : undefined,
-    })),
-    circleIntro: sanityPage.circleIntro ? decodeEntities(sanityPage.circleIntro) : undefined,
-    circlePartners: sanityPage.circlePartners?.map((item) => ({
-      name: item.name ? decodeEntities(item.name) : undefined,
-      role: item.role ? decodeEntities(item.role) : undefined,
-      websiteUrl: item.websiteUrl ? decodeEntities(item.websiteUrl) : undefined,
-    })),
-    seoTitle: sanityPage.seoTitle ? decodeEntities(sanityPage.seoTitle) : undefined,
-    seoDescription: sanityPage.seoDescription
-      ? decodeEntities(sanityPage.seoDescription)
-      : undefined,
-    source: "sanity",
+    title: adminPage.title,
+    html: normalizeHtml(adminPage.bodyHtml ?? ""),
+    pricingSections: adminPage.pricingSections,
+    pricingIntro: adminPage.pricingIntro,
+    pricingCtaText: adminPage.pricingCtaText,
+    pricingCtaLabel: adminPage.pricingCtaLabel,
+    pricingCtaUrl: adminPage.pricingCtaUrl,
+    prestationsMenuTitle: adminPage.prestationsMenuTitle,
+    prestationsIntro: adminPage.prestationsIntro,
+    prestationsMenu: adminPage.prestationsMenu,
+    actualitesIntro: adminPage.actualitesIntro,
+    actualitesItems: adminPage.actualitesItems,
+    circleIntro: adminPage.circleIntro,
+    circlePartners: adminPage.circlePartners,
+    seoTitle: adminPage.seoTitle,
+    seoDescription: adminPage.seoDescription,
+    source: "admin",
   };
 }

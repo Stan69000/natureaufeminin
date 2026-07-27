@@ -9,26 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "studio:dev": "sanity dev --host localhost --port 3333",
-    "studio:deploy": "sanity deploy",
-    "sanity:check": "node scripts/sanity-check.mjs",
-    "sanity:verify": "node scripts/sanity-verify-seed.mjs",
-    "sanity:migrate:portable": "sanity exec scripts/migrate-legacy-html-to-portable-text.mjs --with-user-token",
-    "sanity:migrate:portable:images": "sanity exec scripts/migrate-html-to-portable-with-images.mjs --with-user-token",
-    "sanity:cleanup:bodyhtml": "sanity exec scripts/remove-bodyhtml-field.mjs --with-user-token",
-    "sanity:qui:add-media-cta": "sanity exec scripts/add-qui-video-cta-blocks.mjs --with-user-token",
-    "sanity:sync:local": "sanity exec scripts/sync-dist-to-sanity.mjs --with-user-token",
-    "sanity:footer:sync": "sanity exec scripts/sync-footer-settings.mjs --with-user-token",
-    "sanity:prestations:backfill": "sanity exec scripts/backfill-prestations-menu.mjs --with-user-token",
-    "sanity:actualites:backfill": "sanity exec scripts/backfill-actualites-items.mjs --with-user-token",
-    "sanity:actualites:reset": "sanity exec scripts/reset-actualites-page.mjs --with-user-token",
-    "sanity:moncercle:backfill": "sanity exec scripts/backfill-mon-cercle-partners.mjs --with-user-token",
-    "sanity:legal:update": "sanity exec scripts/update-legal-pages-content.mjs --with-user-token",
-    "sanity:home:rename": "sanity exec scripts/rename-home-slug-to-accueil.mjs --with-user-token"
+    "astro": "astro"
   },
   "dependencies": {
-    "@portabletext/to-html": "^5.0.2",
     "astro": "^7.0.9",
     "sanitize-html": "^2.17.6",
     "styled-components": "^6.4.3"
@@ -37,7 +20,6 @@
     "@astrojs/check": "^0.9.9",
     "@types/node": "^26.1.1",
     "@types/sanitize-html": "^2.16.1",
-    "sanity": "^6.4.0",
     "typescript": "^5.9.3"
   }
 }
