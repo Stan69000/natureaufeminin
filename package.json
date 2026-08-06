@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "@types/sanitize-html": "^2.16.1",
     "typescript": "^5.9.3"
   }
