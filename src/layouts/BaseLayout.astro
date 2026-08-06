@@ -155,7 +155,7 @@ const structuredDataJson = JSON.stringify(defaultStructuredData);
         root.dataset.theme = theme;
       })();
     </script>
-    <script type="application/ld+json" set:html={structuredDataJson} />
+    <script is:inline type="application/ld+json" set:html={structuredDataJson} />
     <slot name="head" />
   </head>
   <body>
