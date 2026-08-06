@@ -202,6 +202,17 @@ interface AdminPage {
 }
 
 async function getAdminPage(slug: string): Promise<AdminPage> {
+  const useCiFixtures =
+    import.meta.env.CI === "true" && import.meta.env.NAF_USE_CONTENT_FIXTURES === "true";
+
+  if (useCiFixtures) {
+    return {
+      slug,
+      title: `CI fixture: ${slug}`,
+      bodyHtml: "<p>Deterministic content fixture used to validate the static build.</p>",
+    };
+  }
+
   const base = import.meta.env.NAF_ADMIN_API_URL;
   if (!base) {
     throw new Error("Missing NAF_ADMIN_API_URL configuration.");

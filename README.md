@@ -11,7 +11,8 @@ Site vitrine statique développé avec Astro. Les contenus éditoriaux sont gér
 
 ## Installation
 
-Prérequis : Node.js `>= 22.12.0` et npm.
+Prérequis : Node.js `>= 22.12.0` et npm `10.9.0`. La version Node de référence
+est déclarée dans `.node-version`.
 
 ```bash
 npm install
@@ -38,8 +39,26 @@ afin d'éviter de publier un site incomplet ou obsolète.
 ```bash
 npm run dev
 npm run build
+npm run check
+npm run audit
 npm run preview
 ```
+
+## Contrôles CI
+
+Les pull requests exécutent systématiquement :
+
+- `astro check` ;
+- un build statique avec des contenus de test déterministes ;
+- Dependency Review pour refuser toute nouvelle vulnérabilité de niveau élevé ;
+- CodeQL et Gitleaks.
+
+Le mode de contenu de test exige simultanément `CI=true` et
+`NAF_USE_CONTENT_FIXTURES=true`. Il ne peut donc pas remplacer par accident
+l'API d'administration pendant un build local ou un déploiement de production.
+
+L'audit npm complet continue de s'exécuter sur `main`, chaque nuit et à la
+demande. Les actions GitHub sont figées sur des SHA immuables.
 
 ## CI/CD GitHub vers O2Switch
 
