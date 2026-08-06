@@ -60,6 +60,10 @@ l'API d'administration pendant un build local ou un déploiement de production.
 L'audit npm complet continue de s'exécuter sur `main`, chaque nuit et à la
 demande. Les actions GitHub sont figées sur des SHA immuables.
 
+Les mises à jour Dependabot de type patch concernant une dépendance directe de
+développement activent automatiquement le squash auto-merge. La fusion reste
+bloquée jusqu'à la réussite de tous les contrôles obligatoires de `main`.
+
 ## CI/CD GitHub vers O2Switch
 
 Le workflow `.github/workflows/deploy-o2switch.yml` :
