@@ -37,11 +37,11 @@ export interface FooterContent {
 
 function decodeEntities(input: string): string {
   return input
-    .replaceAll("&#038;", "&")
     .replaceAll("&rsquo;", "'")
     .replaceAll("&nbsp;", " ")
     .replaceAll("&ndash;", "-")
-    .replaceAll("&mdash;", "-");
+    .replaceAll("&mdash;", "-")
+    .replaceAll("&#038;", "&");
 }
 
 async function getAdminFooterSettings(): Promise<AdminFooterSettings | null> {
