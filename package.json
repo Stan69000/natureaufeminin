@@ -15,9 +15,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.3.5",
-    "sanitize-html": "^2.18.0",
-    "styled-components": "^6.5.3"
+    "astro": "^7.4.0",
+    "sanitize-html": "^2.18.1",
+    "styled-components": "^6.6.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
