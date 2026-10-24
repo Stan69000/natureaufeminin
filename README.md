@@ -11,7 +11,7 @@ Site vitrine statique développé avec Astro. Les contenus éditoriaux sont gér
 
 ## Installation
 
-Prérequis : Node.js `>= 22.12.0` et npm `10.9.0`. La version Node de référence
+Prérequis : Node.js `>= 22.22.0` et npm `10.9.0`. La version Node de référence
 est déclarée dans `.node-version`.
 
 ```bash
