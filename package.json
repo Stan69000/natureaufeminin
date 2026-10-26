@@ -20,7 +20,7 @@
     "styled-components": "^6.6.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "@types/node": "^26.6.5",
     "@types/sanitize-html": "^2.16.2",
     "typescript": "^5.9.3"
