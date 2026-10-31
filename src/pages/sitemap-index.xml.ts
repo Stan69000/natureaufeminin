@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { communeSeoItems } from '../data/communes-seo';
 import { siteConfig } from '../data/site';
+import { CMS_SLUG_BY_PATH } from '../data/cms-pages';
+import { isPageHidden } from '../data/content';
 
 const routes = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
@@ -26,9 +28,22 @@ const routes = [
   })),
 ] as const;
 
-export const GET: APIRoute = () => {
+export const GET: APIRoute = async () => {
   const lastmod = new Date().toISOString();
-  const urls = routes
+
+  // Une page masquée côté admin ne doit pas être proposée au crawl : la laisser
+  // au sitemap tout en la servant en noindex envoie deux signaux contraires.
+  const visibleRoutes = (
+    await Promise.all(
+      routes.map(async (route) => {
+        const slug = CMS_SLUG_BY_PATH[route.path];
+        if (slug && (await isPageHidden(slug))) return null;
+        return route;
+      }),
+    )
+  ).filter((route): route is (typeof routes)[number] => route !== null);
+
+  const urls = visibleRoutes
     .map(
       (route) =>
         `<url><loc>${siteConfig.url}${route.path}</loc><lastmod>${lastmod}</lastmod><changefreq>${route.changefreq}</changefreq><priority>${route.priority}</priority></url>`,

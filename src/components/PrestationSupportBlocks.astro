@@ -1,5 +1,7 @@
 ---
 import type { FaqItem, InternalLinkItem } from "../data/prestations-seo";
+import { CMS_SLUG_BY_PATH } from "../data/cms-pages";
+import { isPageHidden } from "../data/content";
 
 interface Props {
   faqItems: FaqItem[];
@@ -7,6 +9,17 @@ interface Props {
 }
 
 const { faqItems = [], internalLinks = [] } = Astro.props;
+
+// Un lien vers une page masquée la rendrait découvrable malgré le noindex,
+// et proposerait au visiteur une page que l'on ne veut pas encore montrer.
+const visibleLinks = (
+  await Promise.all(
+    internalLinks.map(async (item) => {
+      const slug = CMS_SLUG_BY_PATH[item.href];
+      return slug && (await isPageHidden(slug)) ? null : item;
+    }),
+  )
+).filter((item): item is InternalLinkItem => item !== null);
 ---
 
 {
@@ -28,12 +41,12 @@ const { faqItems = [], internalLinks = [] } = Astro.props;
 }
 
 {
-  internalLinks.length > 0 && (
+  visibleLinks.length > 0 && (
     <nav class="prestation-seo-block prestation-links" aria-label="Autres accompagnements">
       <h2>Autres accompagnements</h2>
       <ul>
         {
-          internalLinks.map((item) => (
+          visibleLinks.map((item) => (
             <li>
               <a href={item.href}>{item.label}</a>
             </li>

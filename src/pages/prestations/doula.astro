@@ -18,7 +18,8 @@ const prestationSeo = getPrestationSeo(path);
 <BaseLayout
   title={title}
   description={description}
- 
+  noindex={page.seoNoindex}
+  ogImage={page.seoOgImage}
   structuredData={prestationSeo.structuredData}
 >
   <article class="section wp-content" aria-labelledby="page-title">

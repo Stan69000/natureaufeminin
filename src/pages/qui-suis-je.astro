@@ -92,7 +92,7 @@ function formatContactBandSection(sourceHtml: string): string {
 const html = formatContactBandSection(formatIntroStorySection(formatTrainingSection(page.html)));
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} noindex={page.seoNoindex} ogImage={page.seoOgImage}>
   <article class="section wp-content qui-page" aria-labelledby="page-title">
     <h1 id="page-title">{page.title}</h1>
     <div set:html={html}></div>

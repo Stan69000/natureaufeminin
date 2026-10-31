@@ -1,3 +1,4 @@
+import { sanitizeCmsUrl } from "../utils/security";
 import sanitizeHtml from "sanitize-html";
 
 export interface SitePageContent {
@@ -18,6 +19,10 @@ export interface SitePageContent {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
+  /** Image de partage propre a la page, champ "Image OG" de l'onglet SEO. */
+  seoOgImage?: string;
+  /** Interrupteur "Désactiver l'indexation (noindex)" de l'onglet SEO de l'admin. */
+  seoNoindex?: boolean;
   source: "admin";
 }
 
@@ -260,6 +265,8 @@ interface AdminPage {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
+  seoOgImage?: string;
+  seoNoindex?: boolean;
 }
 
 /**
@@ -360,6 +367,35 @@ export async function getPageContent(slug: string): Promise<SitePageContent> {
     circlePartners: adminPage.circlePartners,
     seoTitle: adminPage.seoTitle,
     seoDescription: adminPage.seoDescription,
+    // Valeur saisie dans l'admin : on la filtre avant de l'emettre en meta.
+    seoOgImage: sanitizeCmsUrl(adminPage.seoOgImage, { allowRelative: true }) ?? undefined,
+    seoNoindex: adminPage.seoNoindex === true,
     source: "admin",
   };
+}
+
+
+/**
+ * Pages masquees par l'interrupteur "Desactiver l'indexation" de l'admin.
+ *
+ * Le drapeau etait stocke, expose par l'API publique et pilotable depuis
+ * l'interface, mais aucune page du site ne le lisait : le cocher n'avait aucun
+ * effet. Une page masquee est desormais en noindex, retiree du sitemap et plus
+ * liee depuis les autres pages.
+ *
+ * Le resultat est memoise : le sitemap et les blocs de liens interrogent les
+ * memes slugs, inutile de refaire les requetes a chaque appel.
+ */
+const hiddenSlugCache = new Map<string, boolean>();
+
+export async function isPageHidden(slug: string): Promise<boolean> {
+  const cached = hiddenSlugCache.get(slug);
+  if (cached !== undefined) return cached;
+
+  const page = await getOptionalPageContent(slug);
+  // Page absente du CMS : elle n'est pas masquee, elle n'existe simplement pas
+  // encore cote admin et le site publie son contenu de repli.
+  const hidden = page?.seoNoindex === true;
+  hiddenSlugCache.set(slug, hidden);
+  return hidden;
 }
