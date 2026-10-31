@@ -1,12 +1,22 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PrestationSupportBlocks from "../components/PrestationSupportBlocks.astro";
+import { getOptionalPageContent } from "../data/content";
 import { getDefaultPageSeo } from "../data/seo";
 
 const path = "/menopause";
-const defaultSeo = getDefaultPageSeo(path);
+const slug = "menopause";
 
-const title = defaultSeo.title;
-const description = defaultSeo.description;
+// Le contenu vient du CMS des qu'il y est saisi. Tant que la page n'existe pas
+// cote admin, on publie la version de repli ci-dessous : le site reste
+// deployable independamment de l'etat du back-office.
+const page = await getOptionalPageContent(slug);
+const cmsHtml = page?.html?.trim() || null;
+
+const defaultSeo = getDefaultPageSeo(path);
+const title = page?.seoTitle?.trim() || defaultSeo.title;
+const description = page?.seoDescription?.trim() || defaultSeo.description;
+const heading = page?.title?.trim() || "Naturopathie et ménopause";
 
 const faqItems = [
   {
@@ -29,6 +39,13 @@ const faqItems = [
     answer:
       "Oui, au cabinet de Fleurieux-sur-l'Arbresle, à domicile selon disponibilité, ou en visio partout en France.",
   },
+];
+
+const internalLinks = [
+  { href: "/prestations/naturopathie/", label: "L'accompagnement en naturopathie" },
+  { href: "/prestations/ecoute-corporelle/", label: "L'écoute corporelle" },
+  { href: "/qui-suis-je/", label: "Qui suis-je" },
+  { href: "/tarifs/", label: "Les tarifs" },
 ];
 
 const structuredData = [
@@ -68,112 +85,105 @@ const structuredData = [
 
 <BaseLayout title={title} description={description} structuredData={structuredData}>
   <article class="section wp-content" aria-labelledby="page-title">
-    <h1 id="page-title">Naturopathie et ménopause</h1>
-
-    <p>
-      La ménopause n'est pas une maladie. C'est une étape, au même titre que la puberté, la
-      grossesse ou le post-partum : le corps change de rythme et demande à être écouté
-      autrement. Et pourtant, beaucoup de femmes arrivent à ce moment-là sans avoir été
-      préparées, avec des sensations qu'elles ne reconnaissent pas et peu d'endroits où en
-      parler librement.
-    </p>
-
-    <p>
-      J'accompagne les femmes à toutes les phases de leur vie, et celle-ci en fait pleinement
-      partie. Mon rôle n'est pas de vous dire ce que vous devez ressentir, mais de vous aider
-      à comprendre ce qui se passe et à retrouver des appuis concrets au quotidien.
-    </p>
-
-    <h2>Comment se passe un accompagnement</h2>
-
-    <p>
-      Comme pour tout accompagnement en naturopathie, nous commençons par un
-      <strong>bilan de vitalité</strong>. Lors de ce premier entretien, nous faisons votre
-      anamnèse : votre histoire, votre rythme de vie, votre alimentation, votre sommeil, ce
-      qui vous pèse et ce qui vous porte. C'est ce temps-là qui nous permet de définir
-      ensemble un plan d'actions réaliste, adapté à votre énergie du moment.
-    </p>
-
-    <p>
-      Je vous accompagne ensuite tout au long de ce chemin. Je suis le filet de sécurité qui
-      vous permet d'avancer en confiance, à votre rythme, sans injonction.
-    </p>
-
-    <h2>Ce que nous regardons ensemble</h2>
-
-    <ul>
-      <li>
-        <strong>L'alimentation</strong>, notre point de départ si votre énergie vitale le
-        permet.
-      </li>
-      <li>
-        <strong>Le sommeil et la récupération</strong>, souvent les premiers bousculés à cette
-        période.
-      </li>
-      <li>
-        <strong>La mise en mouvement</strong>, adaptée à ce que votre corps accepte
-        aujourd'hui.
-      </li>
-      <li>
-        <strong>La gestion du stress et la respiration</strong>, pour retrouver de la marge.
-      </li>
-      <li>
-        <strong>Le rapport à votre corps</strong>, qui change, et avec lequel il faut parfois
-        refaire connaissance.
-      </li>
-    </ul>
-
-    <h2>La part émotionnelle</h2>
-
-    <p>
-      La ménopause ne se joue pas que dans le corps. C'est aussi une bascule : la fin d'un
-      cycle qui a rythmé des décennies, parfois un rapport à la féminité ou à la
-      transmission qui se réorganise. Quand cette dimension prend beaucoup de place, nous
-      pouvons travailler avec
-      <a href="/prestations/ecoute-corporelle/">l'écoute corporelle par la Voie des Sens</a>,
-      qui permet d'accueillir ce qui se dépose là sans passer uniquement par les mots.
-    </p>
-
-    <h2>Ce que la naturopathie ne fait pas</h2>
-
-    <p>
-      Je préfère le dire clairement. La naturopathie <strong>ne traite pas</strong> et
-      <strong>ne se substitue jamais à la médecine conventionnelle</strong> : elle la
-      complète. Je ne pose aucun diagnostic, je n'interromps aucun traitement, et je
-      n'interfère pas avec les décisions prises avec votre médecin ou votre gynécologue.
-      Le suivi médical reste indispensable à cette période, et je vous encourage à le
-      maintenir.
-    </p>
-
-    <p>
-      Ce que je peux faire, c'est vous aider à comprendre votre terrain, à ajuster votre
-      hygiène de vie et à traverser cette étape en vous sentant moins seule et mieux outillée.
-    </p>
-
-    <h2>Questions fréquentes</h2>
+    <h1 id="page-title">{heading}</h1>
 
     {
-      faqItems.map((item) => (
+      cmsHtml ? (
+        <div set:html={cmsHtml} />
+      ) : (
         <>
-          <h3>{item.question}</h3>
-          <p>{item.answer}</p>
+          <p>
+            La ménopause n'est pas une maladie. C'est une étape, au même titre que la puberté,
+            la grossesse ou le post-partum : le corps change de rythme et demande à être écouté
+            autrement. Et pourtant, beaucoup de femmes arrivent à ce moment-là sans avoir été
+            préparées, avec des sensations qu'elles ne reconnaissent pas et peu d'endroits où
+            en parler librement.
+          </p>
+
+          <p>
+            J'accompagne les femmes à toutes les phases de leur vie, et celle-ci en fait
+            pleinement partie. Mon rôle n'est pas de vous dire ce que vous devez ressentir,
+            mais de vous aider à comprendre ce qui se passe et à retrouver des appuis concrets
+            au quotidien.
+          </p>
+
+          <h2>Comment se passe un accompagnement</h2>
+
+          <p>
+            Comme pour tout accompagnement en naturopathie, nous commençons par un
+            <strong>bilan de vitalité</strong>. Lors de ce premier entretien, nous faisons votre
+            anamnèse : votre histoire, votre rythme de vie, votre alimentation, votre sommeil,
+            ce qui vous pèse et ce qui vous porte. C'est ce temps-là qui nous permet de définir
+            ensemble un plan d'actions réaliste, adapté à votre énergie du moment.
+          </p>
+
+          <p>
+            Je vous accompagne ensuite tout au long de ce chemin. Je suis le filet de sécurité
+            qui vous permet d'avancer en confiance, à votre rythme, sans injonction.
+          </p>
+
+          <h2>Ce que nous regardons ensemble</h2>
+
+          <ul>
+            <li>
+              <strong>L'alimentation</strong>, notre point de départ si votre énergie vitale le
+              permet.
+            </li>
+            <li>
+              <strong>Le sommeil et la récupération</strong>, souvent les premiers bousculés à
+              cette période.
+            </li>
+            <li>
+              <strong>La mise en mouvement</strong>, adaptée à ce que votre corps accepte
+              aujourd'hui.
+            </li>
+            <li>
+              <strong>La gestion du stress et la respiration</strong>, pour retrouver de la
+              marge.
+            </li>
+            <li>
+              <strong>Le rapport à votre corps</strong>, qui change, et avec lequel il faut
+              parfois refaire connaissance.
+            </li>
+          </ul>
+
+          <h2>La part émotionnelle</h2>
+
+          <p>
+            La ménopause ne se joue pas que dans le corps. C'est aussi une bascule : la fin d'un
+            cycle qui a rythmé des décennies, parfois un rapport à la féminité ou à la
+            transmission qui se réorganise. Quand cette dimension prend beaucoup de place, nous
+            pouvons travailler avec
+            <a href="/prestations/ecoute-corporelle/">l'écoute corporelle par la Voie des Sens</a>,
+            qui permet d'accueillir ce qui se dépose là sans passer uniquement par les mots.
+          </p>
+
+          <h2>Ce que la naturopathie ne fait pas</h2>
+
+          <p>
+            Je préfère le dire clairement. La naturopathie <strong>ne traite pas</strong> et
+            <strong>ne se substitue jamais à la médecine conventionnelle</strong> : elle la
+            complète. Je ne pose aucun diagnostic, je n'interromps aucun traitement, et je
+            n'interfère pas avec les décisions prises avec votre médecin ou votre gynécologue.
+            Le suivi médical reste indispensable à cette période, et je vous encourage à le
+            maintenir.
+          </p>
+
+          <p>
+            Ce que je peux faire, c'est vous aider à comprendre votre terrain, à ajuster votre
+            hygiène de vie et à traverser cette étape en vous sentant moins seule et mieux
+            outillée.
+          </p>
+
+          <p>
+            Vous vous reconnaissez dans ces lignes ? Parlons-en : prenez
+            <a href="/contact/">rendez-vous</a>, au cabinet de Fleurieux-sur-l'Arbresle, à
+            domicile ou en visio.
+          </p>
         </>
-      ))
+      )
     }
 
-    <h2>Pour aller plus loin</h2>
-
-    <ul>
-      <li><a href="/prestations/naturopathie/">L'accompagnement en naturopathie</a></li>
-      <li><a href="/prestations/ecoute-corporelle/">L'écoute corporelle</a></li>
-      <li><a href="/qui-suis-je/">Qui suis-je</a></li>
-      <li><a href="/tarifs/">Les tarifs</a></li>
-    </ul>
-
-    <p>
-      Vous vous reconnaissez dans ces lignes ? Parlons-en : prenez
-      <a href="/contact/">rendez-vous</a>, au cabinet de Fleurieux-sur-l'Arbresle, à domicile
-      ou en visio.
-    </p>
+    <PrestationSupportBlocks faqItems={faqItems} internalLinks={internalLinks} />
   </article>
 </BaseLayout>
