@@ -8,30 +8,27 @@ on:
     types:
       - sanity_content_updated
   workflow_dispatch:
-    inputs:
-      target:
-        description: "Deployment target"
-        required: true
-        default: parallel
-        type: choice
-        options:
-          - parallel
-          - production
 
 concurrency:
   group: production-deploy
   cancel-in-progress: false
 
 env:
-  PRODUCTION_SERVER_DIR: /naturaufeminin.fr/
-  PARALLEL_SERVER_DIR: /
+  # Le site public est servi depuis la racine FTP. Le dossier /naturaufeminin.fr/
+  # visé jusqu'ici par la cible « production » contient une copie figée en mai
+  # 2026 : ce n'est pas une cible de déploiement, c'est un reliquat à supprimer.
+  SERVER_DIR: /
+  # Environnement GitHub sans règle d'approbation. « production » en a une
+  # (required_reviewers), ce qui mettait en attente toute publication déclenchée
+  # depuis l'admin — aucune n'est jamais partie.
+  DEPLOY_ENVIRONMENT: parallel
 
 jobs:
   build:
     name: Build Astro
     runs-on: ubuntu-latest
     outputs:
-      deploy_target: ${{ steps.meta.outputs.deploy_target }}
+      deploy_trigger: ${{ steps.meta.outputs.deploy_trigger }}
       deploy_env_name: ${{ steps.meta.outputs.deploy_env_name }}
       deploy_env_url: ${{ steps.meta.outputs.deploy_env_url }}
       server_dir: ${{ steps.meta.outputs.server_dir }}
@@ -40,22 +37,17 @@ jobs:
       - name: Resolve deployment target
         id: meta
         run: |
-          if [ "${{ github.event_name }}" = "repository_dispatch" ] && [ "${{ github.event.action }}" = "sanity_content_updated" ]; then
-            echo "deploy_target=production" >> "$GITHUB_OUTPUT"
-            echo "deploy_env_name=production" >> "$GITHUB_OUTPUT"
-            echo "deploy_env_url=https://naturaufeminin.fr" >> "$GITHUB_OUTPUT"
-            echo "server_dir=${{ env.PRODUCTION_SERVER_DIR }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.target }}" = "production" ]; then
-            echo "deploy_target=production" >> "$GITHUB_OUTPUT"
-            echo "deploy_env_name=production" >> "$GITHUB_OUTPUT"
-            echo "deploy_env_url=https://naturaufeminin.fr" >> "$GITHUB_OUTPUT"
-            echo "server_dir=${{ env.PRODUCTION_SERVER_DIR }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "deploy_target=parallel" >> "$GITHUB_OUTPUT"
-            echo "deploy_env_name=parallel" >> "$GITHUB_OUTPUT"
-            echo "deploy_env_url=https://naturaufeminin.fr" >> "$GITHUB_OUTPUT"
-            echo "server_dir=${{ env.PARALLEL_SERVER_DIR }}" >> "$GITHUB_OUTPUT"
-          fi
+          # Une seule cible réelle : la racine du site. Les trois déclencheurs
+          # — push sur main, publication depuis l'admin (repository_dispatch),
+          # lancement manuel — y mènent désormais tous.
+          case "${{ github.event_name }}" in
+            repository_dispatch) echo "deploy_trigger=admin" >> "$GITHUB_OUTPUT" ;;
+            workflow_dispatch)   echo "deploy_trigger=manuel" >> "$GITHUB_OUTPUT" ;;
+            *)                   echo "deploy_trigger=push" >> "$GITHUB_OUTPUT" ;;
+          esac
+          echo "deploy_env_name=${{ env.DEPLOY_ENVIRONMENT }}" >> "$GITHUB_OUTPUT"
+          echo "deploy_env_url=https://naturaufeminin.fr" >> "$GITHUB_OUTPUT"
+          echo "server_dir=${{ env.SERVER_DIR }}" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -113,7 +105,7 @@ jobs:
 
       - name: Deploy target summary
         run: |
-          echo "Target: ${{ needs.build.outputs.deploy_target }}"
+          echo "Déclencheur : ${{ needs.build.outputs.deploy_trigger }}"
           echo "Server directory: ${{ needs.build.outputs.server_dir }}"
 
       - name: Deploy to O2Switch
