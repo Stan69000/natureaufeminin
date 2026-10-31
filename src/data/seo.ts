@@ -8,106 +8,109 @@ interface DefaultPageSeo {
 
 const defaultPageSeoByPath: Record<string, DefaultPageSeo> = {
   "/": {
-    title:
-      "Naturopathe Ouest Lyonnais, Symptothermie & Doula a Fleurieux-sur-l'Arbresle | Natur' Au Feminin",
+    title: "Naturopathe à Fleurieux-sur-l'Arbresle | Natur' Au Feminin",
     description:
-      "Naturopathe dans l'Ouest lyonnais, conseillere en symptothermie et doula a Fleurieux-sur-l'Arbresle. Consultations au cabinet, a domicile ou en visio.",
+      "Naturopathe, conseillère en symptothermie et doula à Fleurieux-sur-l'Arbresle. Consultations au cabinet, à domicile ou en visio partout en France.",
     keywords:
-      "naturopathe ouest lyonnais, naturopathe fleurieux-sur-l'arbresle, symptothermie, doula, sante feminine, gestion du stress, accompagnement feminin",
+      "naturopathe ouest lyonnais, naturopathe fleurieux-sur-l'arbresle, symptothermie, doula, santé féminine, ménopause, accompagnement féminin",
   },
   "/qui-suis-je": {
-    title: "Qui suis-je ? Naturopathe, Symptothermie & Doula | Natur' Au Feminin",
+    title: "Qui suis-je ? Audrey Martinez Bouchet, naturopathe & doula",
     description:
-      "Decouvrez le parcours d'Audrey Martinez Bouchet, naturopathe, conseillere en symptothermie et accompagnante doula.",
+      "Le parcours d'Audrey Martinez Bouchet : naturopathe, conseillère en symptothermie et accompagnante doula dans l'Ouest lyonnais.",
     keywords:
-      "audrey martinez bouchet, naturopathe, symptothermie, doula, accompagnement feminin, fleurieux-sur-l'arbresle",
+      "audrey martinez bouchet, naturopathe, symptothermie, doula, accompagnement féminin, fleurieux-sur-l'arbresle",
   },
   "/prestations": {
-    title: "Prestations: Naturopathie, Symptothermie, Doula | Natur' Au Feminin",
+    title: "Prestations : naturopathie, symptothermie & doula",
     description:
-      "Explorez les accompagnements proposes: naturopathie, ecoute corporelle, symptothermie et doula.",
+      "Naturopathie féminine, écoute corporelle, symptothermie et accompagnement doula : les quatre accompagnements proposés au cabinet ou en visio.",
     keywords:
-      "prestations naturopathie, ecoute corporelle, symptothermie, doula, accompagnement prenatal, regulation emotionnelle",
+      "prestations naturopathie, écoute corporelle, symptothermie, doula, accompagnement prénatal, régulation émotionnelle",
   },
   "/prestations/naturopathie": {
-    title: "Naturopathie feminine a Fleurieux-sur-l'Arbresle | Natur' Au Feminin",
+    title: "Naturopathie féminine à Fleurieux-sur-l'Arbresle",
     description:
-      "Accompagnement en naturopathie feminine pour retrouver equilibre, vitalite et mieux-etre au quotidien.",
+      "Accompagnement en naturopathie féminine pour retrouver équilibre, vitalité et mieux-être au quotidien. Cabinet, domicile ou visio.",
     keywords:
-      "naturopathie feminine, naturopathe fleurieux-sur-l'arbresle, equilibre hormonal, syndrome premenstruel, menopause",
+      "naturopathie féminine, naturopathe fleurieux-sur-l'arbresle, équilibre hormonal, syndrome prémenstruel, ménopause",
   },
   "/prestations/ecoute-corporelle": {
-    title: "Ecoute corporelle & regulation emotionnelle | Natur' Au Feminin",
+    title: "Écoute corporelle & régulation émotionnelle",
     description:
-      "L'ecoute corporelle par la Voie des Sens pour apaiser la charge emotionnelle et retrouver un ancrage durable.",
+      "L'écoute corporelle par la Voie des Sens pour apaiser la charge émotionnelle et retrouver un ancrage durable.",
     keywords:
-      "ecoute corporelle, regulation emotionnelle, gestion du stress, accompagnement emotionnel, la voie des sens",
+      "écoute corporelle, régulation émotionnelle, gestion du stress, accompagnement émotionnel, la voie des sens",
   },
   "/prestations/symptothermie": {
-    title: "Symptothermie: comprendre son cycle feminin | Natur' Au Feminin",
+    title: "Symptothermie : comprendre son cycle féminin",
     description:
-      "Apprenez a comprendre votre cycle menstruel grace a la symptothermie pour contraception naturelle ou projet de conception.",
+      "Apprenez à lire votre cycle menstruel grâce à la symptothermie, pour une contraception naturelle ou un projet de conception.",
     keywords:
-      "symptothermie, cycle feminin, fertilite naturelle, contraception naturelle, conception, sante menstruelle",
+      "symptothermie, cycle féminin, fertilité naturelle, contraception naturelle, conception, santé menstruelle",
   },
   "/prestations/doula": {
-    title: "Doula: preconception, grossesse & post-partum | Natur' Au Feminin",
+    title: "Doula : préconception, grossesse & post-partum",
     description:
-      "Accompagnement doula en preconception, grossesse et post-partum avec une approche humaine et personnalisee.",
+      "Accompagnement doula en préconception, grossesse et post-partum, avec une approche humaine et personnalisée.",
     keywords:
-      "doula, accompagnement grossesse, post-partum, preconception, allaitement, accompagnement prenatal",
+      "doula, accompagnement grossesse, post-partum, préconception, allaitement, accompagnement prénatal",
   },
   "/tarifs": {
-    title: "Tarifs naturopathie, symptothermie & doula | Natur' Au Feminin",
+    title: "Tarifs : naturopathie, symptothermie & doula",
     description:
-      "Consultez les tarifs des accompagnements en symptothermie, naturopathie, doula et massages.",
+      "Les tarifs des accompagnements en naturopathie, symptothermie, doula, massage ayurvédique et massage bébé.",
     keywords:
-      "tarifs naturopathie, prix symptothermie, tarifs doula, massage femme enceinte, massage bebe",
+      "tarifs naturopathie, prix symptothermie, tarifs doula, massage femme enceinte, massage bébé",
   },
   "/actualites": {
-    title: "Actualites, ateliers et evenements | Natur' Au Feminin",
-    description: "Retrouvez les ateliers, evenements et actualites de Natur' Au Feminin.",
+    title: "Actualités, ateliers et évènements | Natur' Au Feminin",
+    description:
+      "Les prochaines dates, ateliers et annonces de Natur' Au Feminin, à Fleurieux-sur-l'Arbresle et en ligne.",
     keywords:
-      "actualites naturopathie, ateliers cycle menstruel, evenements sante feminine, fleurieux-sur-l'arbresle",
+      "actualités naturopathie, ateliers cycle menstruel, évènements santé féminine, fleurieux-sur-l'arbresle",
   },
   "/mon-cercle": {
-    title: "Mon cercle: partenaires sante feminine | Natur' Au Feminin",
+    title: "Mon cercle : partenaires en santé féminine",
     description:
-      "Decouvrez mon cercle de partenaires de confiance pour un accompagnement complementaire autour de la sante feminine.",
+      "Les partenaires de confiance avec qui je travaille pour un accompagnement complémentaire autour de la santé féminine.",
     keywords:
-      "partenaires sante feminine, reseau bien-etre feminin, accompagnement global, fleurieux-sur-l'arbresle",
+      "partenaires santé féminine, réseau bien-être féminin, accompagnement global, fleurieux-sur-l'arbresle",
   },
   "/contact": {
-    title: "Contact & rendez-vous | Natur' Au Feminin",
+    title: "Contact & prise de rendez-vous | Natur' Au Feminin",
     description:
-      "Prenez contact pour reserver un accompagnement en naturopathie, symptothermie ou doula.",
+      "Réservez un accompagnement en naturopathie, symptothermie ou doula, au cabinet de Fleurieux-sur-l'Arbresle ou en visio.",
     keywords:
       "contact naturopathe, rendez-vous symptothermie, rendez-vous doula, fleurieux-sur-l'arbresle, visio",
   },
   "/zones-desservies": {
-    title: "Zones desservies: Fleurieux, Ouest Lyonnais, Rhône, France | Natur' Au Feminin",
+    title: "Zones desservies : Ouest lyonnais, Rhône et visio",
     description:
-      "Accompagnements en cabinet a Fleurieux-sur-l'Arbresle, a domicile autour de L'Arbresle et en visio partout en France.",
+      "Cabinet à Fleurieux-sur-l'Arbresle, déplacements à domicile autour de L'Arbresle et consultations en visio partout en France.",
     keywords:
-      "naturopathe l'arbresle, naturopathe lentilly, naturopathe lozanne, doula ouest lyonnais, symptothermie rhone, visio france",
+      "naturopathe l'arbresle, naturopathe lentilly, naturopathe lozanne, doula ouest lyonnais, symptothermie rhône, visio france",
   },
   "/ouest-lyonnais": {
-    title: "Naturopathe Ouest Lyonnais: consultations cabinet, domicile et visio | Natur' Au Feminin",
+    title: "Naturopathe dans l'Ouest lyonnais | Natur' Au Feminin",
     description:
-      "Accompagnement en naturopathie, symptothermie et doula dans l'Ouest lyonnais: Fleurieux-sur-l'Arbresle, L'Arbresle, Lentilly, Lozanne et communes voisines.",
+      "Naturopathie, symptothermie et doula dans l'Ouest lyonnais : Fleurieux-sur-l'Arbresle, L'Arbresle, Lentilly, Lozanne et communes voisines.",
     keywords:
       "naturopathe ouest lyonnais, doula ouest lyonnais, symptothermie ouest lyonnais, naturopathe lentilly, naturopathe lozanne, naturopathe l'arbresle",
   },
   "/mentions-legales": {
-    title: "Mentions legales | Natur' Au Feminin",
-    description: "Consultez les mentions legales du site Natur' Au Feminin.",
-    keywords: "mentions legales, natur au feminin",
+    title: "Mentions légales | Natur' Au Feminin",
+    description:
+      "Les mentions légales du site Natur' Au Feminin.",
+    keywords:
+      "mentions légales, natur au feminin",
   },
   "/politique-de-confidentialite": {
-    title: "Politique de confidentialite | Natur' Au Feminin",
+    title: "Politique de confidentialité | Natur' Au Feminin",
     description:
-      "Consultez la politique de confidentialite et la gestion des donnees personnelles de Natur' Au Feminin.",
-    keywords: "politique de confidentialite, donnees personnelles, natur au feminin",
+      "La politique de confidentialité et la gestion des données personnelles de Natur' Au Feminin.",
+    keywords:
+      "politique de confidentialité, données personnelles, natur au feminin",
   },
 };
 
@@ -134,6 +137,9 @@ export function getDefaultPageDescription(pathname: string): string {
   return getDefaultPageSeo(pathname).description;
 }
 
+// Conserve a titre documentaire : la balise meta keywords n'est plus emise
+// (Google l'ignore depuis 2009), mais ce champ garde trace des requetes
+// visees par chaque page.
 export function getDefaultPageKeywords(pathname: string): string {
   return getDefaultPageSeo(pathname).keywords;
 }

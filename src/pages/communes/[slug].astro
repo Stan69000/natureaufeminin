@@ -11,9 +11,8 @@ export function getStaticPaths() {
 
 const { commune } = Astro.props;
 
-const title = `Naturopathe, Symptothermie et Doula à ${commune.name} | Natur' Au Feminin`;
-const description = `Accompagnement en naturopathie, symptothermie et doula à ${commune.name} (${commune.nearbyLabel}), au cabinet, à domicile selon disponibilité ou en visio partout en France.`;
-const keywords = `naturopathe ${commune.name.toLowerCase()}, doula ${commune.name.toLowerCase()}, symptothermie ${commune.name.toLowerCase()}, accompagnement feminin ${commune.name.toLowerCase()}, ouest lyonnais`;
+const title = `Naturopathe, symptothermie & doula à ${commune.name}`;
+const description = `Naturopathie, symptothermie et doula à ${commune.name} (${commune.nearbyLabel}) : au cabinet, à domicile ou en visio.`;
 
 const nearbyLinks = commune.nearbyCommunes
   .map((communeName) => communeSeoItems.find((item) => item.name === communeName))
@@ -52,9 +51,9 @@ const structuredData = [
 ];
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} structuredData={structuredData}>
+<BaseLayout title={title} description={description} structuredData={structuredData}>
   <article class="section wp-content" aria-labelledby="page-title">
-    <h1 id="page-title">Accompagnement à {commune.name}</h1>
+    <h1 id="page-title">Naturopathe à {commune.name}</h1>
     <p>
       Vous recherchez une naturopathe, une conseillère en symptothermie ou une doula à
       <strong> {commune.name}</strong> ? Je vous accompagne avec une approche personnalisée, centrée
