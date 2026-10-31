@@ -46,7 +46,7 @@ const structuredData = {
       {
         communeSeoItems.map((commune) => (
           <li>
-            <a href={`/communes/${commune.slug}`}>{commune.name}</a>
+            <a href={`/communes/${commune.slug}/`}>{commune.name}</a>
           </li>
         ))
       }
@@ -54,15 +54,15 @@ const structuredData = {
 
     <h2>Accompagnements disponibles</h2>
     <ul>
-      <li><a href="/prestations/naturopathie">Naturopathie féminine</a></li>
-      <li><a href="/prestations/symptothermie">Symptothermie</a></li>
-      <li><a href="/prestations/doula">Doula</a></li>
-      <li><a href="/prestations/ecoute-corporelle">Écoute corporelle</a></li>
+      <li><a href="/prestations/naturopathie/">Naturopathie féminine</a></li>
+      <li><a href="/prestations/symptothermie/">Symptothermie</a></li>
+      <li><a href="/prestations/doula/">Doula</a></li>
+      <li><a href="/prestations/ecoute-corporelle/">Écoute corporelle</a></li>
     </ul>
 
     <p>
-      Pour la vue complète par secteur, consultez les <a href="/zones-desservies">zones desservies</a>.
-      Pour réserver, passez par la page <a href="/contact">contact</a>.
+      Pour la vue complète par secteur, consultez les <a href="/zones-desservies/">zones desservies</a>.
+      Pour réserver, passez par la page <a href="/contact/">contact</a>.
     </p>
   </article>
 </BaseLayout>

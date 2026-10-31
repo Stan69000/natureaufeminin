@@ -7,6 +7,15 @@ export const siteConfig = {
   phone: "06 44 09 21 12",
   phoneHref: "tel:+33644092112",
   city: "Fleurieux-sur-l'Arbresle",
+  // Adresse normalisee selon la Base Adresse Nationale (api-adresse.data.gouv.fr).
+  // A reporter a l'identique sur la fiche Google Business : la coherence NAP
+  // (nom / adresse / telephone) entre le site et la fiche est un signal local.
+  streetAddress: "37 place des Deux Chouettes",
+  postalCode: "69210",
+  region: "Auvergne-Rhone-Alpes",
+  latitude: 45.835608,
+  longitude: 4.651224,
+  priceRange: "\u20AC\u20AC",
   bookingUrl: "https://liberlo.com/profil/audrey-martinez-bouchet/",
   adminUrl: "https://admin.stan-bouchet.fr/",
 };
@@ -28,36 +37,36 @@ export const serviceAreas = {
 
 export const navItems = [
   { href: "/", label: "Accueil" },
-  { href: "/qui-suis-je", label: "Qui suis-je ?" },
-  { href: "/prestations", label: "Prestations" },
-  { href: "/tarifs", label: "Tarifs" },
-  { href: "/actualites", label: "Actualités" },
-  { href: "/mon-cercle", label: "Mon cercle" },
-  { href: "/contact", label: "Contact" },
+  { href: "/qui-suis-je/", label: "Qui suis-je ?" },
+  { href: "/prestations/", label: "Prestations" },
+  { href: "/tarifs/", label: "Tarifs" },
+  { href: "/actualites/", label: "Actualités" },
+  { href: "/mon-cercle/", label: "Mon cercle" },
+  { href: "/contact/", label: "Contact" },
 ] as const;
 
 export const serviceCards = [
   {
     title: "Naturopathie",
-    href: "/prestations/naturopathie",
+    href: "/prestations/naturopathie/",
     description:
       "Retrouver un equilibre durable grace a une approche globale de votre hygiene de vie.",
   },
   {
     title: "L’écoute Corporelle par La Voie des Sens",
-    href: "/prestations/ecoute-corporelle",
+    href: "/prestations/ecoute-corporelle/",
     description:
       "Apaiser les surcharges emotionnelles et retrouver de l'espace interieur.",
   },
   {
     title: "Symptothermie",
-    href: "/prestations/symptothermie",
+    href: "/prestations/symptothermie/",
     description:
       "Comprendre votre cycle pour la contraception naturelle ou la conception.",
   },
   {
     title: "Doula",
-    href: "/prestations/doula",
+    href: "/prestations/doula/",
     description:
       "Un accompagnement humain autour de la preconception, grossesse et post-partum.",
   },
