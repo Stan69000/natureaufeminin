@@ -29,12 +29,24 @@ const ogImagePath = ogImage.startsWith("http") ? ogImage : new URL(ogImage, site
 const robotsContent = noindex ? "noindex,nofollow" : "index,follow";
 const keywordsContent = keywords?.trim() || getDefaultPageKeywords(pathname);
 
+// Les href du site portent desormais un slash final (trailingSlash: 'always'),
+// alors que getBreadcrumbItems reconstruit les chemins segment par segment.
+// On normalise des deux cotes pour que la correspondance des libelles tienne.
+function withTrailingSlash(path: string): string {
+  return path.endsWith("/") ? path : `${path}/`;
+}
+
+const breadcrumbPathOverrides = new Map<string, string>([
+  ["/communes/", "/zones-desservies/"],
+]);
+
 const pathnameLabels = new Map<string, string>([
   ["/", "Accueil"] as const,
-  ...navItems.map((item): readonly [string, string] => [item.href, item.label]),
-  ...serviceCards.map((item): readonly [string, string] => [item.href, item.title]),
-  ["/mentions-legales", "Mentions légales"] as const,
-  ["/politique-de-confidentialite", "Politique de confidentialité"] as const,
+  ...navItems.map((item): readonly [string, string] => [withTrailingSlash(item.href), item.label]),
+  ...serviceCards.map((item): readonly [string, string] => [withTrailingSlash(item.href), item.title]),
+  ["/zones-desservies/", "Zones desservies"] as const,
+  ["/mentions-legales/", "Mentions légales"] as const,
+  ["/politique-de-confidentialite/", "Politique de confidentialité"] as const,
 ]);
 
 function toPathLabel(input: string): string {
@@ -47,14 +59,17 @@ function getBreadcrumbItems(path: string): Array<{ name: string; item: string }>
   if (path === "/") return [];
 
   const parts = path.split("/").filter(Boolean);
-  const items = [{ name: "Accueil", item: siteConfig.url }];
+  const items = [{ name: "Accueil", item: `${siteConfig.url}/` }];
 
   for (let index = 0; index < parts.length; index += 1) {
-    const currentPath = `/${parts.slice(0, index + 1).join("/")}`;
-    const knownLabel = pathnameLabels.get(currentPath);
+    const currentPath = withTrailingSlash(`/${parts.slice(0, index + 1).join("/")}`);
+    // /communes/ n'est pas une page du site (le listing Apache y est desactive).
+    // La page reelle qui chapeaute les communes est /zones-desservies/.
+    const resolvedPath = breadcrumbPathOverrides.get(currentPath) ?? currentPath;
+    const knownLabel = pathnameLabels.get(resolvedPath);
     items.push({
       name: knownLabel ?? toPathLabel(parts[index]),
-      item: new URL(currentPath, siteConfig.url).toString(),
+      item: new URL(resolvedPath, siteConfig.url).toString(),
     });
   }
 
@@ -66,10 +81,16 @@ const defaultStructuredData: Record<string, unknown>[] = [
   {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
+    // @id stable : permet a Google de rattacher les mentions de l'entite
+    // entre les pages et avec la fiche Google Business.
+    "@id": `${siteConfig.url}/#business`,
     name: siteConfig.name,
-    url: siteConfig.url,
+    url: `${siteConfig.url}/`,
     description: siteConfig.description,
     telephone: siteConfig.phone,
+    image: new URL("/branding/og-default-1200x630.jpg", siteConfig.url).toString(),
+    logo: new URL("/branding/logo.webp", siteConfig.url).toString(),
+    priceRange: siteConfig.priceRange,
     areaServed: [
       ...serviceAreas.localCommunes.map((city) => ({ "@type": "City", name: city })),
       ...serviceAreas.regionalAreas.map((region) => ({ "@type": "AdministrativeArea", name: region })),
@@ -78,8 +99,16 @@ const defaultStructuredData: Record<string, unknown>[] = [
     availableLanguage: ["fr-FR"],
     address: {
       "@type": "PostalAddress",
+      streetAddress: siteConfig.streetAddress,
+      postalCode: siteConfig.postalCode,
       addressLocality: siteConfig.city,
+      addressRegion: siteConfig.region,
       addressCountry: "FR",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: siteConfig.latitude,
+      longitude: siteConfig.longitude,
     },
   },
 ];
