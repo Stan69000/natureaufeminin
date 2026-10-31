@@ -98,6 +98,13 @@ const defaultPageSeoByPath: Record<string, DefaultPageSeo> = {
     keywords:
       "naturopathe ouest lyonnais, doula ouest lyonnais, symptothermie ouest lyonnais, naturopathe lentilly, naturopathe lozanne, naturopathe l'arbresle",
   },
+  "/menopause": {
+    title: "Naturopathie et ménopause | Natur' Au Feminin",
+    description:
+      "Accompagnement en naturopathie pendant la préménopause et la ménopause : hygiène de vie, sommeil, stress et émotions. Cabinet, domicile ou visio.",
+    keywords:
+      "naturopathe ménopause, naturopathie ménopause, préménopause, bouffées de chaleur, sommeil, ouest lyonnais, fleurieux-sur-l'arbresle",
+  },
   "/mentions-legales": {
     title: "Mentions légales | Natur' Au Feminin",
     description:

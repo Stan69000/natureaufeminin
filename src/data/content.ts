@@ -262,6 +262,18 @@ interface AdminPage {
   seoDescription?: string;
 }
 
+/**
+ * Page absente du CMS (404). Distinguee des pannes reseau : une page pas encore
+ * creee cote admin est un etat normal, une indisponibilite ne l'est pas et doit
+ * faire echouer le build plutot que publier une page vide.
+ */
+export class AdminPageNotFoundError extends Error {
+  constructor(slug: string) {
+    super(`[NAF] Admin page "${slug}" not found`);
+    this.name = "AdminPageNotFoundError";
+  }
+}
+
 async function getAdminPage(slug: string): Promise<AdminPage> {
   const useCiFixtures =
     import.meta.env.CI === "true" && import.meta.env.NAF_USE_CONTENT_FIXTURES === "true";
@@ -286,6 +298,7 @@ async function getAdminPage(slug: string): Promise<AdminPage> {
     try {
       const res = await fetch(url, { headers: { accept: "application/json" } });
       if (!res.ok) {
+        if (res.status === 404) throw new AdminPageNotFoundError(slug);
         const error = new Error(`HTTP ${res.status}`);
         if (![429, 502, 503, 504].includes(res.status)) throw error;
         lastError = error;
@@ -298,6 +311,7 @@ async function getAdminPage(slug: string): Promise<AdminPage> {
         return data;
       }
     } catch (err) {
+      if (err instanceof AdminPageNotFoundError) throw err;
       lastError = err;
     }
 
@@ -307,6 +321,23 @@ async function getAdminPage(slug: string): Promise<AdminPage> {
   }
 
   throw new Error(`[NAF] Admin fetch failed for "${slug}" at ${url}: ${String(lastError)}`);
+}
+
+/**
+ * Variante tolerante : renvoie null si la page n'existe pas encore cote admin,
+ * ce qui permet a une page du site de publier un contenu de repli en attendant
+ * que le CMS prenne le relais. Toute autre erreur reste bloquante.
+ */
+export async function getOptionalPageContent(slug: string): Promise<SitePageContent | null> {
+  try {
+    return await getPageContent(slug);
+  } catch (err) {
+    if (err instanceof AdminPageNotFoundError) {
+      console.log(`[NAF] Admin page "${slug}" absent, contenu de repli utilise`);
+      return null;
+    }
+    throw err;
+  }
 }
 
 export async function getPageContent(slug: string): Promise<SitePageContent> {

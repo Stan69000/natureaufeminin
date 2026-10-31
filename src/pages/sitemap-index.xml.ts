@@ -16,6 +16,7 @@ const routes = [
   { path: '/contact/', priority: '0.9', changefreq: 'monthly' },
   { path: '/zones-desservies/', priority: '0.8', changefreq: 'monthly' },
   { path: '/ouest-lyonnais/', priority: '0.9', changefreq: 'monthly' },
+  { path: '/menopause/', priority: '0.9', changefreq: 'monthly' },
   { path: '/mentions-legales/', priority: '0.2', changefreq: 'yearly' },
   { path: '/politique-de-confidentialite/', priority: '0.2', changefreq: 'yearly' },
   ...communeSeoItems.map((commune) => ({
