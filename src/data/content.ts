@@ -265,6 +265,8 @@ interface AdminPage {
   circlePartners?: CirclePartnerItem[];
   seoTitle?: string;
   seoDescription?: string;
+  seoOgImage?: string;
+  seoNoindex?: boolean;
 }
 
 /**
