@@ -1,11 +1,33 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PrestationSupportBlocks from "../components/PrestationSupportBlocks.astro";
-import { getOptionalPageContent } from "../data/content";
-import { getDefaultPageSeo } from "../data/seo";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PrestationSupportBlocks from "../../components/PrestationSupportBlocks.astro";
+import { getOptionalPageContent } from "../../data/content";
+import { getDefaultPageSeo } from "../../data/seo";
+
+const SLUG = "menopause";
+
+/**
+ * Route dynamique pour une seule URL, /menopause/.
+ *
+ * C'est le seul moyen, en build statique, de ne pas produire la page du tout :
+ * un fichier .astro ordinaire est toujours rendu. Renvoyer un tableau vide
+ * supprime la page du site, et le deploiement FTP, qui synchronise en
+ * differentiel, la retire du serveur.
+ *
+ * noindex ne suffisait pas : il cache des moteurs de recherche, pas des
+ * visiteurs. Une page "Desactiver l'indexation" reste lisible par quiconque
+ * connait son URL.
+ */
+export async function getStaticPaths() {
+  // Astro isole getStaticPaths dans son propre module : il ne voit aucune
+  // constante du frontmatter, d'ou le slug repete ici.
+  const { isPageHidden } = await import("../../data/content");
+  if (await isPageHidden("menopause")) return [];
+  return [{ params: { slug: undefined } }];
+}
 
 const path = "/menopause";
-const slug = "menopause";
+const slug = SLUG;
 
 // Le contenu vient du CMS des qu'il y est saisi. Tant que la page n'existe pas
 // cote admin, on publie la version de repli ci-dessous : le site reste
