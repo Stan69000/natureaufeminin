@@ -77,17 +77,17 @@ const structuredData = [
 
     <h2>Accompagnements proposés</h2>
     <ul>
-      <li><a href="/prestations/naturopathie">Naturopathie féminine</a></li>
-      <li><a href="/prestations/symptothermie">Symptothermie</a></li>
-      <li><a href="/prestations/doula">Accompagnement doula</a></li>
-      <li><a href="/prestations/ecoute-corporelle">Écoute corporelle</a></li>
+      <li><a href="/prestations/naturopathie/">Naturopathie féminine</a></li>
+      <li><a href="/prestations/symptothermie/">Symptothermie</a></li>
+      <li><a href="/prestations/doula/">Accompagnement doula</a></li>
+      <li><a href="/prestations/ecoute-corporelle/">Écoute corporelle</a></li>
     </ul>
 
     {nearbyLinks.length > 0 && (
       <>
         <h2>Communes proches</h2>
         <ul>
-          {nearbyLinks.map((item) => <li><a href={`/communes/${item.slug}`}>{item.name}</a></li>)}
+          {nearbyLinks.map((item) => <li><a href={`/communes/${item.slug}/`}>{item.name}</a></li>)}
         </ul>
       </>
     )}
@@ -105,7 +105,7 @@ const structuredData = [
     </div>
 
     <p>
-      <a href="/contact">Prendre rendez-vous</a> ou consulter toutes les <a href="/zones-desservies">zones desservies</a>.
+      <a href="/contact/">Prendre rendez-vous</a> ou consulter toutes les <a href="/zones-desservies/">zones desservies</a>.
     </p>
   </article>
 </BaseLayout>

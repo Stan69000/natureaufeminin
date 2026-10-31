@@ -44,9 +44,9 @@ const PRESTATION_SEO_BY_PATH: Record<string, PrestationSeoData> = {
       },
     ],
     internalLinks: [
-      { href: "/prestations/symptothermie", label: "Découvrir la symptothermie" },
-      { href: "/prestations/doula", label: "Découvrir l'accompagnement doula" },
-      { href: "/prestations/ecoute-corporelle", label: "Découvrir l'écoute corporelle" },
+      { href: "/prestations/symptothermie/", label: "Découvrir la symptothermie" },
+      { href: "/prestations/doula/", label: "Découvrir l'accompagnement doula" },
+      { href: "/prestations/ecoute-corporelle/", label: "Découvrir l'écoute corporelle" },
     ],
   },
   "/prestations/symptothermie": {
@@ -73,9 +73,9 @@ const PRESTATION_SEO_BY_PATH: Record<string, PrestationSeoData> = {
       },
     ],
     internalLinks: [
-      { href: "/prestations/naturopathie", label: "Découvrir la naturopathie" },
-      { href: "/prestations/doula", label: "Découvrir l'accompagnement doula" },
-      { href: "/prestations/ecoute-corporelle", label: "Découvrir l'écoute corporelle" },
+      { href: "/prestations/naturopathie/", label: "Découvrir la naturopathie" },
+      { href: "/prestations/doula/", label: "Découvrir l'accompagnement doula" },
+      { href: "/prestations/ecoute-corporelle/", label: "Découvrir l'écoute corporelle" },
     ],
   },
   "/prestations/doula": {
@@ -102,9 +102,9 @@ const PRESTATION_SEO_BY_PATH: Record<string, PrestationSeoData> = {
       },
     ],
     internalLinks: [
-      { href: "/prestations/naturopathie", label: "Découvrir la naturopathie" },
-      { href: "/prestations/symptothermie", label: "Découvrir la symptothermie" },
-      { href: "/prestations/ecoute-corporelle", label: "Découvrir l'écoute corporelle" },
+      { href: "/prestations/naturopathie/", label: "Découvrir la naturopathie" },
+      { href: "/prestations/symptothermie/", label: "Découvrir la symptothermie" },
+      { href: "/prestations/ecoute-corporelle/", label: "Découvrir l'écoute corporelle" },
     ],
   },
   "/prestations/ecoute-corporelle": {
@@ -131,9 +131,9 @@ const PRESTATION_SEO_BY_PATH: Record<string, PrestationSeoData> = {
       },
     ],
     internalLinks: [
-      { href: "/prestations/naturopathie", label: "Découvrir la naturopathie" },
-      { href: "/prestations/symptothermie", label: "Découvrir la symptothermie" },
-      { href: "/prestations/doula", label: "Découvrir l'accompagnement doula" },
+      { href: "/prestations/naturopathie/", label: "Découvrir la naturopathie" },
+      { href: "/prestations/symptothermie/", label: "Découvrir la symptothermie" },
+      { href: "/prestations/doula/", label: "Découvrir l'accompagnement doula" },
     ],
   },
 };

@@ -3,13 +3,64 @@
 Options -Indexes
 DirectoryIndex index.html
 
-## Legacy URL redirects (serve true HTTP 301 before static fallback files)
-Redirect 301 /contact-prise-de-rendez-vous /contact
-Redirect 301 /que-se-passe-t-il-en-ce-moment /actualites
-Redirect 301 /gestion-naturelle-de-la-fertilite-symptothermie /prestations/symptothermie
-Redirect 301 /doula-un-bebe-pour-bientot /prestations/doula
-Redirect 301 /lecoute-corporelle-par-la-voie-des-sens /prestations/ecoute-corporelle
-Redirect 301 /naturopathie /prestations/naturopathie
+RewriteEngine On
+
+## 1. Canonicalisation : HTTPS + domaine apex (sans www)
+##    Tout le site declare https://naturaufeminin.fr comme canonique
+##    (astro.config.mjs, sitemap, JSON-LD). Ces regles alignent le serveur.
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://naturaufeminin.fr%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^www\.naturaufeminin\.fr$ [NC]
+RewriteRule ^ https://naturaufeminin.fr%{REQUEST_URI} [R=301,L]
+
+## 2. Anciennes URL WordPress (?page_id= / ?p=)
+##    Correspondance reprise de src/data/content.ts (linkMap), qui sert deja
+##    a reecrire ces liens dans le HTML venant du CMS.
+##    Le "?" en fin de cible supprime la query string et evite toute boucle.
+RewriteCond %{QUERY_STRING} ^page_id=16$
+RewriteRule ^$ /contact/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=20$
+RewriteRule ^$ /prestations/naturopathie/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=22$
+RewriteRule ^$ /tarifs/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=25$
+RewriteRule ^$ /actualites/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=27$
+RewriteRule ^$ /prestations/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=30$
+RewriteRule ^$ /mon-cercle/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=32$
+RewriteRule ^$ /mentions-legales/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=34$
+RewriteRule ^$ /prestations/ecoute-corporelle/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=36$
+RewriteRule ^$ /prestations/symptothermie/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} ^page_id=38$
+RewriteRule ^$ /prestations/doula/? [R=301,L]
+
+##    Tout autre ?p= / ?page_id= : pas de correspondance connue -> accueil.
+RewriteCond %{QUERY_STRING} ^(p|page_id)=[0-9]+$
+RewriteRule ^$ /? [R=301,L]
+
+## 3. Anciens permaliens WordPress -> pages actuelles (vrais 301)
+##    Ancres explicites + /? pour couvrir les deux formes, avec ou sans slash.
+RewriteRule ^contact-prise-de-rendez-vous/?$ /contact/ [R=301,L]
+RewriteRule ^que-se-passe-t-il-en-ce-moment/?$ /actualites/ [R=301,L]
+RewriteRule ^gestion-naturelle-de-la-fertilite-symptothermie/?$ /prestations/symptothermie/ [R=301,L]
+RewriteRule ^doula-un-bebe-pour-bientot/?$ /prestations/doula/ [R=301,L]
+RewriteRule ^lecoute-corporelle-par-la-voie-des-sens/?$ /prestations/ecoute-corporelle/ [R=301,L]
+RewriteRule ^naturopathie/?$ /prestations/naturopathie/ [R=301,L]
 
 <IfModule mod_headers.c>
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
@@ -18,14 +69,22 @@ Redirect 301 /naturopathie /prestations/naturopathie
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
   Header always set X-XSS-Protection "1; mode=block"
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto: https://liberlo.com"
+  # script-src 'unsafe-inline' : Astro genere deux scripts inline non hashes
+  #   (initialisation du theme, comportement de l'en-tete).
+  # img-src cdn.sanity.io : images de contenu servies par le CMS.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.sanity.io https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto: https://liberlo.com"
+
+  # Les fichiers /_astro/ portent un hash dans leur nom : immuables par construction.
+  <FilesMatch "\.(css|js|woff2)$">
+    Header append Cache-Control "immutable"
+  </FilesMatch>
 </IfModule>
 
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/png "access plus 1 year"

@@ -112,8 +112,12 @@ const defaultPageSeoByPath: Record<string, DefaultPageSeo> = {
 };
 
 export function getDefaultPageSeo(pathname: string): DefaultPageSeo {
+  // Depuis trailingSlash: 'always', Astro.url.pathname se termine par "/"
+  // alors que les cles de defaultPageSeoByPath n'en ont pas : sans cette
+  // normalisation, toute recherche par pathname retomberait sur le defaut.
+  const key = pathname !== "/" && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
   return (
-    defaultPageSeoByPath[pathname] ?? {
+    defaultPageSeoByPath[key] ?? {
       title: siteConfig.title,
       description: siteConfig.description,
       keywords:
