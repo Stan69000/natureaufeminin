@@ -131,6 +131,53 @@ function sanitizeCmsHtml(html: string): string {
   });
 }
 
+// Les images du CMS sont servies par le CDN Sanity, qui expose une API de
+// transformation : ?w= redimensionne, auto=format sert du WebP/AVIF aux
+// navigateurs compatibles. Sans ca, la photo de /qui-suis-je partait en
+// 2305x2560 pour 771 Ko, affichee a moins de 800 px de large.
+// Le nom de fichier Sanity se termine par -<largeur>x<hauteur>.<ext>, ce qui
+// donne les dimensions intrinseques sans requete reseau : on peut donc poser
+// width/height et supprimer le decalage de mise en page au chargement.
+const SANITY_WIDTHS = [480, 768, 1200, 1600];
+const SANITY_MAX_WIDTH = SANITY_WIDTHS[SANITY_WIDTHS.length - 1];
+
+interface SanityImageVariants {
+  src: string;
+  attrs: string;
+}
+
+function buildSanityImageVariants(src: string): SanityImageVariants | null {
+  const dimensions = src.match(/-(\d+)x(\d+)\.[a-z]+$/i);
+  if (!dimensions) return null;
+
+  const naturalWidth = Number(dimensions[1]);
+  const naturalHeight = Number(dimensions[2]);
+  if (!naturalWidth || !naturalHeight) return null;
+
+  const variant = (width: number) => `${src}?w=${width}&auto=format&q=75&fit=max`;
+
+  // L'original n'entre jamais dans le srcset : un ecran haute densite le
+  // choisirait et rechargerait le fichier complet (771 Ko pour la photo de
+  // /qui-suis-je). Toutes les variantes passent par le CDN, donc en WebP.
+  const widths = Array.from(
+    new Set([
+      ...SANITY_WIDTHS.filter((width) => width < naturalWidth),
+      Math.min(naturalWidth, SANITY_MAX_WIDTH),
+    ]),
+  ).sort((a, b) => a - b);
+
+  const displayWidth = widths[widths.length - 1];
+  const displayHeight = Math.round((displayWidth * naturalHeight) / naturalWidth);
+  const srcset = widths.map((width) => `${variant(width)} ${width}w`).join(", ");
+
+  return {
+    src: variant(displayWidth),
+    attrs:
+      ` width="${displayWidth}" height="${displayHeight}"` +
+      ` srcset="${srcset}" sizes="(min-width: 768px) 720px, 100vw"`,
+  };
+}
+
 function optimizeHtmlForSeo(html: string): string {
   let result = html;
 
@@ -173,6 +220,20 @@ function optimizeHtmlForSeo(html: string): string {
       nextAttrs += ' alt="Illustration Natur Au Feminin"';
     } else if (!altAttrMatch[1].trim()) {
       nextAttrs = nextAttrs.replace(/\balt\s*=\s*["'][^"']*["']/i, 'alt="Illustration Natur Au Feminin"');
+    }
+
+    const imageSrc = nextAttrs.match(/\bsrc\s*=\s*["']([^"']+)["']/i)?.[1];
+    if (imageSrc?.startsWith("https://cdn.sanity.io/") && !/\bsrcset\s*=/.test(nextAttrs)) {
+      const variants = buildSanityImageVariants(imageSrc);
+      if (variants) {
+        // src pointe aussi sur une variante : meme sans support de srcset,
+        // aucun navigateur ne telecharge l'original.
+        nextAttrs = nextAttrs.replace(
+          /\bsrc\s*=\s*["'][^"']+["']/i,
+          `src="${variants.src}"`,
+        );
+        nextAttrs += variants.attrs;
+      }
     }
 
     return `<img${nextAttrs} />`;

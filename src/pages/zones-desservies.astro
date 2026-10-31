@@ -9,7 +9,6 @@ const defaultSeo = getDefaultPageSeo(path);
 
 const title = defaultSeo.title;
 const description = defaultSeo.description;
-const keywords = defaultSeo.keywords;
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -38,7 +37,7 @@ const structuredData = {
 };
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} structuredData={structuredData}>
+<BaseLayout title={title} description={description} structuredData={structuredData}>
   <article class="section wp-content" aria-labelledby="page-title">
     <h1 id="page-title">Zones desservies</h1>
     <p>

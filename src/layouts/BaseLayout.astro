@@ -3,12 +3,10 @@ import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { navItems, serviceAreas, serviceCards, siteConfig } from "../data/site";
-import { getDefaultPageKeywords } from "../data/seo";
 
 interface Props {
   title?: string;
   description?: string;
-  keywords?: string;
   ogImage?: string;
   noindex?: boolean;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
@@ -17,7 +15,6 @@ interface Props {
 const {
   title = siteConfig.title,
   description = siteConfig.description,
-  keywords,
   ogImage = "/branding/og-default-1200x630.jpg",
   noindex = false,
   structuredData,
@@ -27,7 +24,6 @@ const pathname = Astro.url.pathname;
 const canonicalUrl = new URL(pathname, siteConfig.url).toString();
 const ogImagePath = ogImage.startsWith("http") ? ogImage : new URL(ogImage, siteConfig.url).toString();
 const robotsContent = noindex ? "noindex,nofollow" : "index,follow";
-const keywordsContent = keywords?.trim() || getDefaultPageKeywords(pathname);
 
 // Les href du site portent desormais un slash final (trailingSlash: 'always'),
 // alors que getBreadcrumbItems reconstruit les chemins segment par segment.
@@ -143,7 +139,6 @@ const structuredDataJson = JSON.stringify(defaultStructuredData);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="keywords" content={keywordsContent} />
     <meta name="robots" content={robotsContent} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="author" content={siteConfig.name} />
