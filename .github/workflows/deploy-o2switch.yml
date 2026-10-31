@@ -92,6 +92,9 @@ jobs:
           name: dist
           path: dist
           if-no-files-found: error
+          # .htaccess est un fichier cache : sans ce flag, upload-artifact (>= v4)
+          # le retire silencieusement de l'artefact et il n'atteint jamais la prod.
+          include-hidden-files: true
 
   deploy:
     name: Deploy via FTP
