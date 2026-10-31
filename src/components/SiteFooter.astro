@@ -53,7 +53,13 @@ const footerContent = await getFooterContent();
         {
           footerContent.informations.map((item) => (
             <li>
-              <a href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}>{item.label}</a>
+              <a
+                href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : undefined}
+                rel={item.href.startsWith("http") ? "noopener noreferrer nofollow" : undefined}
+              >
+                {item.label}
+              </a>
             </li>
           ))
         }
