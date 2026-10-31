@@ -44,6 +44,7 @@ const PRESTATION_SEO_BY_PATH: Record<string, PrestationSeoData> = {
       },
     ],
     internalLinks: [
+      { href: "/menopause/", label: "Naturopathie et ménopause" },
       { href: "/prestations/symptothermie/", label: "Découvrir la symptothermie" },
       { href: "/prestations/doula/", label: "Découvrir l'accompagnement doula" },
       { href: "/prestations/ecoute-corporelle/", label: "Découvrir l'écoute corporelle" },

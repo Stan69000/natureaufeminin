@@ -1,0 +1,179 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDefaultPageSeo } from "../data/seo";
+
+const path = "/menopause";
+const defaultSeo = getDefaultPageSeo(path);
+
+const title = defaultSeo.title;
+const description = defaultSeo.description;
+
+const faqItems = [
+  {
+    question: "À partir de quand peut-on se faire accompagner ?",
+    answer:
+      "Dès la préménopause, quand les premiers changements se font sentir — souvent plusieurs années avant l'arrêt des règles. Il n'y a pas de moment juste : on commence quand le besoin s'en fait sentir.",
+  },
+  {
+    question: "Est-ce que cela remplace un suivi médical ?",
+    answer:
+      "Non, jamais. La naturopathie accompagne l'hygiène de vie et vient en complément du suivi médical, qui reste indispensable à cette période de la vie.",
+  },
+  {
+    question: "Combien de séances faut-il prévoir ?",
+    answer:
+      "Un premier entretien permet de faire le point et de définir un rythme réaliste. La ménopause s'étalant sur plusieurs années, un suivi espacé dans le temps est souvent plus pertinent qu'un accompagnement intensif.",
+  },
+  {
+    question: "Les consultations peuvent-elles se faire à distance ?",
+    answer:
+      "Oui, au cabinet de Fleurieux-sur-l'Arbresle, à domicile selon disponibilité, ou en visio partout en France.",
+  },
+];
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Accompagnement de la ménopause en naturopathie",
+    serviceType: "Naturopathie",
+    description:
+      "Accompagnement en hygiène de vie pendant la préménopause et la ménopause : alimentation, sommeil, mouvement, gestion du stress et dimension émotionnelle.",
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Ouest lyonnais" },
+      { "@type": "Country", name: "France" },
+    ],
+    availableChannel: [
+      {
+        "@type": "ServiceChannel",
+        serviceLocation: { "@type": "Place", name: "Cabinet à Fleurieux-sur-l'Arbresle" },
+      },
+      {
+        "@type": "ServiceChannel",
+        serviceUrl: "https://naturaufeminin.fr/contact/",
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  },
+];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <article class="section wp-content" aria-labelledby="page-title">
+    <h1 id="page-title">Naturopathie et ménopause</h1>
+
+    <p>
+      La ménopause n'est pas une maladie. C'est une étape, au même titre que la puberté, la
+      grossesse ou le post-partum : le corps change de rythme et demande à être écouté
+      autrement. Et pourtant, beaucoup de femmes arrivent à ce moment-là sans avoir été
+      préparées, avec des sensations qu'elles ne reconnaissent pas et peu d'endroits où en
+      parler librement.
+    </p>
+
+    <p>
+      J'accompagne les femmes à toutes les phases de leur vie, et celle-ci en fait pleinement
+      partie. Mon rôle n'est pas de vous dire ce que vous devez ressentir, mais de vous aider
+      à comprendre ce qui se passe et à retrouver des appuis concrets au quotidien.
+    </p>
+
+    <h2>Comment se passe un accompagnement</h2>
+
+    <p>
+      Comme pour tout accompagnement en naturopathie, nous commençons par un
+      <strong>bilan de vitalité</strong>. Lors de ce premier entretien, nous faisons votre
+      anamnèse : votre histoire, votre rythme de vie, votre alimentation, votre sommeil, ce
+      qui vous pèse et ce qui vous porte. C'est ce temps-là qui nous permet de définir
+      ensemble un plan d'actions réaliste, adapté à votre énergie du moment.
+    </p>
+
+    <p>
+      Je vous accompagne ensuite tout au long de ce chemin. Je suis le filet de sécurité qui
+      vous permet d'avancer en confiance, à votre rythme, sans injonction.
+    </p>
+
+    <h2>Ce que nous regardons ensemble</h2>
+
+    <ul>
+      <li>
+        <strong>L'alimentation</strong>, notre point de départ si votre énergie vitale le
+        permet.
+      </li>
+      <li>
+        <strong>Le sommeil et la récupération</strong>, souvent les premiers bousculés à cette
+        période.
+      </li>
+      <li>
+        <strong>La mise en mouvement</strong>, adaptée à ce que votre corps accepte
+        aujourd'hui.
+      </li>
+      <li>
+        <strong>La gestion du stress et la respiration</strong>, pour retrouver de la marge.
+      </li>
+      <li>
+        <strong>Le rapport à votre corps</strong>, qui change, et avec lequel il faut parfois
+        refaire connaissance.
+      </li>
+    </ul>
+
+    <h2>La part émotionnelle</h2>
+
+    <p>
+      La ménopause ne se joue pas que dans le corps. C'est aussi une bascule : la fin d'un
+      cycle qui a rythmé des décennies, parfois un rapport à la féminité ou à la
+      transmission qui se réorganise. Quand cette dimension prend beaucoup de place, nous
+      pouvons travailler avec
+      <a href="/prestations/ecoute-corporelle/">l'écoute corporelle par la Voie des Sens</a>,
+      qui permet d'accueillir ce qui se dépose là sans passer uniquement par les mots.
+    </p>
+
+    <h2>Ce que la naturopathie ne fait pas</h2>
+
+    <p>
+      Je préfère le dire clairement. La naturopathie <strong>ne traite pas</strong> et
+      <strong>ne se substitue jamais à la médecine conventionnelle</strong> : elle la
+      complète. Je ne pose aucun diagnostic, je n'interromps aucun traitement, et je
+      n'interfère pas avec les décisions prises avec votre médecin ou votre gynécologue.
+      Le suivi médical reste indispensable à cette période, et je vous encourage à le
+      maintenir.
+    </p>
+
+    <p>
+      Ce que je peux faire, c'est vous aider à comprendre votre terrain, à ajuster votre
+      hygiène de vie et à traverser cette étape en vous sentant moins seule et mieux outillée.
+    </p>
+
+    <h2>Questions fréquentes</h2>
+
+    {
+      faqItems.map((item) => (
+        <>
+          <h3>{item.question}</h3>
+          <p>{item.answer}</p>
+        </>
+      ))
+    }
+
+    <h2>Pour aller plus loin</h2>
+
+    <ul>
+      <li><a href="/prestations/naturopathie/">L'accompagnement en naturopathie</a></li>
+      <li><a href="/prestations/ecoute-corporelle/">L'écoute corporelle</a></li>
+      <li><a href="/qui-suis-je/">Qui suis-je</a></li>
+      <li><a href="/tarifs/">Les tarifs</a></li>
+    </ul>
+
+    <p>
+      Vous vous reconnaissez dans ces lignes ? Parlons-en : prenez
+      <a href="/contact/">rendez-vous</a>, au cabinet de Fleurieux-sur-l'Arbresle, à domicile
+      ou en visio.
+    </p>
+  </article>
+</BaseLayout>
