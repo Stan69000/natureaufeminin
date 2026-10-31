@@ -11,7 +11,7 @@ const description = page.seoDescription?.trim() || defaultSeo.description;
 const html = page.html;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} noindex={page.seoNoindex} ogImage={page.seoOgImage}>
   <section class="home-hero section" aria-labelledby="home-hero-title">
     <div class="hero-grid">
       <div>

@@ -83,7 +83,7 @@ const structuredData = [
 ];
 ---
 
-<BaseLayout title={title} description={description} structuredData={structuredData}>
+<BaseLayout title={title} description={description} noindex={page?.seoNoindex} ogImage={page?.seoOgImage} structuredData={structuredData}>
   <article class="section wp-content" aria-labelledby="page-title">
     <h1 id="page-title">{heading}</h1>
 
