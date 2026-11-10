@@ -13,7 +13,7 @@ export function sanitizeCmsUrl(input: string | undefined, policy: UrlPolicy = {}
   if (/[\u0000-\u001F\u007F]/.test(raw)) return null;
 
   if (policy.allowRelative && /^\/(?!\/)/.test(raw)) {
-    return raw;
+    return withTrailingSlash(raw);
   }
 
   let url: URL;
@@ -29,6 +29,21 @@ export function sanitizeCmsUrl(input: string | undefined, policy: UrlPolicy = {}
   }
 
   return url.toString();
+}
+
+/**
+ * Le site est construit avec `trailingSlash: 'always'` : Apache redirige
+ * `/contact` vers `/contact/` (301). Un lien interne saisi sans slash dans
+ * l'admin produirait donc une redirection sur chaque page où il apparaît
+ * (« Page avec redirection » dans la Search Console). Les fichiers
+ * (`/sitemap.xml`, `/doc.pdf`) sont laissés tels quels.
+ */
+export function withTrailingSlash(href: string): string {
+  const match = /^([^?#]*)(.*)$/.exec(href);
+  if (!match) return href;
+  const [, path, suffix] = match;
+  if (path.endsWith("/") || /\.[a-z0-9]+$/i.test(path)) return href;
+  return `${path}/${suffix}`;
 }
 
 export function sanitizeYoutubeVideoId(value: string): string | null {
