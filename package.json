@@ -15,8 +15,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.4.2",
-    "sanitize-html": "^2.18.1",
+    "astro": "^7.4.11",
+    "sanitize-html": "^2.18.2",
     "styled-components": "^6.6.0"
   },
   "devDependencies": {
