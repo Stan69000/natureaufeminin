@@ -3,6 +3,7 @@ import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { navItems, serviceAreas, serviceCards, siteConfig } from "../data/site";
+import AudienceBeacon from '../components/AudienceBeacon.astro';
 
 interface Props {
   title?: string;
@@ -188,5 +189,6 @@ const structuredDataJson = JSON.stringify(defaultStructuredData);
       <slot />
     </main>
     <SiteFooter />
+    <AudienceBeacon />
   </body>
 </html>
