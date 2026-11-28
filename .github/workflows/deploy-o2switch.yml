@@ -23,6 +23,11 @@ env:
   # depuis l'admin — aucune n'est jamais partie.
   DEPLOY_ENVIRONMENT: parallel
 
+# Jeton GITHUB_TOKEN en lecture seule par défaut ; un job qui a besoin de
+# plus le déclare lui-même.
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build Astro
